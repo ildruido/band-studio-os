@@ -2,6 +2,14 @@
 
 Newest first. Each entry: id, date, decision, why, alternatives, who decided, status (`active`, `superseded by D-0NN`, `revisited`).
 
+### D-006 Identity Studio starts light; the first build is end-to-end
+- **Date:** 2026-11-04
+- **Decision:** V1 Identity Studio starts light (Grit slider, anti-moodboard, a few references). Onboarding captures only the essentials. The customer can add or fine-tune further identity settings at any later moment. Which identity variables exist is decided by a UX design round, driven by their impact on the output's identity. The first iteration is end-to-end (identity to finished campaign assets) so output variations can be tested before more identity variables are added.
+- **Why:** Identity variables only matter if they visibly change the output. Testing output end-to-end first shows which variables earn their place.
+- **Alternatives:** Full Identity Studio up front (heaviest build, long onboarding); minimal logo-and-colors only (risks generic output).
+- **Decided by:** Ale (light in principle, with the clarifications above)
+- **Status:** active
+
 ### D-005 V1 is built for the one active "driver" member
 - **Date:** 2026-11-04
 - **Decision:** The main user of V1 is the single active member who runs the band's promotion. Other members only approve, through a light flow (no full account needed). The Consensus Engine is a light add-on in V1, not the core.
