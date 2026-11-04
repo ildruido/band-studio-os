@@ -2,6 +2,14 @@
 
 Newest first. Each entry: id, date, decision, why, alternatives, who decided, status (`active`, `superseded by D-0NN`, `revisited`).
 
+### D-014 Research priorities approved; driver interviews designed and parked
+- **Date:** 2026-11-04
+- **Decision:** Ale approved the ranking of hypotheses in the [research plan](../research/research-plan.md) (riskiest three: H-01 output feels like "us", H-03 willingness to pay, H-02 the driver exists and hurts) and its three experiments, as proposed. Recruitment and the tests themselves are postponed. For now only the first test, the driver interviews (R-003), is designed in full; it is parked until Ale says go. The blind output test and price test stay at plan level.
+- **Why:** Ale wants the evidence plan settled without spending his time or budget on fieldwork yet.
+- **Alternatives:** Approve with the output test at deep tier; change the ranking (not chosen).
+- **Decided by:** Ale, on Claude's recommendation
+- **Status:** active
+
 ### D-013 After R-001, run a light size check before drafting personas
 - **Date:** 2026-11-04
 - **Decision:** R-001 returned "Needs primary research": no hard count of bands in Italy or the UK, and thin first-hand voices. Ale chose a short follow-up size check (R-002, light tier, H1 only) before personas. The R-001 kill-criteria flags for H1 and H3 are read as "not found", not "contradicted" (this is the override the framework asks Ale to log). Provisional personas follow R-002, tagged evidence or assumption.
