@@ -4,29 +4,29 @@ Protocol: [protocol.md](protocol.md), pre-registered in commit 40671c8 on 2026-1
 
 ## Verdict
 
-**Needs primary research.** We found no verified product that guides a band from gig details to a full, on-brand campaign for 25 EUR a month or less. But the strongest candidates, Canva and Adobe Express, could not be opened at their own sites (both blocked automated access), so the key hypothesis S2 cannot be called supported. Coverage (S1) is also not proven, because community and review routes were thin. Two threats stand out: Canva's 2026 brand-aware AI features and Bandsintown's June 2026 "Boost" (automated show promotion). The antidote to the main risk is human: venues are publicly refusing AI-made posters.
+**Reshape.** The skeptic's own search found relevant competitors the scan had missed, which triggers the S1 kill criterion (coverage was not complete). The landscape must be widened and re-run before R-005 relies on it. Separately, we found no verified product that guides a band from gig details to a full, on-brand campaign for 25 EUR a month or less, but the strongest candidates (Canva, Adobe Express, Piktochart) could not be opened at their own sites, and newly found AI poster tools (for example Mew Design, which makes story and banner crops of the same artwork) were not checked on price. So S2 stays open and needs a hands-on check by Ale. Two threats stand out: Canva's 2026 brand-aware AI features and Bandsintown's June 2026 "Boost" (automated show promotion). The antidote to the main risk is human: venues are publicly refusing AI-made posters.
 
 | Id | Hypothesis | Verdict | Confidence | Key evidence | Key evidence against |
 | --- | --- | --- | --- | --- | --- |
-| S1 Coverage (key) | Relevant set found in all classes | Insufficient evidence | Low | Landscape table, discovery log | Routes 5, 6 thin; Canva, Adobe unverifiable; Italian scene tools unchecked |
-| S2 Gap exists (key) | No product meets all three conditions | Insufficient evidence | Low | No verified product meets 2 of 3 (E-01 to E-09) | Canva (unverified, E-18) may meet (b) and (c); PosterMyWall price unverified (E-08) |
+| S1 Coverage (key) | Relevant set found in all classes | **Contradicted** (kill criterion triggered by the skeptic's routes) | Medium | K-01 (Mew Design, opened) and leads K-02 to K-05 | Routes 5, 6 thin; Canva, Adobe unverifiable; Italian scene tools unchecked |
+| S2 Gap exists (key) | No product meets all three conditions | Insufficient evidence | Low | No verified product meets 2 of 3 (E-01 to E-09) | Canva (unverified, E-18) may meet (b) and (c); Mew Design (K-01) is closest to (a); PosterMyWall price unverified (E-08) |
 | S3 Crowding | No dominant gig-promotion product | Insufficient evidence | Low | None found | No usage survey found; Canva dominates the DIY class (secondary only) |
 | S4 Incumbent inertia | Incumbents not closing the gap | Mixed | Low | No musician-specific guided campaign tool found | E-01 Bandsintown Boost (2026-06-05); E-18 Canva AI 2.0 and Brand Kit in ChatGPT and Claude (secondary) |
 
-No kill criterion was triggered on verified evidence. S4's kill criterion needs a product built for musicians; Boost automates audience reach but makes no creative, and Canva's features are not musician-specific, so both are near misses, not triggers. This is a judgement call and is flagged for the skeptic.
+S1's kill criterion is triggered, so the study verdict is Reshape. No kill criterion was triggered for S2 to S4. For S4, the criterion as written needs a product built for musicians, so general incumbents (Canva, and Boost, which automates audience reach but makes no creative) could not trigger it. That reading was made after seeing the data and is logged as a deviation for Ale to rule on. S3 is Insufficient evidence: do not read it as "no crowding".
 
 ## Strongest evidence against our idea
 
-1. **"Good enough" already exists in the DIY class.** Guides aimed at bands say Canva is enough for most gig flyers (E-20, grade C, secondary). Canva reportedly added Brand Kit, "Brand Intelligence" and agentic AI in 2026 and exposed Brand Kits inside ChatGPT and Claude (E-18, unverified). If true, a driver already has brand memory plus generation for about 13 USD a month (secondary figure). Our gap would then be the guided gig flow, not the brand.
+1. **"Good enough" already exists in the DIY class.** Guides aimed at bands say Canva is enough for most gig flyers (E-20, grade C, secondary). Canva reportedly added Brand Kit, "Brand Intelligence" and agentic AI in 2026 and exposed Brand Kits inside ChatGPT and Claude (E-18, unverified). If true, a driver already has brand memory plus generation for about 13 USD a month (a secondary figure, unlogged, so no weight). Our gap would then be the guided gig flow, not the brand.
 2. **The adjacent incumbent is moving.** Bandsintown, which already holds the show listings, launched Boost on 2026-06-05 with the pitch "No setup, no creative to produce, no campaign management" (E-01). That covers "getting the show seen" without any flyer.
-3. **Authenticity cuts against AI output itself.** Venues now publicly refuse AI-made posters (E-19, E-24, E-25). A product that generates flyers risks being the thing scenes reject, unless its output is clearly the band's own. This is a design constraint on the product, not a reason to stop.
+3. **Authenticity cuts against AI output itself.** Some venues, so far found only in the US and Canada, publicly refuse AI-made posters (E-19, E-24, E-25; none from Italy or the UK). A product that generates flyers risks being the thing scenes reject, unless its output is clearly the band's own. This is a design constraint on the product, not a reason to stop.
 4. **Dead products warn about the market.** Five music promotion platforms shut down (E-14 to E-17), two with no stated reason and one after raising 9.35 million USD. A pattern of small revenue from time- and cash-poor musicians is plausible but not proven here.
 
 ## Findings
 
 **Landscape in one line.** Nothing verified does the whole job. The job is split across (a) design tools (Canva, PosterMyWall, AI flyer makers), (b) schedulers and AI caption tools (PostPlanify and similar), (c) music-marketing add-ons (smart links, EPK sites, ticket and listing platforms), and (d) doing it by hand. A band stitches these together.
 
-**S1.** Routes run: 1, 2, 3, 4, 7, 8, 9 (7 of 9). Quality was uneven. Route 3 (app stores) yielded only a 2013 app. Route 5 (communities) returned guides and news, not threads, because Reddit and Facebook are unreadable. Route 6 (reviews) found one G2 snippet. Route 9 added Orphiq and Base for Music, so the saturation rule (two successive routes with nothing new) was **not met**. Verdict: Insufficient evidence. Next step is the skeptic's two routes.
+**S1.** Routes run: 1, 2, 3, 4, 7, 8, 9 (7 of 9). Quality was uneven. Route 3 was a web search about apps, not an app-store search, and yielded only a 2013 app. Route 5 (communities) returned guides and news, not threads, because Reddit and Facebook are unreadable. Route 6 (reviews) found one G2 snippet. Route 9 added Orphiq and Base for Music, so the saturation rule (two successive routes with nothing new) was **not met**. The skeptic's two own routes then found relevant competitors not on the list (K-01 to K-05: Mew Design, Piktochart, Kapwing, Venngage, Simplified, Vista Social, Soundverse, Beatflyer, Desygner and others), which triggers the kill criterion. Verdict: Contradicted at medium confidence. Next step: add these to the landscape, check the top ones at their own sites and re-run discovery until two routes add nothing (not yet done).
 
 **S2.** Checked against the three conditions (a) one guided flow, (b) saved identity, (c) 25 EUR a month or 15 EUR a campaign:
 
@@ -36,10 +36,12 @@ No kill criterion was triggered on verified evidence. S4's kill criterion needs 
 | Orphiq | No (strategy advice) | Profile-based advice | 37 USD a month (DIY) | E-07 |
 | PosterMyWall | Not shown (templates plus AI writer and images) | Yes, Brand Kits listed | Not verified | E-08 |
 | Pixazo and similar AI flyer makers | No: static output, colours not guaranteed | Not shown | Not verified | E-09 |
+| Mew Design | Closest so far: gig poster plus story, banner and venue-screen crops of the same artwork (vendor claim) | Brand reuse claimed | Not verified | K-01 |
+| Piktochart AI concert poster | Poster from band name, venue, date, genre (search summary only) | Not shown | Not verified (403) | K-02 |
 | Canva | Unverified | Reportedly yes | Reportedly about 13 USD | E-18, E-20 |
 | Bandsintown Boost | Not a creative tool | n/a | Not verified | E-01 |
 
-No verified product meets two of three. Canva is the one that could, and it is unverifiable from this environment (HTTP 403 at its own site and Adobe's). That keeps S2 at Insufficient evidence.
+No *checked* product meets two of three, but Mew Design and Piktochart sit closest to condition (a) and their prices are unchecked, and Canva could meet (b) and (c) but cannot be opened from this environment (HTTP 403 at its own site and Adobe's). So S2 is Insufficient evidence, not Supported. A hands-on check by Ale is the blocker. The PostPlanify price in E-02 is not confirmed in the fetched page and carries no weight.
 
 **S3.** We found no usage survey for any gig-promotion-specific product. Absence is not evidence of space, so Insufficient evidence. Secondary guides name Canva and Linktree as the most-cited tools (not opened, unverified).
 
@@ -65,9 +67,11 @@ No verified product meets two of three. Canva is the one that could, and it is u
 | ChatGPT or Claude with prompts | DIY | Active | lead only |
 | Friends and freelance designers | DIY | Active | rates in guides, vendor-sourced |
 | Printed posters, venue promotion, street team, doing nothing | Substitute and non-consumption | Always | guides, grade C |
+| Mew Design, Piktochart AI poster, Kapwing, Venngage, Simplified, Vista Social, Soundverse, Beatflyer, Desygner, OpenArt (found by the skeptic) | Indirect, AI poster and caption tools | Active, mostly unchecked | K-01 to K-05 |
 | Gig Poster (SplitGigs, 2013) | Direct-ish | Stale or dead, unverified | E-21 |
-| Zankme, Magnifi, DEMAND, PureVolume, Fuzz.com | Dead | Dead 2009 to 2020 | E-14 to E-17 |
-| Brots, Gotobeat, ILiveMusic (Italy) | Leads | Status unverified | none |
+| Zankme, Magnifi, DEMAND, PureVolume | Dead | Dead 2014 to 2020 | E-14 to E-17 |
+| Fuzz.com, Flyer Lizard, Pippit, Pixelcut, AdaptlyPost, TimeToPost | Leads only | Not opened | none (search summaries) |
+| Brots, Gotobeat, ILiveMusic (Italy) | Leads | Status unverified. An Italian-language skeptic search for Rockit and Gigsta found nothing | none |
 
 ## Discovery log
 
@@ -119,11 +123,23 @@ Italian bands and the quiet majority who do nothing are absent. English-language
 
 ## Skeptic review
 
-Pending (`research-skeptic` agent, standard tier).
+`research-skeptic` agent, standard tier, fresh context. Verdict: **sound with fixes.** It opened every openable source (quotes found); Canva also returned 403 to it. Its blind verdicts matched ours on S2, S3, S4 and the study, and differed on S1 (Contradicted at medium confidence).
+
+| Must-fix | Resolution |
+| --- | --- |
+| Missed competitors, S1 kill criterion triggered | Accepted. S1 Contradicted, study verdict Reshape, K-01 to K-06 added. Saturation not yet re-run: listed as next step. |
+| S2 table omitted the closest products | Fixed: Mew Design and Piktochart added; "no verified product" wording narrowed. |
+| S4 read generously | Logged as a deviation for Ale to rule on. |
+| No log of disconfirming queries | Logged as a deviation: the queries run were "bands Canva enough or hire designer", "AI generated posters backlash venue", "tools that stopped using / cancelled", "Canva musicians AI announcement 2026" and "Bandsintown 2026 features". These are fewer than the protocol's minimum of two per hypothesis for S2 and S3. |
+| Unlogged claims (Canva about 13 USD, Canva and Linktree most-cited, PostPlanify 79 USD) | Marked as unverified and given no weight. |
+
+Should-fix items (E-25 to C, "some venues" US and Canada, leads with own rows, route 3 relabelled, Italian search recorded as empty) are all done. Unresolved: no Reddit or Facebook access and no Canva access, so S2 needs Ale's hands-on check.
 
 ## Deviations from the protocol
 
-None. The search tool's summaries replaced direct reads of some pages; they are marked unverified, not weighed.
+1. **2026-11-04, S4 reading.** The kill criterion needs a product built for musicians, so general incumbents could not trigger it. This was decided after seeing the data. Effect: S4 is Mixed instead of Contradicted. If Ale reads Canva's Brand Kit in ChatGPT and Claude, or Boost, as closing the gap, S4 becomes Contradicted.
+2. **2026-11-04, disconfirming queries.** Fewer than the standard tier's minimum were run for S2 and S3 (see Skeptic review). Effect: S2 and S3 stay at Insufficient evidence.
+3. **2026-11-04, tool summaries.** Search summaries replaced direct reads of some pages; they are marked unverified and carry no weight.
 
 ## Evidence log
 
@@ -132,7 +148,7 @@ Grade D means vendor material about itself. "Unverified" carries no weight.
 | Id | Hyp. | For / against | Source | Publisher, date, geo | Grade | Interest | Verified quote | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | E-01 | S4 | against | [Bandsintown Boost blog](https://artists.bandsintown.com/support/blog/meet-boost-a-new-way-to-promote-your-shows-on-bandsintown) | Bandsintown, 2026-06-05, global | D (fact of launch is primary) | yes | "No setup, no creative to produce, no campaign management, nothing added to your plate." | Price not on page; press figures unverified |
-| E-02 | S2 | for | [PostPlanify pricing](https://postplanify.com/pricing) and [musicians page](https://postplanify.com/social-media-management-for-musicians) | PostPlanify, accessed 2026-11-04 | D | yes | "Growth ... $ 79 /month" | Aimed at agencies; AI caption assistant |
+| E-02 | S2 | for | [PostPlanify pricing](https://postplanify.com/pricing) and [musicians page](https://postplanify.com/social-media-management-for-musicians) | PostPlanify, accessed 2026-11-04 | D | yes | "Growth For freelancers and small agencies" | Price seen in first fetch, not reproduced in the skeptic's fetch (JS-rendered): **price unverified, no weight**. AI caption assistant |
 | E-03 | S2 | neutral | [Feature.fm pricing](https://www.feature.fm/pricing) | Feature.fm, 2026-11-04 | D | yes | "Basic Artist $ 8 /mo" | Smart links, not creative |
 | E-04 | S2 | neutral | [Hypeddit pricing](https://hypeddit.com/pricing) | Hypeddit, 2026-11-04 | D | yes | "Basic $9 /mo billed monthly" | Smart links, pre-saves |
 | E-05 | S2 | neutral | [Bandzoogle pricing](https://bandzoogle.com/pricing) | Bandzoogle, 2026-11-04 | D | yes | "Lite Website plan ... $11.00/month" | Website and EPK |
@@ -154,8 +170,12 @@ Grade D means vendor material about itself. "Unverified" carries no weight.
 | E-21 | S1 | neutral | [Hypebot on Gig Poster (2013)](https://www.hypebot.com/gig-poster-is-almost-a-really-cool-app-from-splitgigs/) | Hypebot, 2013 | **Unverified** | no | none | App status unknown |
 | E-22 | S1 | neutral | Orphiq and Base for Music G2 snippets via search | 2026 | **Unverified** | yes | none | Lead only |
 | E-23 | S3 | neutral | Instagram 88% survey via inkl (not opened) | unknown | **Unverified** | no | none | Lead only |
+| K-01 | S1, S2 | against | [Mew Design AI concert poster generator](https://mew.design/create/ai-concert-poster-generator) | Mew Design, 2026-11-04, found by the skeptic | D | yes | "story, banner, or venue-screen crops with the same artwork and information hierarchy" | Opened. Price not verified |
+| K-02 | S1, S2 | against | Piktochart AI concert poster generator | via search summary; HTTP 403 | Unverified | yes | none | Lead only |
+| K-03 to K-05 | S1 | against | Kapwing, Venngage, Lovart, Simplified, Melboss, Soundverse, Vista Social, Beatflyer, Desygner, OpenArt | search results | Unverified | yes | none | Leads found by the skeptic; not opened |
+| K-06 | authenticity | neutral | Boston Globe 2026-05-13 and KJZZ 2026-08-11 via search | 2026, US | Unverified | no | none | More venue-refusal anecdotes, also US |
 | E-24 | authenticity | neutral | [Global News on Gus' Pub](https://globalnews.ca/news/12045069/halifax-pub-ai-posters/) | Global News, 2026-09-02, Canada | C | no | "Gus's Pub says it's no longer accepting show flyers that were created by AI." | |
-| E-25 | authenticity | neutral | [Peterborough Currents](https://peterboroughcurrents.ca/newsletters/generative-ai-show-posters/) | 2026, Canada | B | no | "If every poster starts looking like every other AI poster, then we've traded personality for convenience. Local events stop looking local." | Designer voice, not a band driver |
+| E-25 | authenticity | neutral | [Peterborough Currents](https://peterboroughcurrents.ca/newsletters/generative-ai-show-posters/) | 2026, Canada | C (a designer's voice, not a band driver) | no | "If every poster starts looking like every other AI poster, then we've traded personality for convenience. Local events stop looking local." | Designer voice, not a band driver |
 
 ### Excluded
 
