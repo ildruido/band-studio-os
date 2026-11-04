@@ -2,6 +2,22 @@
 
 Newest first. Each entry: id, date, decision, why, alternatives, who decided, status (`active`, `superseded by D-0NN`, `revisited`).
 
+### D-011 Personas are grounded in a desk-research reality check
+- **Date:** 2026-11-04
+- **Decision:** Before any persona is written, a reality check (study R-001, `persona-validation` part A, standard tier) tests whether the target users exist in meaningful numbers, do the job themselves, feel the pain, find today's workarounds lacking, and care about the product's angle. Personas are built from its evidence, tag every trait as evidence or assumption, and pass an evidence audit (part B) before their PR. The deeper market scan (artifact 3) stays after personas.
+- **Why:** Without it, personas describe an imagined market and problem. Ale asked for personas rooted in reality and a minimum of desk research.
+- **Alternatives:** Validate inside the market research after personas (rejected: the personas would anchor the research); run the full market research before personas (slower, and most of it isn't needed to write personas).
+- **Decided by:** Ale, on Claude's recommendation
+- **Status:** active
+
+### D-010 All research follows a bias-guarded framework, with tiers
+- **Date:** 2026-11-04
+- **Decision:** Every piece of research follows [docs/research/framework.md](../research/framework.md): a protocol with falsifiable hypotheses and kill criteria committed before searching, searches for evidence against as well as for, a graded evidence log with verified quotes, fixed confidence and verdict rules, and an independent skeptic review. Guardrails scale with the cost of being wrong: light, standard (adds the `research-skeptic` agent) and deep (adds Ale's approval of the kill criteria, a pre-mortem and an independent replication). A generic layer (`research-protocol` skill, `research-skeptic` agent) carries a skill per research type, starting with `persona-validation`. It stays in force after inception.
+- **Why:** Ale and Claude both want the idea to work, and Claude tends to agree with whoever asks. Ale asked for guardrails against confirmation bias that get stronger as research gets deeper.
+- **Alternatives:** A "watch for bias" reminder in each skill (rejected: reminders don't hold under pressure); deep, multi-agent research for everything (rejected: costly on the Pro plan and slow for small questions).
+- **Decided by:** Ale, on Claude's recommendation
+- **Status:** active
+
 ### D-009 V1 is export-only, on a connector-based architecture
 - **Date:** 2026-11-04
 - **Decision:** V1 outputs a ready-to-post campaign folder; the driver posts by hand. The architecture must be multi-channel, composable and connector-based from the start, so publishing channels and other integrations can be added incrementally toward the fully integrated vision. This is a requirement for the architecture handoff.
