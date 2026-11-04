@@ -35,12 +35,13 @@ Progress against these criteria is tracked in [status.md](status.md). Update it 
 
 ## Artifacts
 
-All of them live in `docs/inception/`, one PR per artifact. Typos and decision log entries may go straight to `main` (see `CLAUDE.md` for the cloud-session limit).
+All of them live in `docs/inception/`, except research studies, which live in `docs/research/`. One PR per artifact. Typos and decision log entries may go straight to `main` (see `CLAUDE.md` for the cloud-session limit).
 
 | # | Artifact | File | Made with | Exit criterion |
 | --- | --- | --- | --- | --- |
 | 1 | Product foundation (vision, value prop, key product artifacts), refined from `starting-idea.md` | `product-foundation.md` | `inception-interview` | 1 |
-| 2 | Target users and personas | `personas.md` | `inception-interview` | 7 |
+| 2a | Persona reality check (desk research, R-001) | `../research/R-001-persona-reality-check/` | `persona-validation` (part A) | 2, 7 |
+| 2 | Target users and personas | `personas.md` | `inception-interview` + `persona-validation` (part B) | 7 |
 | 3 | Market scan and riskiest hypotheses | `market-and-hypotheses.md` | `riskiest-hypotheses` | 2 |
 | 4 | Success metrics | `success-metrics.md` | `inception-interview` | 8 |
 | 5 | Constraints and non-goals | `constraints.md` | `inception-interview` | 9 |
@@ -53,7 +54,7 @@ All of them live in `docs/inception/`, one PR per artifact. Typos and decision l
 ## Order
 
 1. **Foundation**: refine the starting idea (`starting-idea.md`, a starting point, not a bible) into artifact 1.
-2. **People and market**: personas (2), then the market scan and riskiest hypotheses (3).
+2. **People and market**: a reality check of the target users in desk research (2a), then personas grounded in it (2), then the deeper market scan and riskiest hypotheses (3). A reality check verdict of Reshape or Stop goes to Ale before personas start.
 3. **Shape**: success metrics (4), constraints and non-goals (5), then the MVP and roadmap (6).
 4. **Show**: prototypes (7) for the riskiest MVP flows, used to test hypotheses.
 5. **Hand over**: architecture handoff (9), then the exit gate (10). Ale's sign-off closes inception.
@@ -68,6 +69,10 @@ The decision log (8) is kept current at every step. Steps may loop: a prototype 
 - No production code until inception closes. Prototypes are throwaway mock-ups (Artifacts), with no tests and no harness.
 - Every product decision Ale makes goes into the decision log in the same turn.
 
+## Research
+
+Every piece of research follows the [research framework](../research/framework.md): questions and kill criteria fixed before searching, evidence against searched as hard as evidence for, every claim traced to an opened source, and an independent skeptic review, with guardrails that scale with the cost of being wrong (D-010). Personas rest on a reality check run that way (D-011).
+
 ## Skills
 
 Project skills live in `.claude/skills/`:
@@ -76,12 +81,14 @@ Project skills live in `.claude/skills/`:
 | --- | --- |
 | `inception-interview` | Fill or refine an artifact by interviewing Ale one question at a time |
 | `decision-log` | Record, revise or look up a decision |
-| `riskiest-hypotheses` | Market scan, competitors, and a ranked list of the riskiest hypotheses with how to test each |
+| `research-protocol` | Run any research with the framework's bias guardrails, at a light, standard or deep tier |
+| `persona-validation` | Reality check of the target users before personas (part A), evidence audit of the personas draft (part B) |
+| `riskiest-hypotheses` | Market scan, competitors, and a ranked list of the riskiest hypotheses with how to test each (runs on `research-protocol`) |
 | `prototype` | Build a quick interactive mock-up as an Artifact, linked to the hypotheses it tests |
 | `exit-gate` | Check the 11 exit criteria and report what is missing |
 | `architecture-handoff` | Write the input for the Architecture phase and the bridge to `app-studio` |
 
-They lean on skills that already exist: `product-management:*` (brainstorm, competitive-brief, write-spec, roadmap-update, synthesize-research), `anthropic-skills:deep-research`, and `frontend-design`. No extra agents are needed for inception.
+They lean on skills that already exist: `product-management:*` (brainstorm, competitive-brief, write-spec, roadmap-update, synthesize-research), `anthropic-skills:deep-research`, and `frontend-design`. One extra agent: `research-skeptic` (`.claude/agents/`), the independent reviewer for standard and deep research.
 
 ## Handover to the build phase
 

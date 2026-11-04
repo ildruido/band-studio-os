@@ -20,7 +20,7 @@ Product-specific facts (product, users, principles, key concepts, market segment
 ## Artifact outlines
 
 - **Product foundation:** problem, target market, vision, value proposition, key product artifacts and concepts, principles, open questions. Keep the Inception profile's key concepts and principles in step with it.
-- **Personas:** two to four personas. For each: role, goals, pains, current tools, budget and time, what would make them pay, and a quote. Name the primary persona for the MVP.
+- **Personas:** start only after the `persona-validation` reality check (part A) is done, and build from its persona building blocks and segment candidates. Two to four personas, plus at least one anti-persona. For each: role, goals, pains, current tools, budget and time, what would make them pay, and a quote. Tag every trait with its evidence id or `(Assumption)`; quotes are real and sourced, or labelled illustrative. Name the primary persona for the MVP. Run the `persona-validation` audit (part B) before the PR.
 - **Success metrics:** one North Star metric, three to five supporting metrics, and leading indicators for the MVP. Each one has a definition, a target and how it is measured.
 - **Constraints and non-goals:** budget, team, time, legal (see the Inception profile's domain risks), platform, and AI cost. List non-goals explicitly.
 - **MVP and roadmap:** the MVP problem and scope, in and out, the core user flows, the riskiest assumptions it tests, and Now / Next / Later. It must convert cleanly into `app-studio`'s `prd-intake` later.
