@@ -1,6 +1,6 @@
 # Research framework
 
-How every piece of research in this project is run, so it informs decisions instead of confirming them. It covers desk research now, and interviews, surveys and prototype tests later. It outlives inception. Decisions that adopt or change it go in the project's decision log.
+How every piece of research in this project is run, so it informs decisions instead of confirming them. It applies to any kind of research: desk research, interviews, surveys and tests.
 
 ## Why we need it
 
@@ -23,9 +23,8 @@ The framework makes that hard to do by accident:
 | --- | --- | --- |
 | Any research without a type skill | `research-protocol` | chosen per study |
 | Persona validation: reality check before personas, evidence audit after | [`persona-validation`](../../.claude/skills/persona-validation/SKILL.md) | standard |
-| Market scan and riskiest hypotheses | [`riskiest-hypotheses`](../../.claude/skills/riskiest-hypotheses/SKILL.md) | standard |
 
-Later types (user interviews, prototype tests, pricing tests) get their own skill when we first need them.
+Other kinds of research (for example interviews, prototype tests or pricing tests) get their own type skill, built the same way.
 
 ## Biases we guard against
 
@@ -33,7 +32,7 @@ Later types (user interviews, prototype tests, pricing tests) get their own skil
 | --- | --- | --- |
 | Confirmation bias | Searching "small teams struggle with reporting" and finding exactly that | Two-sided search with a quota of disconfirming queries; a mandatory "strongest evidence against" section |
 | Moving the goalposts | Deciding what counts as success after seeing the data | Kill criteria pre-registered and committed before the first search; later changes only as logged deviations |
-| Anchoring | The starting idea frames every question | Each hypothesis has a stated null or strongest alternative; priors are declared up front; the skeptic reads cold |
+| Anchoring | The original idea frames every question | Each hypothesis has a stated null or strongest alternative; priors are declared up front; the skeptic reads cold |
 | Sycophancy (AI) | Claude softens bad news for the person who asked | Verdict rules applied mechanically; an independent skeptic with no access to the conversation |
 | Invented or misread sources (AI) | A statistic that does not exist, or says something else | Every cited source opened and the supporting passage quoted; the skeptic re-checks |
 | Conflict of interest | "73% of freelancers say…" from a company selling tools to freelancers | Source grades and an interest flag; vendor material can never carry a claim alone |
@@ -49,9 +48,9 @@ Later types (user interviews, prototype tests, pricing tests) get their own skil
 | Role | Who | Does | Must not |
 | --- | --- | --- | --- |
 | Sponsor and decision owner | The product owner | Names the decision the research informs. At deep tier, approves the kill criteria before the search starts. Reads the report and decides. | Hint at the expected answer while the research runs. Change the kill criteria after seeing results (only as a logged deviation). |
-| Lead researcher | Claude, in the thread doing the study | Writes the protocol, searches, keeps the evidence log, writes the report, answers the skeptic. | Drop inconvenient evidence. Search before the protocol is committed. |
+| Lead researcher | Claude, running the study | Writes the protocol, searches, keeps the evidence log, writes the report, answers the skeptic. | Drop inconvenient evidence. Search before the protocol is committed. |
 | Contrarian | Claude, as a separate pass inside the search step | Runs the disconfirming queries and writes the strongest case against each hypothesis. | Stop at the first weak counter-example. |
-| Skeptic | Light: the lead, as a separate self-review pass. Standard and deep: the `research-skeptic` agent, in a fresh context. | Re-checks sources, reaches its own verdict from the evidence before reading the lead's, then attacks the gaps. | See the chat, the sponsor's hopes or the product pitch before forming its own verdict. |
+| Skeptic | Light: the lead, as a separate self-review pass. Standard and deep: the `research-skeptic` agent, in a fresh context. | Re-checks sources, reaches its own verdict from the evidence before reading the lead's, then attacks the gaps. | See the conversation, the sponsor's hopes or the product pitch before forming its own verdict. |
 | Replicator | Deep tier only: a second fresh agent | Runs the same protocol without seeing the first run, so the two can be compared. | Read the first run's evidence or report. |
 
 ## Steps (every study)
@@ -64,7 +63,7 @@ Later types (user interviews, prototype tests, pricing tests) get their own skil
 6. **Verify.** Open each cited source and quote the passage that supports the claim. Trace statistics to their origin. A source that can't be opened is marked unverified and carries no weight.
 7. **Grade and conclude** with the rules below. Write `report.md` from the template: verdict first, then the strongest evidence against, then the findings.
 8. **Skeptic review** at the strength the tier asks for. The lead fixes or rebuts every must-fix item in the report. Disagreements stay visible.
-9. **Decide.** The product owner reads the report and decides. The decision goes into the decision log with a link to the report.
+9. **Decide.** The product owner reads the report and decides. The decision is recorded with a link to the report.
 
 ## Tiers
 
@@ -77,7 +76,7 @@ Later types (user interviews, prototype tests, pricing tests) get their own skil
 | Skeptic review | self-review pass | `research-skeptic` agent | `research-skeptic` agent plus a pre-mortem |
 | Skeptic re-checks sources | a sample of 5 | every source behind a high or medium confidence claim, plus 5 others | all |
 | Independent replication | no | no | yes |
-| Use it for | quick fact checks, low-stakes scoping | inputs that shape an artifact or the MVP | go/no-go calls, pricing, big bets |
+| Use it for | quick fact checks, low-stakes scoping | inputs that shape a deliverable or a product decision | go/no-go calls, pricing, big bets |
 | Extra cost | none | one agent run | two agent runs and the product owner's time up front |
 
 When unsure between two tiers, take the higher one.
@@ -126,7 +125,7 @@ A triggered kill criterion forces Reshape or Stop, whatever the lead's view. The
 
 ## What desk research cannot tell us
 
-Desk research shows whether a group exists, what it does and what it says hurts. It cannot show whether people would switch to our product, use it, or pay for it: what people say and what they do often differ. Every report names the primary research that would settle what it couldn't (interviews, fake-door tests, prototype tests), and those feed the riskiest hypotheses.
+Desk research shows whether a group exists, what it does and what it says hurts. It cannot show whether people would switch to our product, use it, or pay for it: what people say and what they do often differ. Every report names the primary research that would settle what it couldn't (interviews, fake-door tests, prototype tests), as candidates for the next studies.
 
 ## Ethics
 
@@ -134,7 +133,7 @@ Quote public posts briefly and link to them. Don't record usernames or personal 
 
 ## Where studies live
 
-Each study gets a folder `docs/research/R-NNN-<slug>/` holding `protocol.md` (committed first), `report.md` with the evidence log, and `replication.md` at deep tier. One PR per study. Add each study to the table below when its protocol is committed.
+Each study gets a folder `docs/research/R-NNN-<slug>/` holding `protocol.md` (committed first), `report.md` with the evidence log, and `replication.md` at deep tier. Add each study to the table below when its protocol is committed.
 
 ## Studies
 

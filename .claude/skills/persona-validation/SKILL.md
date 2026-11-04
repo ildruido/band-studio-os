@@ -7,7 +7,7 @@ description: Ground personas in evidence. Part A runs a desk-research reality ch
 
 A type layer on the `research-protocol` skill: follow every step of it, plus what this skill adds. It never removes a generic guardrail. Method: `docs/research/framework.md`.
 
-Product facts (target users, starting idea, principles, market segments) come from the **Inception profile** in `CLAUDE.md` and from `docs/inception/product-foundation.md`. This skill stays generic.
+Product facts (target users, the problem the product solves, principles, market segments) come from the project's instructions and product docs. This skill stays generic.
 
 **Default tier: standard.** The reality check decides whether we are building for people who exist and have this problem, so a wrong answer is expensive. Go deep if the product's whole bet rests on one segment that the evidence leaves unclear.
 
@@ -15,7 +15,7 @@ Product facts (target users, starting idea, principles, market segments) come fr
 
 Run `research-protocol` as study `R-NNN-persona-reality-check`. Don't draft personas until its report is done and the product owner has seen the verdict.
 
-- **Scope is a product decision.** If the launch markets (countries, languages) aren't settled in the decision log, ask the product owner before pre-registering: one question, with your recommended answer.
+- **Scope is a product decision.** If the launch markets (countries, languages) aren't already settled, ask the product owner before pre-registering: one question, with your recommended answer.
 - **Time box:** about one working session by default. Record it in the protocol.
 
 ### Standard hypotheses
@@ -28,8 +28,8 @@ Pre-register all six, worded for this product's target users and the job the pro
 | H2 Does the job | Within that group, members themselves do the job the product does, rather than intermediaries (agencies, managers, outside services). | Someone else does it, or nobody does. | Most evidence shows the job is handed to others or skipped. |
 | H3 Job hurts | The job costs them meaningful time, money or results, and they say so without being prompted. | It is a minor annoyance next to their real problems. | The pain shows up mainly when prompted or in vendor material, or it ranks low among their problems. |
 | H4 Workarounds fall short | They use tools or people today, and the same shortcomings come up again and again. | What they use today (free tools, friends, freelancers) is good enough. | Satisfaction with current workarounds outweighs complaints in independent sources. |
-| H5 Angle matters | The product's distinctive angle (from the Inception profile's principles) matters to them. | They want polished or generic output, or don't care. | Evidence shows a clear preference against the angle, or indifference. |
-| H6 Would pay (signal only) | They already pay for comparable help. | They don't pay for this kind of help. | No evidence that they pay for comparable help today. Desk research rarely settles this either way: expect "Insufficient evidence" and pass it to the riskiest hypotheses. |
+| H5 Angle matters | The product's distinctive angle (from the project's principles) matters to them. | They want polished or generic output, or don't care. | Evidence shows a clear preference against the angle, or indifference. |
+| H6 Would pay (signal only) | They already pay for comparable help. | They don't pay for this kind of help. | No evidence that they pay for comparable help today. Desk research rarely settles this either way: expect "Insufficient evidence" and list it for primary research. |
 
 Also ask, as a neutral question: **what are this group's biggest problems, in their own words?** If the job the product does is not near the top, that is a finding, not noise.
 
@@ -53,11 +53,11 @@ Add these sections to the generic report, after Findings:
 - **Anti-personas:** people who look like targets but aren't, with the evidence.
 - **Open questions for interviews:** what only talking to real people can settle.
 
-A verdict of Reshape proposes the change (a different target group, a different job, a narrower segment). The product owner decides it before personas start, and it goes into the decision log.
+A verdict of Reshape proposes the change (a different target group, a different job, a narrower segment). The product owner decides it before personas start, and the decision is recorded.
 
 ## Part B: persona evidence audit (after drafting personas)
 
-When `docs/inception/personas.md` is drafted (with `inception-interview`), audit it before opening the PR:
+When a personas draft exists, audit it before it goes for approval:
 
 1. **Every trait is tagged:** an evidence id from the reality check (`[E-07]`) or `(Assumption)`.
 2. **The core is evidence-backed:** each persona's main pain and current workaround rest on medium or high confidence evidence. The primary persona can't be the exception. If one doesn't, the persona isn't ready: say so, or mark it as speculative.
@@ -65,6 +65,6 @@ When `docs/inception/personas.md` is drafted (with `inception-interview`), audit
 4. **Honest quotes:** a quote is either real, short and sourced from the evidence log, or labelled "illustrative". Never present an invented quote as real.
 5. **Illustrative details are labelled:** names, photos, ages and similar flavour are marked illustrative.
 6. **At least one anti-persona** from the reality check.
-7. **Assumptions listed:** every `(Assumption)` appears in an Assumptions section with how to test it. These feed the riskiest hypotheses.
+7. **Assumptions listed:** every `(Assumption)` appears in an Assumptions section with how to test it, as candidates for the next studies.
 
-Run the audit as a separate self-review pass: re-read the reality check report, then check the draft against it line by line. Record the result in an **Evidence** section of `personas.md`: the reality check it rests on, the share of traits backed by evidence, and any persona marked speculative.
+Run the audit as a separate self-review pass: re-read the reality check report, then check the draft against it line by line. Record the result in an **Evidence** section of the personas document: the reality check it rests on, the share of traits backed by evidence, and any persona marked speculative.

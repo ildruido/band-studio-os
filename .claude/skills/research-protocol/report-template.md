@@ -32,7 +32,7 @@ The specific findings that would flip each key verdict.
 
 ## Next: primary research needed
 
-What desk research could not settle and the cheapest test for each (feeds the riskiest hypotheses).
+What desk research could not settle and the cheapest test for each, as candidates for the next studies.
 
 ## Skeptic review
 

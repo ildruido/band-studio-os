@@ -11,7 +11,7 @@ Pre-registered before any search. After the first search, only the **Deviations*
 
 ## Declared priors
 
-What the lead already believes, and what it has already seen on this topic, before searching. Name where the belief comes from (the starting idea, the foundation doc, general knowledge).
+What the lead already believes, and what it has already seen on this topic, before searching. Name where the belief comes from (earlier project documents, past work, general knowledge).
 
 ## Hypotheses
 
