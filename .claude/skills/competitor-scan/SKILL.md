@@ -32,7 +32,7 @@ Pre-register these, with numbers in each kill criterion set before searching. S1
 
 | Id | Hypothesis | Null or strongest alternative | Example kill criterion |
 | --- | --- | --- | --- |
-| S1 Coverage | The scan found the relevant set of ways the job gets done, in every class above. | Important competitors are missing. | A discovery method not yet used (see below) still turns up a relevant competitor in its last round, or fewer than the minimum classes are covered. |
+| S1 Coverage | The scan found the relevant set of ways the job gets done, in every class above. | Important competitors are missing. | A discovery method not yet used (see below) still turns up a relevant competitor in its last round, or fewer classes are covered than the minimum set in the protocol. |
 | S2 Gap exists | No competitor serves the target customer's job well on the criterion we care about. | An existing solution already serves it. | A verified competitor offers it to the target customer at a price and effort they can bear. |
 | S3 Crowding | The space is not so crowded that a new entrant cannot get attention. | Strong incumbents dominate the customer's attention. | The leading players share is above the threshold set in the protocol, with evidence. |
 | S4 Incumbent inertia | Direct incumbents and adjacent platforms are not about to close the gap. | A visible roadmap or trend is closing it. | Dated evidence (releases, announcements, hiring, funding) that an incumbent is moving into the gap. |
@@ -55,7 +55,7 @@ Single-route searches miss competitors. Use at least five of these routes, and l
 
 ## Profile each competitor
 
-Use [competitor-entry-template.md](competitor-entry-template.md). The rules:
+Use [competitor-entry-template.md](competitor-entry-template.md): each entry gets an evidence id and sits in the report's evidence log beside the table rows. The rules:
 
 - Verify every fact at the **primary source** (the competitor's own site, pricing page, store listing, terms, changelog, filings) and quote it with the access date. Cache nothing from memory.
 - Separate **what they claim** from **what customers say**. Marketing claims are grade D for quality; customer voices are grade B.
@@ -65,7 +65,7 @@ Use [competitor-entry-template.md](competitor-entry-template.md). The rules:
 
 ## Disconfirming search (required)
 
-Per key hypothesis, at least the tier minimum of searches built to find it false: a competitor that already does our job; customers saying an existing tool is good enough; evidence that incumbents are adding the feature; search the DIY and non-consumption class on purpose, because it is the easiest to overlook. Search for dead products in the same space and read why they died.
+Per hypothesis, at least the tier minimum of searches built to find it false: a competitor that already does our job; customers saying an existing tool is good enough; evidence that incumbents are adding the feature; search the DIY and non-consumption class on purpose, because it is the easiest to overlook. Search for dead products in the same space and read why they died.
 
 ## Extra outputs in the report
 

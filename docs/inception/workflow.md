@@ -71,7 +71,7 @@ The decision log (8) is kept current at every step. Steps may loop: a prototype 
 
 ## Research
 
-Every piece of research follows the [research framework](../research/framework.md): questions and kill criteria fixed before searching, evidence against searched as hard as evidence for, every claim traced to an opened source, and an independent skeptic review, with guardrails that scale with the cost of being wrong (D-010). Personas rest on a reality check run that way (D-011).
+Every piece of research follows the [research framework](../research/framework.md): questions and kill criteria fixed before searching, evidence against searched as hard as evidence for, every claim traced to an opened source, and an independent skeptic review, with guardrails that scale with the cost of being wrong (D-010). Personas rest on a reality check run that way (D-011). The index of studies is [studies.md](../research/studies.md).
 
 ## Skills
 
@@ -83,7 +83,10 @@ Project skills live in `.claude/skills/`:
 | `decision-log` | Record, revise or look up a decision |
 | `research-protocol` | Run any research with the framework's bias guardrails, at a light, standard or deep tier |
 | `persona-validation` | Reality check of the target users before personas (part A), evidence audit of the personas draft (part B) |
-| `riskiest-hypotheses` | Market scan, competitors, and a ranked list of the riskiest hypotheses with how to test each (runs on `research-protocol`) |
+| `market-analysis` | Size and health of the market (TAM, SAM, SOM) with triangulated estimates and ranges |
+| `competitor-scan` | Find and verify every way the target users solve the problem today, including DIY and dead products |
+| `competitive-analysis` | Criteria-first comparison of verified competitors, with an honest "where we lose" (needs a finished scan) |
+| `riskiest-hypotheses` | Ranked list of the riskiest hypotheses with how to test each, built on market and competitor studies (runs on `research-protocol`) |
 | `prototype` | Build a quick interactive mock-up as an Artifact, linked to the hypotheses it tests |
 | `exit-gate` | Check the 11 exit criteria and report what is missing |
 | `architecture-handoff` | Write the input for the Architecture phase and the bridge to `app-studio` |

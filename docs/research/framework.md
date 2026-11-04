@@ -60,7 +60,7 @@ Other kinds of research (for example interviews, prototype tests or pricing test
 
 1. **Frame.** Name the decision this informs and what we would do differently if the answer is yes or no. If nothing would change, don't run the study.
 2. **Pick the tier** by the cost of being wrong, not by the time available (table below).
-3. **Pre-register.** Write `protocol.md` from the template: the hypotheses as falsifiable claims, each with its null and a kill criterion that could really happen, the scope, the search plan (neutral and disconfirming queries), the time box, and Claude's declared priors (what it already believes and has already seen). Commit and push it **before the first search**. The commit time is the proof.
+3. **Pre-register.** Write `protocol.md` from the template: the hypotheses as falsifiable claims, each with its null and a kill criterion that could really happen (triggered by evidence, never by finding nothing; a pure method check may instead state what its failure yields, such as Insufficient evidence), the scope, the search plan (neutral and disconfirming queries), the time box, and Claude's declared priors (what it already believes and has already seen). Commit and push it **before the first search**. The commit time is the proof.
 4. **Search both ways.** Neutral wording, never leading queries. Disconfirming queries at least as many as supportive ones. Look for the people who are missing.
 5. **Log every relevant source** in the evidence log as it is found, against as carefully as for. Exclude only by the protocol's rules, and say why.
 6. **Verify.** Open each cited source and quote the passage that supports the claim. Trace statistics to their origin. A source that can't be opened is marked unverified and carries no weight.
@@ -136,12 +136,4 @@ Quote public posts briefly and link to them. Don't record usernames or personal 
 
 ## Where studies live
 
-Each study gets a folder `docs/research/R-NNN-<slug>/` holding `protocol.md` (committed first), `report.md` with the evidence log, and `replication.md` at deep tier. Add each study to the table below when its protocol is committed.
-
-## Studies
-
-| Id | Study | Type | Tier | Verdict |
-| --- | --- | --- | --- | --- |
-| R-001 | [Persona reality check](R-001-persona-reality-check/protocol.md) | Persona validation | standard | Needs primary research (skeptic review pending) |
-| R-002 | [Band count size check](R-002-band-count-size-check/protocol.md) | Persona validation (H1 follow-up) | light | Needs primary research (H1 insufficient) |
-| R-003 | [Driver interviews](R-003-driver-interviews/protocol.md) | Interviews (experiment E1) | standard | Designed, parked (D-014) |
+Each study gets a folder `docs/research/R-NNN-<slug>/` holding `protocol.md` (committed first), `report.md` with the evidence log, `replication.md` at deep tier, and any working files its type skill defines (for example a sizing sheet). The index of all studies is [studies.md](studies.md): add a study to it when its protocol is committed.
