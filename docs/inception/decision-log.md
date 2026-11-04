@@ -19,7 +19,7 @@ Newest first. Each entry: id, date, decision, why, alternatives, who decided, st
 
 ### D-002 Inception exit criteria
 - **Date:** 2026-11-04
-- **Decision:** Inception closes when the 11 exit criteria in [workflow.md](workflow.md) and project memory are met and Ale signs off.
+- **Decision:** Inception closes when the 11 exit criteria in [workflow.md](workflow.md#exit-criteria) are met and Ale signs off.
 - **Why:** A clear gate stops inception from dragging on and sets what the Architecture phase receives.
 - **Decided by:** Ale
 - **Status:** active
@@ -30,4 +30,4 @@ Newest first. Each entry: id, date, decision, why, alternatives, who decided, st
 - **Why:** `app-studio` is a code-phase harness (PRD, backlog, CI, releases) with no support for discovery artifacts.
 - **Alternatives:** Stretch `app-studio`'s `prd-intake` to cover discovery (rejected: it assumes a defined product). Build the layer in `app-studio` now (rejected: unproven, and it would change the harness for every app).
 - **Decided by:** Ale, on Claude's recommendation
-- **Status:** active
+- **Status:** active (revised by D-004: the harness core was installed early, but its build-phase skills still wait for the build phase)
