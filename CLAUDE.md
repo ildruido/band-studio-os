@@ -9,7 +9,7 @@
 - Keep [docs/inception/status.md](docs/inception/status.md) current: update it in the same PR whenever an artifact's status or an open PR/risk changes.
 - Every piece of research follows [docs/research/framework.md](docs/research/framework.md) and the `research-protocol` skill, during and after inception.
 - Log every product decision in [docs/inception/decision-log.md](docs/inception/decision-log.md) in the same turn. This decision log stays the home for product decisions after inception too.
-- `app-studio` is the build-phase harness. Read it, but never change it from here. Its core (v0.4.0) was installed early, only so the health check and the `Harness` workflow guard this repo during inception. The build-phase skills (`build-feature`, `release`, `test-handoff`) aren't used until inception closes. `new-app` then adds the stack packs and merges the rest of the template into this file.
+- `app-studio` is the build-phase harness. Read it, but never change it from here. Its core (v0.4.1, pinned in `.claude/studio/lock.json`) was installed early, only so the health check and the `Harness` workflow guard this repo during inception. The build-phase skills (`build-feature`, `release`, `test-handoff`) aren't used until inception closes. `new-app` then adds the stack packs and merges the rest of the template into this file.
 
 ## App profile
 
