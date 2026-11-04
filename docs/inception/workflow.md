@@ -31,6 +31,8 @@ Inception closes when all 11 are met (D-002). The `exit-gate` skill scores them.
 10. Decision log kept current
 11. Ale's final sign-off
 
+Progress against these criteria is tracked in [status.md](status.md). Update it in the same PR whenever an artifact's status changes.
+
 ## Artifacts
 
 All of them live in `docs/inception/`, one PR per artifact. Typos and decision log entries may go straight to `main` (see `CLAUDE.md` for the cloud-session limit).
