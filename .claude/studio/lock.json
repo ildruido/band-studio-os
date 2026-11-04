@@ -1,0 +1,17 @@
+{
+  "studio": "0.4.0",
+  "files": {
+    ".claude/agents/planner.md": "c3c107b4cc76e409bdd1c8c0944c5ccd41e09209df1ba68293546e27d8e61ee2",
+    ".claude/agents/qa.md": "5e150a15ddacd8a2682ebae9788d51c6fd8aec6442c4e689e27c3854f6c80f8f",
+    ".claude/agents/reviewer.md": "64f7646eab7ee9a749111ec8a456d957efdf2b8f6bed63a98b25f4084248f077",
+    ".claude/hooks/check.mjs": "44b3542c0bea90a30d425c943a22ce31df8dfa5607052fd894eef877bbdb953e",
+    ".claude/hooks/cloud-setup.mjs": "98bc9c1d7c8bd78fc2d73fcbcf021782da8dee3feefcdbbd2cecfc48fc4c9657",
+    ".claude/skills/build-feature/SKILL.md": "7571205061af5e7e3852a0d7603dc7ba4c207e38561931e07d022b5e06fac19d",
+    ".claude/skills/harness-sync/SKILL.md": "673f67ed2d97c5ad0ab2d7e6419ae6acc199e72d9b42e4ac1d719cfd1dce35bf",
+    ".claude/skills/new-app/SKILL.md": "e1641241989751eb441e9ac5dfa9de50be9da05d4ce6862919c0cdf8567a58de",
+    ".claude/skills/prd-intake/SKILL.md": "5442124bbc333de95acbd28eb8b5e86665b62716a5fb6b49920fa29e84dbe071",
+    ".claude/skills/release/SKILL.md": "11263c2fe247a59351aeb4e95fe4e09c6e453f96f9a6da00cfa73adf98bedbc1",
+    ".claude/skills/test-handoff/SKILL.md": "427e6b3c0cb513d7ea2f852f4e964c56afda613f11d41f1cda4668dac470d849",
+    ".claude/studio/studio-sync.mjs": "8660ffe9158b7119b06ba48020ff4bf2a20df9b1485025423852b3b565480011"
+  }
+}

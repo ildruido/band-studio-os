@@ -7,7 +7,32 @@
 - One PR per artifact. Typos and decision log entries may go straight to `main`.
 - Merge your own PR as soon as the task is done and CI is green. This repo has no CI yet (docs only): merge anyway and flag that as a risk.
 - Log every product decision in [docs/inception/decision-log.md](docs/inception/decision-log.md).
-- `app-studio` is the build-phase harness. Read it, but never change it from here. It is installed into this repo only after inception closes.
+- `app-studio` is the build-phase harness. Read it, but never change it from here. Its core (v0.4.0) was installed early, only so the health check and the `Harness` workflow guard this repo during inception. The build-phase skills (`build-feature`, `release`, `test-handoff`) aren't used until inception closes. `new-app` then adds the stack packs and merges the rest of the template into this file.
+
+## App profile
+
+Read by the app-studio harness skills and its health check. Values marked "Inception" are decided during inception and filled in by `new-app` at sign-off.
+
+| Field          | Value |
+| -------------- | ----- |
+| App            | Band Studio OS (working title) |
+| Id prefix      | `BS` (backlog items are `BS-001`, `BS-002`, …) |
+| Stack          | Inception: no stack yet (chosen in the architecture handoff) |
+| User           | Ale, as the active member of an emergent indie or rock band |
+| Repo           | https://github.com/ildruido/band-studio-os (private) |
+| Release target | Inception: none |
+| Preview target | none |
+| Capabilities   | Inception: none (no app code yet) |
+| AI plan        | Inception: decided in the architecture handoff |
+
+### Domain rules
+
+- Authenticity first: generated material amplifies the band's own identity, never generic corporate polish.
+- Human in the loop: nothing is published without a band member's approval.
+
+### Stack notes
+
+- **Build / QA / Release / Preview:** Inception: none yet.
 
 ## Inception profile
 

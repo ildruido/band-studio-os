@@ -2,6 +2,14 @@
 
 Newest first. Each entry: id, date, decision, why, alternatives, who decided, status (`active`, `superseded by D-0NN`, `revisited`).
 
+### D-004 Install the app-studio harness core early to close the CI gap
+- **Date:** 2026-11-04
+- **Decision:** Install the app-studio v0.4.0 harness core and its `Harness` workflow during inception, with no code and no stack packs. The App profile is filled with "Inception" values where they're unknown, and the backlog id prefix is `BS` (Claude's default, can be changed before the first backlog item).
+- **Why:** Gives the repo a health check (harness files, skills, doc links) on every commit and every docs PR, instead of no CI until inception ends.
+- **Alternatives:** Keep the no-CI risk until sign-off (rejected by Ale).
+- **Decided by:** Ale, on Claude's recommendation
+- **Status:** active
+
 ### D-003 Keep inception skills generic via an Inception profile
 - **Date:** 2026-11-04
 - **Decision:** Product-specific facts live in the Inception profile section of `CLAUDE.md`. The six inception skills stay generic, so they can be upstreamed to `app-studio` unchanged if they prove effective.
