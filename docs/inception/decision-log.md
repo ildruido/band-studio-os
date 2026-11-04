@@ -2,6 +2,14 @@
 
 Newest first. Each entry: id, date, decision, why, alternatives, who decided, status (`active`, `superseded by D-0NN`, `revisited`).
 
+### D-020 Remaining constraints and non-goals agreed
+- **Date:** 2026-11-04
+- **Decision:** Ale agreed the rest of [constraints.md](constraints.md): no fixed deadline (pace set by his hours and the research gates), and as V1 non-goals: managers, agencies, labels and multi-band accounts; team roles, permissions and billing seats; music creation, mixing and distribution tools; paid acquisition at scale (small tests only).
+- **Why:** Closes the open assumptions in the draft so exit criterion 9 is complete.
+- **Alternatives:** Change any of them (none requested).
+- **Decided by:** Ale
+- **Status:** active
+
 ### D-019 A native app is wanted, but much later than V1
 - **Date:** 2026-11-04
 - **Decision:** V1 is a phone-first web experience. A native app is a future goal, added well after V1, not a permanent non-goal.
