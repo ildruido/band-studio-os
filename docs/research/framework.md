@@ -139,4 +139,4 @@ Each study gets a folder `docs/research/R-NNN-<slug>/` holding `protocol.md` (co
 
 | Id | Study | Type | Tier | Verdict |
 | --- | --- | --- | --- | --- |
-| — | None yet. | | | |
+| R-001 | [Persona reality check](R-001-persona-reality-check/protocol.md) | Persona validation | standard | In progress |
