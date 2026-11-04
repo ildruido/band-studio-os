@@ -8,3 +8,4 @@ Index of every study run under the [research framework](framework.md). Add a row
 | R-002 | [Band count size check](R-002-band-count-size-check/protocol.md) | Persona validation (H1 follow-up) | light | Needs primary research (H1 insufficient) |
 | R-003 | [Driver interviews](R-003-driver-interviews/protocol.md) | Interviews (experiment E1) | standard | Designed, parked (D-014) |
 | R-004 | [Competitor scan](R-004-competitor-scan/protocol.md) | Competitor scan | standard | Reshape (S1 coverage contradicted by skeptic; S2 needs Ale's hands-on check of Canva) |
+| R-006 | [Market sizing](R-006-market-sizing/protocol.md) | Market analysis | standard | Needs primary research |
