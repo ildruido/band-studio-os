@@ -7,12 +7,12 @@ Status values: `not started`, `in progress`, `done`, `ongoing`.
 | # | Exit criterion | Status | Notes |
 | --- | --- | --- | --- |
 | 1 | Refined product foundation doc | in progress | Interview running in thread "Refine product foundation doc" |
-| 2 | Validation, market research, riskiest hypotheses | not started | Starts with the persona reality check (R-001), run under the new [research framework](../research/framework.md) |
+| 2 | Validation, market research, riskiest hypotheses | in progress | R-001 reality check and R-002 size check done, both "Needs primary research" ([R-001](../research/R-001-persona-reality-check/report.md), [R-002](../research/R-002-band-count-size-check/report.md)). Proposed [research plan](../research/research-plan.md) ranks hypotheses and designs 3 experiments, awaiting Ale's OK. Full market scan still to do |
 | 3 | MVP definition and roadmap | not started | |
 | 4 | Prototypes (interactive mock-ups) | not started | |
 | 5 | Project and repo set up; workflow from `app-studio`; next-steps recommendation | in progress | Project, repo, harness core and CI done; next-steps recommendation pending |
 | 6 | Architecture-phase handoff | not started | |
-| 7 | Target users and personas | not started | Next: the reality check (R-001), then personas grounded in it. Research framework approved by Ale |
+| 7 | Target users and personas | in progress | Provisional (speculative) personas written: [personas.md](personas.md). They need interviews to firm up (see the [research plan](../research/research-plan.md)) |
 | 8 | Success metrics | not started | |
 | 9 | Constraints and non-goals | not started | |
 | 10 | Decision log kept current | ongoing | See [decision-log.md](decision-log.md) |
