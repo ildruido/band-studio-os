@@ -12,7 +12,7 @@ Status values: `not started`, `in progress`, `done`, `ongoing`.
 | 4 | Prototypes (interactive mock-ups) | not started | |
 | 5 | Project and repo set up; workflow from `app-studio`; next-steps recommendation | in progress | Project, repo, harness core and CI done; next-steps recommendation pending |
 | 6 | Architecture-phase handoff | not started | |
-| 7 | Target users and personas | not started | On hold until Ale approves the research framework; then the reality check (R-001), then personas |
+| 7 | Target users and personas | not started | Next: the reality check (R-001), then personas grounded in it. Research framework approved by Ale |
 | 8 | Success metrics | not started | |
 | 9 | Constraints and non-goals | not started | |
 | 10 | Decision log kept current | ongoing | See [decision-log.md](decision-log.md) |
@@ -20,7 +20,6 @@ Status values: `not started`, `in progress`, `done`, `ongoing`.
 
 ## Open PRs awaiting Ale
 
-- `band-studio-os`: research framework (bias guardrails, `research-protocol` and `persona-validation` skills, `research-skeptic` agent). Awaiting Ale's review before merge.
 
 - `app-studio` #20 (draft): harness change proposals from the consistency review. Awaiting Ale's review.
 
