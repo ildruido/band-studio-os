@@ -67,5 +67,5 @@ They lean on skills that already exist: `product-management:*` (brainstorm, comp
 At the end of inception:
 
 1. `architecture-handoff` writes the product and meta-architecture input, including the App profile draft (domain rules, capabilities, AI plan) and any extra skills, plugins or agents needed on top of `app-studio`.
-2. After sign-off, `app-studio`'s `new-app` installs the harness into this repo, and `prd-intake` turns `mvp-and-roadmap.md` into `docs/PRD.md` and `docs/BACKLOG.md`.
+2. After sign-off, `app-studio`'s `new-app` (v0.3.0+) installs the harness into this existing repo. It keeps these docs and skills, and merges its template into this `CLAUDE.md`, dropping the inception-only rules. `prd-intake` then reads `mvp-and-roadmap.md` and the decision log directly to write `docs/PRD.md` and `docs/BACKLOG.md`.
 3. If this layer worked well, upstream it to `app-studio` as a generic discovery stage (`harness-sync` part B). Until then, `app-studio` stays untouched.
