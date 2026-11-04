@@ -2,6 +2,46 @@
 
 Newest first. Each entry: id, date, decision, why, alternatives, who decided, status (`active`, `superseded by D-0NN`, `revisited`).
 
+### D-009 V1 is export-only, on a connector-based architecture
+- **Date:** 2026-11-04
+- **Decision:** V1 outputs a ready-to-post campaign folder; the driver posts by hand. The architecture must be multi-channel, composable and connector-based from the start, so publishing channels and other integrations can be added incrementally toward the fully integrated vision. This is a requirement for the architecture handoff.
+- **Why:** V1 needs to prove output quality, and manual posting keeps band approval in the loop. Building connectors in from the start avoids a rewrite when direct publishing arrives.
+- **Alternatives:** One-tap share to Instagram; full auto-scheduling on all channels.
+- **Decided by:** Ale, on Claude's recommendation (plus the architecture requirement)
+- **Status:** active
+
+### D-008 Monetization: pay per campaign, then subscription, freemium and add-ons later
+- **Date:** 2026-11-04
+- **Decision:** Long-run model is freemium. For early adopters, casual users can pay per campaign; regular users move to a monthly subscription. Add-ons and a freemium tier can be layered on top later. Pricing details are an open question for the market and hypotheses work.
+- **Why:** Pay-per-campaign lowers the barrier for early adopters and feedback, and matches AI cost per use. A subscription fits bands that gig regularly.
+- **Alternatives:** Subscription only; free tier first (AI cost paid on non-paying users).
+- **Decided by:** Ale (extending Claude's recommendation)
+- **Status:** active
+
+### D-007 No genre restriction
+- **Date:** 2026-11-04
+- **Decision:** V1 is not limited to one genre or scene. Each band sets its own style and nuances through the Identity Studio. Indie and rock stay the reference community for early users and for the tone of the product, but nothing in V1 is built only for them.
+- **Why:** The Identity Studio exists so each band can define its own style, so a genre limit would contradict it.
+- **Alternatives:** Rock/indie/punk only; one narrow scene.
+- **Decided by:** Ale
+- **Status:** active
+
+### D-006 Identity Studio starts light; the first build is end-to-end
+- **Date:** 2026-11-04
+- **Decision:** V1 Identity Studio starts light (Grit slider, anti-moodboard, a few references). Onboarding captures only the essentials. The customer can add or fine-tune further identity settings at any later moment. Which identity variables exist is decided by a UX design round, driven by their impact on the output's identity. The first iteration is end-to-end (identity to finished campaign assets) so output variations can be tested before more identity variables are added.
+- **Why:** Identity variables only matter if they visibly change the output. Testing output end-to-end first shows which variables earn their place.
+- **Alternatives:** Full Identity Studio up front (heaviest build, long onboarding); minimal logo-and-colors only (risks generic output).
+- **Decided by:** Ale (light in principle, with the clarifications above)
+- **Status:** active
+
+### D-005 V1 is built for the one active "driver" member
+- **Date:** 2026-11-04
+- **Decision:** The main user of V1 is the single active member who runs the band's promotion. Other members only approve, through a light flow (no full account needed). The Consensus Engine is a light add-on in V1, not the core.
+- **Why:** The starting idea says one or two members carry the work. Saving their time is the sharpest pain and doesn't depend on getting the whole band to sign up.
+- **Alternatives:** The whole band as a team (more onboarding friction); band plus helpers such as friends or managers (pulls multi-band and handoff into scope).
+- **Decided by:** Ale, on Claude's recommendation
+- **Status:** active
+
 ### D-004 Install the app-studio harness core early to close the CI gap
 - **Date:** 2026-11-04
 - **Decision:** Install the app-studio v0.4.0 harness core and its `Harness` workflow during inception, with no code and no stack packs. The App profile is filled with "Inception" values where they're unknown, and the backlog id prefix is `BS` (Claude's default, can be changed before the first backlog item).
