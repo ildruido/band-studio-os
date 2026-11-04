@@ -17,7 +17,7 @@ Product facts (the product, target customer, principles) come from the project's
 
 Choose and weight the comparison criteria **before** reading any competitor's profile for this analysis. Criteria come from the customer's job and what the evidence says the customer values (grade A or B), not from our feature list. Pre-register them in the protocol with weights and the reason each matters. Add "criteria the customer cares about where we are weakest" on purpose; a criteria set made of our strengths is rejected.
 
-If a criterion is added after seeing the data, log it as a deviation and show the result with and without it.
+Before the protocol is committed, read only the scan's list of competitor names and the customer evidence, not the competitor profiles. If a criterion is added after seeing the data, log it as a deviation and show the result with and without it.
 
 ## Standard hypotheses
 
@@ -46,7 +46,7 @@ Write the strongest case that a customer would choose a competitor or do nothing
 
 ## Disconfirming search (required)
 
-At least the tier minimum per key hypothesis, built to show the gap is not real or is closing: customers praising the incumbent, recent releases or announcements closing the gap, successful entrants with our position, failed attempts at our position, and reasons the position was left empty.
+At least the tier minimum per hypothesis, built to show the gap is not real or is closing: customers praising the incumbent, recent releases or announcements closing the gap, successful entrants with our position, failed attempts at our position, and reasons the position was left empty.
 
 ## Extra outputs in the report
 
@@ -66,4 +66,4 @@ Add a **Type-specific checks** section: the criteria, weights and scoring scale;
 
 ## Verdict mapping
 
-Use the framework's study verdicts. C1 or C2 contradicted at high confidence is Stop or Reshape the positioning. C1 supported only by "unknown" scores is Insufficient evidence.
+Use the framework's study verdicts. C1 or C2 contradicted at high confidence is Stop; contradicted at medium confidence is Reshape (the positioning). C1 supported only by "unknown" scores is Insufficient evidence.

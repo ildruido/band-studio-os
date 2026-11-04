@@ -24,12 +24,12 @@ Pre-register all six, worded for this product's target users and the job the pro
 
 | Id | Hypothesis | Null or strongest alternative | Example kill criterion |
 | --- | --- | --- | --- |
-| H1 Exists | The target group exists in meaningful numbers in our launch markets. | It is too small or too scattered to build for. | No credible source supports a size above the threshold set in the protocol. |
+| H1 Exists | The target group exists in meaningful numbers in our launch markets. | It is too small or too scattered to build for. | Credible sources put the size below the threshold set in the protocol. No usable size source is Insufficient evidence, not a trigger. |
 | H2 Does the job | Within that group, members themselves do the job the product does, rather than intermediaries (agencies, managers, outside services). | Someone else does it, or nobody does. | Most evidence shows the job is handed to others or skipped. |
 | H3 Job hurts | The job costs them meaningful time, money or results, and they say so without being prompted. | It is a minor annoyance next to their real problems. | The pain shows up mainly when prompted or in vendor material, or it ranks low among their problems. |
 | H4 Workarounds fall short | They use tools or people today, and the same shortcomings come up again and again. | What they use today (free tools, friends, freelancers) is good enough. | Satisfaction with current workarounds outweighs complaints in independent sources. |
 | H5 Angle matters | The product's distinctive angle (from the project's principles) matters to them. | They want polished or generic output, or don't care. | Evidence shows a clear preference against the angle, or indifference. |
-| H6 Would pay (signal only) | They already pay for comparable help. | They don't pay for this kind of help. | No evidence that they pay for comparable help today. Desk research rarely settles this either way: expect "Insufficient evidence" and list it for primary research. |
+| H6 Would pay (signal only) | They already pay for comparable help. | They don't pay for this kind of help. | Independent evidence that they do not pay for comparable help today. Desk research rarely settles this either way: expect "Insufficient evidence" and list it for primary research. |
 
 Also ask, as a neutral question: **what are this group's biggest problems, in their own words?** If the job the product does is not near the top, that is a finding, not noise.
 

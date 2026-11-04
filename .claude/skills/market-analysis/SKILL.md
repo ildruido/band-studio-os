@@ -13,7 +13,7 @@ Product facts (what is sold, to whom, where, how it earns) come from the project
 
 ## Before pre-registering
 
-Fix the **sizing definition** with the product owner if the product docs don't settle it. Ask at most one question, with your recommended answer:
+Fix the **sizing definition** with the product owner if the product docs don't settle it. Ask one question at a time, each with your recommended answer:
 
 - **Unit of count:** who or what is counted (customers, accounts, households, organisations)?
 - **Value basis:** revenue per year at which price and model?
@@ -28,9 +28,9 @@ Pre-register all of these, with numbers in each kill criterion set before search
 
 | Id | Hypothesis | Null or strongest alternative | Example kill criterion |
 | --- | --- | --- | --- |
-| M1 Big enough | The reachable market (SAM) clears the minimum the business needs (a threshold the product owner sets before the search). | It is too small to sustain the business. | The base-case SAM, and the high case, are below the threshold. |
-| M2 Methods agree | Top-down and bottom-up estimates fall within 3x of each other, or the gap has a sourced explanation. | The two disagree and we cannot tell which is right. | Gap above 3x with no sourced explanation. Then verdict is Insufficient evidence, not an average. |
-| M3 Payers exist | The target segment already spends money on comparable solutions. | They get this done free or not at all. | No independent evidence of spend on comparable solutions. |
+| M1 Big enough | The reachable market (SAM) clears the minimum the business needs (a threshold the product owner sets before the search). | It is too small to sustain the business. | Sourced estimates put the base-case SAM and the high case below the threshold. No usable estimate is Insufficient evidence, not a trigger. |
+| M2 Methods agree | Top-down and bottom-up estimates fall within 3x of each other, or the gap has a sourced explanation. | The two disagree and we cannot tell which is right. | A method check, so no kill criterion of its own: a gap above 3x with no sourced explanation gives Insufficient evidence, never an average and never Proceed. |
+| M3 Payers exist | The target segment already spends money on comparable solutions. | They get this done free or not at all. | Independent evidence that the segment does not pay for comparable solutions. No evidence either way is Insufficient evidence. |
 | M4 Healthy trend | The segment is stable or growing over the last 3 to 5 years. | It is shrinking or the spend is moving elsewhere. | Independent evidence of decline in the unit count or spend. |
 | M5 Reachable | There is an identifiable, affordable way to reach the buyers at the assumed cost. | Buyers exist but cannot be reached at a viable cost. | Every identified channel costs more per customer than the customer's value. |
 
@@ -45,7 +45,7 @@ Pre-register all of these, with numbers in each kill criterion set before search
 7. **Reconcile.** Compare the methods. Explain any gap with named assumptions. Never average two methods to hide a gap.
 8. **Penetration reality check:** SOM must follow from a stated reach, conversion and time path, not from "1% of the market". Compare it with the realistic share that comparable products reached, with evidence.
 
-Use the sheet in [sizing-sheet-template.md](sizing-sheet-template.md).
+Use the sheet in [sizing-sheet-template.md](sizing-sheet-template.md), saved as `sizing.md` in the study folder. The skeptic reads its inputs (definition, assumptions, bottom-up, top-down, third check) first and its Reconciliation, Sensitivity and Result sections only after forming its own view; the protocol's Type-specific checks names the file.
 
 ## Source rules
 

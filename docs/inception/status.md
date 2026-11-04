@@ -27,6 +27,7 @@ Status values: `not started`, `in progress`, `done`, `ongoing`.
 
 - The target group's size and pain are still unproven by desk research (R-001, R-002). Interviews with Italian band drivers are the next study. Kill-criteria flags on H1 and H3 were read as "not found" (D-013).
 - Page fetch tool is blocked in the cloud environment; research opens pages with `curl`. Reddit and Facebook groups are unreachable.
+- The research harness passed a one-off consistency review (no conflicts left between the framework, the type skills, the skeptic and the workflow). Harness CI checks only file health, not consistency or behaviour, so new components need a repeat review until a consistency check exists.
 - The research guardrails are untested: R-001 is their first run, so expect to tune them after it.
 - Standard-tier research uses one extra agent run (the skeptic), deep tier two. That costs usage on the Pro plan.
 - CI covers docs and harness files only; there are no code tests during inception.

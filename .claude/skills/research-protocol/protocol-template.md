@@ -17,7 +17,7 @@ What the lead already believes, and what it has already seen on this topic, befo
 
 Falsifiable claims. A key hypothesis is one the decision can't survive without. The kill criterion must be something that could really happen; one that can't fail protects nothing.
 
-| Id | Key? | Hypothesis | Null or strongest alternative | Supported if | Kill criterion (contradicted if) |
+| Id (H1…, or the type skill's prefix) | Key? | Hypothesis | Null or strongest alternative | Supported if | Kill criterion (contradicted if) |
 | --- | --- | --- | --- | --- | --- |
 | H1 | yes / no | | | | |
 
