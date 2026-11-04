@@ -2,6 +2,14 @@
 
 Newest first. Each entry: id, date, decision, why, alternatives, who decided, status (`active`, `superseded by D-0NN`, `revisited`).
 
+### D-022 No upfront market-size target; discover a realistic one from the sizing study
+- **Date:** 2026-11-04
+- **Decision:** The market sizing study ([R-005](../research/R-005-market-sizing/report.md)) sets no minimum market size or revenue threshold in advance. Instead it reports ranges and an income ladder (paying bands needed for 10k, 30k, 60k and 100k EUR a year). A target is chosen later from that ladder and from primary research.
+- **Why:** Ale did not want to set a number before knowing what is realistic. A fixed bar chosen blind would also invite goalpost moving. This departs from the `market-analysis` skill's default of a pre-set M1 threshold; the protocol records it.
+- **Alternatives:** 5M EUR a year for Italy plus UK (recommended, declined); 2M; 10M.
+- **Decided by:** Ale
+- **Status:** active
+
 ### D-019 A native app is wanted, but much later than V1
 - **Date:** 2026-11-04
 - **Decision:** V1 is a phone-first web experience. A native app is a future goal, added well after V1, not a permanent non-goal.

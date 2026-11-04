@@ -4,7 +4,7 @@ Protocol: [protocol.md](protocol.md), pre-registered in commit 3f72cfc (as R-004
 
 ## Verdict
 
-**Needs primary research.** We can bound the market only very loosely: yearly revenue from Italy and the UK is somewhere between about 16k EUR and 6.4M EUR (base 446k EUR), a 400x spread, because the three assumptions that drive it (share of bands who would pay, price per payer, share who promote digitally) have no solid source. The best-sourced input (still read through press, with an interest flag) is the UK count of artist performances at grassroots venues. No kill criterion was triggered; the answer is "not known yet", not "too small". Because Ale chose not to set a minimum (D-NEW), the useful output is the income ladder in [sizing.md](sizing.md): at the base price (150 EUR a year), 30k EUR a year needs about 200 paying bands and 100k EUR needs about 670.
+**Needs primary research.** We can bound the market only very loosely: yearly revenue from Italy and the UK is somewhere between about 16k EUR and 6.4M EUR (base 446k EUR), a 400x spread, because the three assumptions that drive it (share of bands who would pay, price per payer, share who promote digitally) have no solid source. The best-sourced input (still read through press, with an interest flag) is the UK count of artist performances at grassroots venues. No kill criterion was triggered; the answer is "not known yet", not "too small". Because Ale chose not to set a minimum (D-022), the useful output is the income ladder in [sizing.md](sizing.md): at the base price (150 EUR a year), 30k EUR a year needs about 200 paying bands and 100k EUR needs about 670.
 
 | Id | Hypothesis | Verdict | Confidence | Key evidence | Key evidence against |
 | --- | --- | --- | --- | --- | --- |

@@ -8,7 +8,7 @@ Part of [R-005](protocol.md). All money in 2026 EUR; GBP converted at 1 GBP = 1.
 - **Value basis:** revenue per year to Band Studio OS: pay-per-campaign plus subscription (D-008), blended into revenue per paying band per year.
 - **Geography and year:** Italy and the UK (base), wider Europe as a scaling factor. 2025 to 2026 data where available.
 - **Segment boundary:** unsigned or small-label bands and duos; solo acts, DJs, managed or labelled acts, tribute and cover bands out.
-- **Minimum business threshold:** none, by Ale's choice (D-NEW). See the income ladder below.
+- **Minimum business threshold:** none, by Ale's choice (D-022). See the income ladder below.
 
 ## Assumptions register
 
@@ -96,7 +96,7 @@ Top three (A10, A9, A8) account for about 69% of the total swing. None has an A 
 | SAM including wider Europe | 32k EUR | 1.8M EUR | 38M EUR | bottom-up x (Assumption) | Very low |
 | SOM, year 3, Italy + UK | 0.3k EUR | 44k EUR | 1.6M EUR | would-pay pool x assumed capture | Very low |
 
-## Income ladder (replaces a fixed threshold, D-NEW)
+## Income ladder (replaces a fixed threshold, D-022)
 
 Paying bands needed for a yearly revenue level, at each price, set against the would-pay pool in Italy + UK (low 265, base 2,970, high 21,400).
 

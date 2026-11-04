@@ -3,8 +3,8 @@
 Pre-registered before any search. After the first search, only the **Deviations** section changes. Method: `docs/research/framework.md`.
 
 - **Type:** Market analysis and sizing (`market-analysis` skill, on `research-protocol`)
-- **Tier:** standard (the skill's default). Reason for not going deep: no go/no-go rests on this number yet. Fieldwork is postponed (D-014), pricing is untested and Ale chose to discover a realistic target rather than set one (D-NEW). The result is a provisional range, never a verdict on whether to build. Re-run at deep tier if a go/no-go or pricing decision starts to depend on it.
-- **Decision this informs:** what size of business Band Studio OS can realistically be in its launch markets, so Ale can set a realistic target (D-NEW) and so the pricing and primary-research plans (E3, R-003) aim at the right numbers.
+- **Tier:** standard (the skill's default). Reason for not going deep: no go/no-go rests on this number yet. Fieldwork is postponed (D-014), pricing is untested and Ale chose to discover a realistic target rather than set one (D-022). The result is a provisional range, never a verdict on whether to build. Re-run at deep tier if a go/no-go or pricing decision starts to depend on it.
+- **Decision this informs:** what size of business Band Studio OS can realistically be in its launch markets, so Ale can set a realistic target (D-022) and so the pricing and primary-research plans (E3, R-003) aim at the right numbers.
 - **If the answer is yes we will…; if no we will…:** A credible range with sourced unit counts: use it to pick a target and refine it with E3. A range that is small or unfounded: change the scope (more markets, an adjacent segment, a different price model) or put primary sizing research first, before more building.
 - **Sponsor:** Ale. **Lead:** Claude.
 - **Kill criteria approved by the product owner:** not required at this tier.
@@ -15,7 +15,7 @@ Pre-registered before any search. After the first search, only the **Deviations*
 - **Value basis:** revenue per year to Band Studio OS, at pay-per-campaign plus a subscription (D-008). Prices are `(Assumption)` with ranges until E3 runs. Starting range: 10 to 40 EUR per gig campaign, 0 to 15 EUR a month subscription, 2 to 8 campaigns a year.
 - **Geography and year:** Italy first, then the UK, then the rest of Europe (D-012). Figures in 2026 EUR (UK in GBP converted at a recorded rate). Present state (2025 to 2026 data) and a three-year view.
 - **Segment boundary:** in: unsigned or small-label bands and duos, any genre (D-007). Out: solo acts and DJs, acts with a manager or label that promotes for them, tribute and wedding bands, cover bands that don't promote their own gigs.
-- **Minimum business threshold:** none, by Ale's choice (D-NEW). Instead the report gives an **income ladder**: customers and market share needed for 10k, 30k, 60k and 100k EUR a year of revenue, set against the estimated SAM.
+- **Minimum business threshold:** none, by Ale's choice (D-022). Instead the report gives an **income ladder**: customers and market share needed for 10k, 30k, 60k and 100k EUR a year of revenue, set against the estimated SAM.
 
 ## Declared priors
 
@@ -26,7 +26,7 @@ Pre-registered before any search. After the first search, only the **Deviations*
 
 ## Hypotheses
 
-M1 is not given a pass/fail threshold (D-NEW); it is a measurement. Key hypotheses are the ones the estimate cannot stand on without.
+M1 is not given a pass/fail threshold (D-022); it is a measurement. Key hypotheses are the ones the estimate cannot stand on without.
 
 | Id | Key? | Hypothesis | Null or strongest alternative | Supported if | Kill criterion (contradicted if) |
 | --- | --- | --- | --- | --- | --- |
