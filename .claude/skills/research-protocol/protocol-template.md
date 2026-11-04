@@ -4,10 +4,10 @@ Pre-registered before any search. After the first search, only the **Deviations*
 
 - **Type:** <research type, and the type skill used>
 - **Tier:** light | standard | deep, and why (cost of being wrong)
-- **Decision this informs:** <what Ale will decide with it>
+- **Decision this informs:** <what the product owner will decide with it>
 - **If the answer is yes we will…; if no we will…:** <both, concretely>
-- **Sponsor:** Ale. **Lead:** Claude.
-- **Kill criteria approved by Ale:** <date, deep tier only; otherwise "not required at this tier">
+- **Sponsor:** <product owner>. **Lead:** Claude.
+- **Kill criteria approved by the product owner:** <date, deep tier only; otherwise "not required at this tier">
 
 ## Declared priors
 
@@ -27,7 +27,7 @@ Falsifiable claims. A key hypothesis is one the decision can't survive without. 
 - **Geography:** <markets>
 - **Time window:** <sources from YYYY onward, and why>
 - **Languages:**
-- **Include / exclude rules:** <e.g. exclude vendor material as evidence; exclude posts by labels or agencies speaking for bands>
+- **Include / exclude rules:** <e.g. exclude vendor material as evidence; exclude posts by intermediaries speaking for the target users>
 
 ## Search plan
 
