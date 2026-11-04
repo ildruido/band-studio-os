@@ -2,6 +2,14 @@
 
 Newest first. Each entry: id, date, decision, why, alternatives, who decided, status (`active`, `superseded by D-0NN`, `revisited`).
 
+### D-007 No genre restriction
+- **Date:** 2026-11-04
+- **Decision:** V1 is not limited to one genre or scene. Each band sets its own style and nuances through the Identity Studio. Indie and rock stay the reference community for early users and for the tone of the product, but nothing in V1 is built only for them.
+- **Why:** The Identity Studio exists so each band can define its own style, so a genre limit would contradict it.
+- **Alternatives:** Rock/indie/punk only; one narrow scene.
+- **Decided by:** Ale
+- **Status:** active
+
 ### D-006 Identity Studio starts light; the first build is end-to-end
 - **Date:** 2026-11-04
 - **Decision:** V1 Identity Studio starts light (Grit slider, anti-moodboard, a few references). Onboarding captures only the essentials. The customer can add or fine-tune further identity settings at any later moment. Which identity variables exist is decided by a UX design round, driven by their impact on the output's identity. The first iteration is end-to-end (identity to finished campaign assets) so output variations can be tested before more identity variables are added.
