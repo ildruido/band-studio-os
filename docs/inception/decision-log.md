@@ -2,15 +2,7 @@
 
 Newest first. Each entry: id, date, decision, why, alternatives, who decided, status (`active`, `superseded by D-0NN`, `revisited`).
 
-### D-015 Add three research types: market analysis, competitor scan, competitive analysis
-- **Date:** 2026-11-04
-- **Decision:** Add three generic type skills on top of the research framework: `market-analysis` (triangulated top-down and bottom-up sizing, assumptions with ranges, sensitivity), `competitor-scan` (direct, indirect, substitutes, DIY, adjacent entrants and dead products, found through several discovery routes and verified at the primary source) and `competitive-analysis` (criteria set before scoring, evidence-linked scores, a mandatory "Where we lose" section). Each pre-registers its hypotheses and type-specific checks, which the skeptic runs. No scan has been run yet.
-- **Why:** Ale asked for dedicated, rigorous harness components for market sizing and for competitor identification and analysis. Market claims are the easiest to inflate.
-- **Alternatives:** Reuse the general `market-sizing` and `competitive-brief` skills as they are (kept as models for the output shape; they lack pre-registration, source verification and a skeptic step). One combined skill (rejected: the three jobs have different hypotheses and sources).
-- **Decided by:** Ale, plan approved on Claude's recommendation
-- **Status:** active
-
-### D-017 V1 has no AI video; a short-video proof of concept comes right after
+### D-018 V1 has no AI video; a short-video proof of concept comes right after
 - **Date:** 2026-11-04
 - **Decision:** V1 makes images (flyers, stories, carousels) and simple template motion synced to audio. AI-generated video is not in V1. A short-video proof of concept to prove feasibility and cost is the first thing after V1 scope is set.
 - **Why:** Video is the biggest AI cost risk and the budget (D-016) cannot absorb it before revenue. Ale still wants feasibility proven early.
@@ -18,7 +10,7 @@ Newest first. Each entry: id, date, decision, why, alternatives, who decided, st
 - **Decided by:** Ale (chose images and template motion only, and asked for the video proof of concept to be next)
 - **Status:** active
 
-### D-016 V1 cash budget is under 100 EUR a month
+### D-017 V1 cash budget is under 100 EUR a month
 - **Date:** 2026-11-04
 - **Decision:** Until the first paying customers, total cash spend (tools, hosting, AI generation, test ads) stays under 100 EUR a month.
 - **Why:** Ale's choice; keeps the venture low-risk while the riskiest hypotheses are still unproven.
@@ -26,12 +18,20 @@ Newest first. Each entry: id, date, decision, why, alternatives, who decided, st
 - **Decided by:** Ale (recommendation was 100 to 500 EUR; Ale chose lower)
 - **Status:** active
 
-### D-015 V1 is built by Ale part-time plus Claude, with no hires
+### D-016 V1 is built by Ale part-time plus Claude, with no hires
 - **Date:** 2026-11-04
 - **Decision:** One person plus AI, about 5 to 10 hours a week of Ale's time, no paid contractors.
 - **Why:** Matches the postponed fieldwork and the Pro-plan usage limits.
 - **Alternatives:** Ale full-time plus Claude; adding paid freelancers.
 - **Decided by:** Ale, on Claude's recommendation
+- **Status:** active
+
+### D-015 Add three research types: market analysis, competitor scan, competitive analysis
+- **Date:** 2026-11-04
+- **Decision:** Add three generic type skills on top of the research framework: `market-analysis` (triangulated top-down and bottom-up sizing, assumptions with ranges, sensitivity), `competitor-scan` (direct, indirect, substitutes, DIY, adjacent entrants and dead products, found through several discovery routes and verified at the primary source) and `competitive-analysis` (criteria set before scoring, evidence-linked scores, a mandatory "Where we lose" section). Each pre-registers its hypotheses and type-specific checks, which the skeptic runs. No scan has been run yet.
+- **Why:** Ale asked for dedicated, rigorous harness components for market sizing and for competitor identification and analysis. Market claims are the easiest to inflate.
+- **Alternatives:** Reuse the general `market-sizing` and `competitive-brief` skills as they are (kept as models for the output shape; they lack pre-registration, source verification and a skeptic step). One combined skill (rejected: the three jobs have different hypotheses and sources).
+- **Decided by:** Ale, plan approved on Claude's recommendation
 - **Status:** active
 
 ### D-014 Research priorities approved; driver interviews designed and parked
