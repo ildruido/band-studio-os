@@ -2,6 +2,14 @@
 
 Newest first. Each entry: id, date, decision, why, alternatives, who decided, status (`active`, `superseded by D-0NN`, `revisited`).
 
+### D-008 Monetization: pay per campaign, then subscription, freemium and add-ons later
+- **Date:** 2026-11-04
+- **Decision:** Long-run model is freemium. For early adopters, casual users can pay per campaign; regular users move to a monthly subscription. Add-ons and a freemium tier can be layered on top later. Pricing details are an open question for the market and hypotheses work.
+- **Why:** Pay-per-campaign lowers the barrier for early adopters and feedback, and matches AI cost per use. A subscription fits bands that gig regularly.
+- **Alternatives:** Subscription only; free tier first (AI cost paid on non-paying users).
+- **Decided by:** Ale (extending Claude's recommendation)
+- **Status:** active
+
 ### D-007 No genre restriction
 - **Date:** 2026-11-04
 - **Decision:** V1 is not limited to one genre or scene. Each band sets its own style and nuances through the Identity Studio. Indie and rock stay the reference community for early users and for the tone of the product, but nothing in V1 is built only for them.
