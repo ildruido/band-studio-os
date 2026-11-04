@@ -1,6 +1,6 @@
 # Research plan: what to test first
 
-**Status: proposed, awaiting Ale's OK.** Builds on [R-001](R-001-persona-reality-check/report.md), [R-002](R-002-band-count-size-check/report.md) and the [provisional personas](../inception/personas.md). Method for every study: [framework.md](framework.md). Launch order: Italy, then the UK, then the rest of Europe (D-012).
+**Status: approved by Ale (D-014). Fieldwork postponed. E1 is designed as [R-003](R-003-driver-interviews/protocol.md) and parked; E2 and E3 stay at plan level.** Builds on [R-001](R-001-persona-reality-check/report.md), [R-002](R-002-band-count-size-check/report.md) and the [provisional personas](../inception/personas.md). Method for every study: [framework.md](framework.md). Launch order: Italy, then the UK, then the rest of Europe (D-012).
 
 ## What desk research told us
 
@@ -29,7 +29,7 @@ H-01, H-03 and H-02 are the **riskiest three**. Run order differs from rank orde
 
 Each becomes a study under the framework with a pre-registered protocol (hypotheses, thresholds, search or sampling plan) committed before any data. Thresholds below are my proposals; Ale approves them before each study starts.
 
-### E1: Driver interviews (tests H-02, informs H-04 and H-09). Run first.
+### E1: Driver interviews (tests H-02, informs H-04 and H-09). Run first. Designed as R-003, parked.
 
 - **Method:** 8 to 10 interviews with Italian band drivers, then 3 or 4 with UK ones. 30 minutes, past behaviour only ("tell me about your last gig and how you promoted it"). A neutral script, no pitch. The "biggest problems" question comes first and unprompted; promotion is only raised after.
 - **Sample:** active bands of any genre, 2 to 6 members, played live in the last 6 months. Deliberately include 2 or 3 who outsource promotion, who stopped, or who have a manager.
@@ -59,7 +59,7 @@ Each becomes a study under the framework with a pre-registered protocol (hypothe
 - **H-06 AI cost spike:** log tokens and cost for every item generated in E2; target at most a stated cost per campaign (to be set from E3's price). No people needed.
 - **H-07 rights check:** a desk study (light or standard tier) of music, likeness and image-rights rules for uploaded gig media and generated assets, Italy and UK.
 - **H-09 size:** email KeepOn LIVE, Rockit and SIAE's live-events team for counts of distinct acts playing live per year (R-002's next step).
-- **Market scan and competitors** (the `riskiest-hypotheses` step, R-003): do before E3 so we know the price anchors.
+- **Market scan and competitors** (the `riskiest-hypotheses` step, a later study): do before E3 so we know the price anchors.
 
 ## Sequence
 
