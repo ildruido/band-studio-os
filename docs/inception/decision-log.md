@@ -10,6 +10,30 @@ Newest first. Each entry: id, date, decision, why, alternatives, who decided, st
 - **Decided by:** Ale, plan approved on Claude's recommendation
 - **Status:** active
 
+### D-017 V1 has no AI video; a short-video proof of concept comes right after
+- **Date:** 2026-11-04
+- **Decision:** V1 makes images (flyers, stories, carousels) and simple template motion synced to audio. AI-generated video is not in V1. A short-video proof of concept to prove feasibility and cost is the first thing after V1 scope is set.
+- **Why:** Video is the biggest AI cost risk and the budget (D-016) cannot absorb it before revenue. Ale still wants feasibility proven early.
+- **Alternatives:** Short AI video in V1; leave video as a candidate until the cost spike (H-06).
+- **Decided by:** Ale (chose images and template motion only, and asked for the video proof of concept to be next)
+- **Status:** active
+
+### D-016 V1 cash budget is under 100 EUR a month
+- **Date:** 2026-11-04
+- **Decision:** Until the first paying customers, total cash spend (tools, hosting, AI generation, test ads) stays under 100 EUR a month.
+- **Why:** Ale's choice; keeps the venture low-risk while the riskiest hypotheses are still unproven.
+- **Alternatives:** 100 to 500 EUR a month; over 500 EUR a month.
+- **Decided by:** Ale (recommendation was 100 to 500 EUR; Ale chose lower)
+- **Status:** active
+
+### D-015 V1 is built by Ale part-time plus Claude, with no hires
+- **Date:** 2026-11-04
+- **Decision:** One person plus AI, about 5 to 10 hours a week of Ale's time, no paid contractors.
+- **Why:** Matches the postponed fieldwork and the Pro-plan usage limits.
+- **Alternatives:** Ale full-time plus Claude; adding paid freelancers.
+- **Decided by:** Ale, on Claude's recommendation
+- **Status:** active
+
 ### D-014 Research priorities approved; driver interviews designed and parked
 - **Date:** 2026-11-04
 - **Decision:** Ale approved the ranking of hypotheses in the [research plan](../research/research-plan.md) (riskiest three: H-01 output feels like "us", H-03 willingness to pay, H-02 the driver exists and hurts) and its three experiments, as proposed. Recruitment and the tests themselves are postponed. For now only the first test, the driver interviews (R-003), is designed in full; it is parked until Ale says go. The blind output test and price test stay at plan level.
