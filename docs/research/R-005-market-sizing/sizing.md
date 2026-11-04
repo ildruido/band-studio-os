@@ -1,6 +1,6 @@
-# R-004 Sizing sheet
+# R-005 Sizing sheet
 
-Part of [R-004](protocol.md). All money in 2026 EUR; GBP converted at 1 GBP = 1.15 EUR `(Assumption)`. Every figure is a provisional range, not a forecast. Calculation reproducible from the assumptions below.
+Part of [R-005](protocol.md). All money in 2026 EUR; GBP converted at 1 GBP = 1.15 EUR `(Assumption)`. Every figure is a provisional range, not a forecast. Calculation reproducible from the assumptions below.
 
 ## Definition (pre-registered in the protocol)
 
@@ -8,7 +8,7 @@ Part of [R-004](protocol.md). All money in 2026 EUR; GBP converted at 1 GBP = 1.
 - **Value basis:** revenue per year to Band Studio OS: pay-per-campaign plus subscription (D-008), blended into revenue per paying band per year.
 - **Geography and year:** Italy and the UK (base), wider Europe as a scaling factor. 2025 to 2026 data where available.
 - **Segment boundary:** unsigned or small-label bands and duos; solo acts, DJs, managed or labelled acts, tribute and cover bands out.
-- **Minimum business threshold:** none, by Ale's choice (D-021). See the income ladder below.
+- **Minimum business threshold:** none, by Ale's choice (D-NEW). See the income ladder below.
 
 ## Assumptions register
 
@@ -43,7 +43,7 @@ Formulas: Italy bands = A1 x A2 x A3 / A4. UK bands = A5 / A6 x A7. Addressable 
 | SAM with wider Europe (A11) | 32k | 1.8M | 38M |
 | SOM path: payers won by year 3 as a share of the would-pay pool (2%, 10%, 25%, an `(Assumption)` not taken from comparables) | 5 payers, 0.3k EUR | 297 payers, 44k EUR | 5,350 payers, 1.6M EUR |
 
-The SOM path is a stated chain (pool of would-pay bands x share won by year 3 x revenue per payer) with an assumed capture share. No comparable product's reach was found, so it is illustrative.
+Note: if the 605 concerts a week in E-02 are national, not only KeepOn's circuit, A3 should be 1.0: Italian bands become 7,900 and the base SAM 422k EUR. The SOM path is a stated chain (pool of would-pay bands x share won by year 3 x revenue per payer) with an assumed capture share. No comparable product's reach was found, so it is illustrative.
 
 ## Top-down (promotion spend by bands)
 
@@ -96,7 +96,7 @@ Top three (A10, A9, A8) account for about 69% of the total swing. None has an A 
 | SAM including wider Europe | 32k EUR | 1.8M EUR | 38M EUR | bottom-up x (Assumption) | Very low |
 | SOM, year 3, Italy + UK | 0.3k EUR | 44k EUR | 1.6M EUR | would-pay pool x assumed capture | Very low |
 
-## Income ladder (replaces a fixed threshold, D-021)
+## Income ladder (replaces a fixed threshold, D-NEW)
 
 Paying bands needed for a yearly revenue level, at each price, set against the would-pay pool in Italy + UK (low 265, base 2,970, high 21,400).
 
