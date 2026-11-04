@@ -5,6 +5,8 @@ description: Check the 11 inception exit criteria against the repo and report wh
 
 # Exit gate
 
+Product-specific facts (product, users, principles, key concepts, market segments, domain risks, look and feel) come from the **Inception profile** in `CLAUDE.md`. This skill stays generic.
+
 ## Steps
 
 1. **Read** `docs/inception/workflow.md` (the artifact map) and every file in `docs/inception/`. Check open PRs too: an unmerged artifact counts as partial.

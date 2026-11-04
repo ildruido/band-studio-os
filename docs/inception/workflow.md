@@ -19,7 +19,7 @@ All of them live in `docs/inception/`, one PR per artifact. Small fixes such as 
 
 | # | Artifact | File | Made with | Exit criterion |
 | --- | --- | --- | --- | --- |
-| 1 | Product foundation (vision, value prop, key product artifacts) | `product-foundation.md` | `inception-interview` | 1 |
+| 1 | Product foundation (vision, value prop, key product artifacts), refined from `starting-idea.md` | `product-foundation.md` | `inception-interview` | 1 |
 | 2 | Target users and personas | `personas.md` | `inception-interview` | 7 |
 | 3 | Market scan and riskiest hypotheses | `market-and-hypotheses.md` | `riskiest-hypotheses` | 2 |
 | 4 | Success metrics | `success-metrics.md` | `inception-interview` | 8 |
@@ -32,7 +32,7 @@ All of them live in `docs/inception/`, one PR per artifact. Small fixes such as 
 
 ## Order
 
-1. **Foundation**: refine the starting idea (`band_studio_os_product_foundation.md`, a starting point, not a bible) into artifact 1.
+1. **Foundation**: refine the starting idea (`starting-idea.md`, a starting point, not a bible) into artifact 1.
 2. **People and market**: personas (2), then the market scan and riskiest hypotheses (3).
 3. **Shape**: success metrics (4), constraints and non-goals (5), then the MVP and roadmap (6).
 4. **Show**: prototypes (7) for the riskiest MVP flows, used to test hypotheses.
