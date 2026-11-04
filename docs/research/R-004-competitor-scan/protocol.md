@@ -89,3 +89,4 @@ One research session, about 3 hours of searching and verifying, then the skeptic
 Filled in during the research. Each one: date, what changed, why, and what it means for the conclusions.
 
 - None yet.
+- **2026-11-04, round 2 after skeptic review (Ale chose to widen the scan).** The S1 kill criterion was triggered by the skeptic's routes. Ale chose to widen the scan and check Canva by hand before the competitive analysis. Round 2 and its results are in [addendum-1.md](addendum-1.md). Effect: S1 stays Contradicted; the landscape grows; S2 stays open until the hands-on check.
