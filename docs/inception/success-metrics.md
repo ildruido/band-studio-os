@@ -1,6 +1,6 @@
 # Success metrics: Band Studio OS (working title)
 
-Decision: D-020 in the [decision log](decision-log.md). Only the North Star was decided by Ale. Everything marked **(Assumption)** is Claude's proposal for Ale to review. **All targets are provisional**: they are guesses until the primary research ([research plan](../research/research-plan.md): R-003, E2, E3) gives real numbers, and are re-set after E3.
+Decision: D-021 in the [decision log](decision-log.md). Only the North Star was decided by Ale. Everything marked **(Assumption)** is Claude's proposal for Ale to review. **All targets are provisional**: they are guesses until the primary research ([research plan](../research/research-plan.md): R-003, E2, E3) gives real numbers, and are re-set after E3.
 
 ## North Star
 
@@ -56,4 +56,4 @@ Follower growth, likes, streams or ticket sales. They depend on the band's music
 
 - Should the North Star later count posted campaigns, once a connector can see publishing (D-009)?
 - What price makes "30% of price for AI cost" workable? Set by E3.
-- Does a target date for first paying customers exist? (See [constraints](constraints.md).)
+- Pace is set by Ale's hours and research gates (no fixed deadline, D-020), so targets are relative to the first paid pilot.

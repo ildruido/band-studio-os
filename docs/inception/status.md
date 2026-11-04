@@ -13,8 +13,8 @@ Status values: `not started`, `in progress`, `done`, `ongoing`.
 | 5 | Project and repo set up; workflow from `app-studio`; next-steps recommendation | in progress | Project, repo, harness core and CI done; next-steps recommendation pending |
 | 6 | Architecture-phase handoff | not started | |
 | 7 | Target users and personas | in progress | Provisional (speculative) personas written: [personas.md](personas.md). They need interviews to firm up (see the [research plan](../research/research-plan.md)) |
-| 8 | Success metrics | done (provisional) | [success-metrics.md](success-metrics.md): North Star decided (D-020); supporting metrics, guardrails and targets are assumptions awaiting Ale's review and E3 |
-| 9 | Constraints and non-goals | in progress | Draft in [constraints.md](constraints.md); D-016 to D-019 set team, budget, video and native app timing. Awaiting Ale's review of the rest |
+| 8 | Success metrics | done (provisional) | [success-metrics.md](success-metrics.md): North Star decided (D-021); supporting metrics, guardrails and targets are assumptions awaiting Ale's review and E3 |
+| 9 | Constraints and non-goals | done | [constraints.md](constraints.md), agreed by Ale (D-016 to D-020) |
 | 10 | Decision log kept current | ongoing | See [decision-log.md](decision-log.md) |
 | 11 | Ale's sign-off | not started | Last step, via `exit-gate` |
 

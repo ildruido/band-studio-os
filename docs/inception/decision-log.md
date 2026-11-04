@@ -2,12 +2,20 @@
 
 Newest first. Each entry: id, date, decision, why, alternatives, who decided, status (`active`, `superseded by D-0NN`, `revisited`).
 
-### D-020 North Star is approved campaigns per month
+### D-021 North Star is approved campaigns per month
 - **Date:** 2026-11-04
 - **Decision:** The North Star metric is approved campaigns per month: gig campaigns that all required bandmates approved and the driver exported. Supporting metrics, guardrails and targets are Claude's provisional proposals (see [success-metrics.md](success-metrics.md)) until E3 sets real numbers.
 - **Why:** Bandmate approval proves the output feels like "us" (H-01) and maps to pay-per-campaign revenue (H-03).
 - **Alternatives:** Paying bands per month (says nothing about output quality); hours saved per campaign (hard to measure without surveys).
 - **Decided by:** Ale, on Claude's recommendation
+- **Status:** active
+
+### D-020 Remaining constraints and non-goals agreed
+- **Date:** 2026-11-04
+- **Decision:** Ale agreed the rest of [constraints.md](constraints.md): no fixed deadline (pace set by his hours and the research gates), and as V1 non-goals: managers, agencies, labels and multi-band accounts; team roles, permissions and billing seats; music creation, mixing and distribution tools; paid acquisition at scale (small tests only).
+- **Why:** Closes the open assumptions in the draft so exit criterion 9 is complete.
+- **Alternatives:** Change any of them (none requested).
+- **Decided by:** Ale
 - **Status:** active
 
 ### D-019 A native app is wanted, but much later than V1
