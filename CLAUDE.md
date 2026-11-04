@@ -2,11 +2,11 @@
 
 **Phase: Inception.** No production code until Ale signs off on the exit gate. Follow [docs/inception/workflow.md](docs/inception/workflow.md) and its skills in `.claude/skills/`.
 
-- Interview Ale one question at a time, each with a recommended answer.
-- English for all docs.
-- One PR per artifact. Typos and decision log entries may go straight to `main`.
+- Ask Ale only product decisions, one question at a time, each with a recommended answer. Decide technical details yourself and record them in the PR description.
+- English everywhere: docs, commits, PRs and chat.
+- One PR per artifact. Inception-only exception to app-studio's "never commit straight to `main`": typos and decision log entries may go straight to `main` from a local session. A cloud session can push only its own branch, so it opens a PR for those too. `new-app` drops this exception when inception closes.
 - Merge your own PR as soon as the task is done and CI is green. The `Harness` workflow checks harness and docs PRs. There are no code tests yet (inception), so say so when you merge.
-- Log every product decision in [docs/inception/decision-log.md](docs/inception/decision-log.md).
+- Log every product decision in [docs/inception/decision-log.md](docs/inception/decision-log.md) in the same turn. This decision log stays the home for product decisions after inception too.
 - `app-studio` is the build-phase harness. Read it, but never change it from here. Its core (v0.4.0) was installed early, only so the health check and the `Harness` workflow guard this repo during inception. The build-phase skills (`build-feature`, `release`, `test-handoff`) aren't used until inception closes. `new-app` then adds the stack packs and merges the rest of the template into this file.
 
 ## App profile

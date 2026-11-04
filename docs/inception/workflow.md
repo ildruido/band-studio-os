@@ -4,18 +4,36 @@ How Ale and Claude run the Inception phase of Band Studio OS. It comes before th
 
 ## Why a separate layer
 
-`app-studio` (v0.2.8) is built for the code phase only. Every skill and agent in it (`prd-intake`, `build-feature`, `test-handoff`, `release`, `new-app`, `harness-sync`; `planner`, `reviewer`, `qa`) expects a repo with npm, `docs/PRD.md`, `docs/BACKLOG.md`, CI and releases. Nothing in it covers discovery. This layer fills that gap and then hands over to it.
+`app-studio` is built for the code phase. Its skills and agents (`prd-intake`, `build-feature`, `test-handoff`, `release`, `new-app`, `harness-sync`; `planner`, `reviewer`, `qa`) expect a repo with npm, `docs/PRD.md`, `docs/BACKLOG.md`, CI and releases. Nothing in it covers discovery. This layer fills that gap and then hands over to it.
 
-Decision: D-001 in the [decision log](decision-log.md).
+The harness core (the version pinned in `.claude/studio/lock.json`) is already installed, only so its health check and the `Harness` workflow guard this repo during inception (D-004). Its build-phase skills are not used until inception closes.
+
+Decisions: D-001 and D-004 in the [decision log](decision-log.md).
 
 ## Roles
 
 - **Ale (PO/PM):** owns the vision, answers questions, approves each artifact, and signs off the end of inception.
 - **Claude:** interviews, researches, drafts, prototypes, keeps the decision log, and checks the exit gate.
 
+## Exit criteria
+
+Inception closes when all 11 are met (D-002). The `exit-gate` skill scores them.
+
+1. Refined product foundation doc (vision, value prop, key product artifacts)
+2. Initial validation, market research and riskiest hypotheses
+3. Clear MVP definition and roadmap
+4. Prototypes (quick interactive mock-ups) showing the concept
+5. Artifacts produced; project and app repo set up; workflow initialized from `app-studio`; minimal next-steps recommendation
+6. Architecture-phase handoff (product architecture and project meta-architecture: extra skills, plugins or agents on top of `app-studio`)
+7. Target users and personas
+8. Success metrics
+9. Constraints and non-goals
+10. Decision log kept current
+11. Ale's final sign-off
+
 ## Artifacts
 
-All of them live in `docs/inception/`, one PR per artifact. Small fixes such as typos and decision log entries may go straight to `main`.
+All of them live in `docs/inception/`, one PR per artifact. Typos and decision log entries may go straight to `main` (see `CLAUDE.md` for the cloud-session limit).
 
 | # | Artifact | File | Made with | Exit criterion |
 | --- | --- | --- | --- | --- |
@@ -42,8 +60,9 @@ The decision log (8) is kept current at every step. Steps may loop: a prototype 
 
 ## Ways of working
 
-- Interview Ale **one question at a time**, each with a recommended answer.
+- Ask Ale only product decisions, **one question at a time**, each with a recommended answer. Claude decides technical details.
 - English everywhere.
+- Merge your own PR once the task is done and CI (the `Harness` workflow) is green. There are no code tests during inception: say so when you merge.
 - No production code until inception closes. Prototypes are throwaway mock-ups (Artifacts), with no tests and no harness.
 - Every product decision Ale makes goes into the decision log in the same turn.
 
@@ -67,5 +86,5 @@ They lean on skills that already exist: `product-management:*` (brainstorm, comp
 At the end of inception:
 
 1. `architecture-handoff` writes the product and meta-architecture input, including the App profile draft (domain rules, capabilities, AI plan) and any extra skills, plugins or agents needed on top of `app-studio`.
-2. After sign-off, `app-studio`'s `new-app` (v0.3.0+) installs the harness into this existing repo. It keeps these docs and skills, and merges its template into this `CLAUDE.md`, dropping the inception-only rules. `prd-intake` then reads `mvp-and-roadmap.md` and the decision log directly to write `docs/PRD.md` and `docs/BACKLOG.md`.
+2. After sign-off, `app-studio`'s `new-app` completes the harness already installed here: it adds the stack packs, keeps these docs and skills, and merges its template into `CLAUDE.md`, dropping the inception-only rules. `prd-intake` then reads `mvp-and-roadmap.md` and the decision log directly to write `docs/PRD.md` and `docs/BACKLOG.md`.
 3. If this layer worked well, upstream it to `app-studio` as a generic discovery stage (`harness-sync` part B). Until then, `app-studio` stays untouched.
