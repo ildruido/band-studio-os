@@ -64,4 +64,4 @@ Run as a separate self-review pass against the R-001 and R-002 reports.
 6. **Anti-personas:** three listed.
 7. **Assumptions listed:** yes, with tests.
 
-**Share of traits backed by evidence:** 5 of 17 Driver and Reviewer traits (about 30%), all Low confidence. **Both personas are speculative.** They are fit for guiding interview questions and early prototype choices, not for pricing or go-to-market claims.
+**Share of traits backed by evidence:** 6 of 19 Driver and Reviewer traits (about one third), all Low confidence. **Both personas are speculative.** They are fit for guiding interview questions and early prototype choices, not for pricing or go-to-market claims.
