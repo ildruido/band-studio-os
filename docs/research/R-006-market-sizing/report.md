@@ -1,6 +1,6 @@
-# R-005 Market sizing: report
+# R-006 Market sizing: report
 
-Protocol: [protocol.md](protocol.md), pre-registered in commit 3f72cfc (as R-004, renumbered R-005) on 2026-11-04. Tier: standard. Method: `docs/research/framework.md`. Working file: [sizing.md](sizing.md).
+Protocol: [protocol.md](protocol.md), pre-registered in commit 3f72cfc (as R-004, renumbered R-006) on 2026-11-04. Tier: standard. Method: `docs/research/framework.md`. Working file: [sizing.md](sizing.md).
 
 ## Verdict
 

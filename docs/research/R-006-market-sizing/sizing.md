@@ -1,6 +1,6 @@
-# R-005 Sizing sheet
+# R-006 Sizing sheet
 
-Part of [R-005](protocol.md). All money in 2026 EUR; GBP converted at 1 GBP = 1.15 EUR `(Assumption)`. Every figure is a provisional range, not a forecast. Calculation reproducible from the assumptions below.
+Part of [R-006](protocol.md). All money in 2026 EUR; GBP converted at 1 GBP = 1.15 EUR `(Assumption)`. Every figure is a provisional range, not a forecast. Calculation reproducible from the assumptions below.
 
 ## Definition (pre-registered in the protocol)
 

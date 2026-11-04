@@ -7,13 +7,13 @@ Status values: `not started`, `in progress`, `done`, `ongoing`.
 | # | Exit criterion | Status | Notes |
 | --- | --- | --- | --- |
 | 1 | Refined product foundation doc | in progress | Interview running in thread "Refine product foundation doc" |
-| 2 | Validation, market research, riskiest hypotheses | in progress | R-001 reality check and R-002 size check done, both "Needs primary research" ([R-001](../research/R-001-persona-reality-check/report.md), [R-002](../research/R-002-band-count-size-check/report.md)). [Research plan](../research/research-plan.md) approved (D-014): ranks hypotheses, designs 3 experiments. Driver interviews designed as [R-003](../research/R-003-driver-interviews/protocol.md) and parked; fieldwork postponed. Market sizing [R-005](../research/R-005-market-sizing/report.md) done: Needs primary research (Italy plus UK revenue range 16k to 6.4M EUR a year, base 446k; income ladder instead of a threshold, D-022). Competitor scan and fieldwork still to do: harness for them built (D-015: `market-analysis`, `competitor-scan`, `competitive-analysis` skills), awaiting Ale's review before any scan runs |
+| 2 | Validation, market research, riskiest hypotheses | in progress | R-001 reality check and R-002 size check done, both "Needs primary research" ([R-001](../research/R-001-persona-reality-check/report.md), [R-002](../research/R-002-band-count-size-check/report.md)). [Research plan](../research/research-plan.md) approved (D-014): ranks hypotheses, designs 3 experiments. Driver interviews designed as [R-003](../research/R-003-driver-interviews/protocol.md) and parked; fieldwork postponed. Research types built (D-015: `market-analysis`, `competitor-scan`, `competitive-analysis`). Competitor scan [R-004](../research/R-004-competitor-scan/report.md) run: verdict Reshape (coverage contradicted by the skeptic's search; Canva could not be opened, so the gap question needs Ale's hands-on check). Round 2 widening done ([addendum](../research/R-004-competitor-scan/addendum-1.md)); waiting on Ale's [hands-on Canva check](../research/R-004-competitor-scan/hands-on-check.md), then competitive analysis (next free R- number). Market sizing [R-006](../research/R-006-market-sizing/report.md) done: Needs primary research (Italy plus UK revenue range 16k to 6.4M EUR a year, base 446k; income ladder instead of a threshold, D-022) |
 | 3 | MVP definition and roadmap | not started | |
 | 4 | Prototypes (interactive mock-ups) | not started | |
 | 5 | Project and repo set up; workflow from `app-studio`; next-steps recommendation | in progress | Project, repo, harness core and CI done; next-steps recommendation pending |
 | 6 | Architecture-phase handoff | not started | |
 | 7 | Target users and personas | in progress | Provisional (speculative) personas written: [personas.md](personas.md). They need interviews to firm up (see the [research plan](../research/research-plan.md)) |
-| 8 | Success metrics | not started | |
+| 8 | Success metrics | done (provisional) | [success-metrics.md](success-metrics.md): North Star decided (D-021); supporting metrics, guardrails and targets are assumptions awaiting Ale's review and E3 |
 | 9 | Constraints and non-goals | done | [constraints.md](constraints.md), agreed by Ale (D-016 to D-020) |
 | 10 | Decision log kept current | ongoing | See [decision-log.md](decision-log.md) |
 | 11 | Ale's sign-off | not started | Last step, via `exit-gate` |
@@ -32,3 +32,4 @@ Status values: `not started`, `in progress`, `done`, `ongoing`.
 - Standard-tier research uses one extra agent run (the skeptic), deep tier two. That costs usage on the Pro plan.
 - CI covers docs and harness files only; there are no code tests during inception.
 - The `Harness` check did not auto-start on PR #5. Check that it runs on each PR before merging.
+- Canva, Adobe Express and some other sites block automated access from the cloud environment. R-004's key question (is there already a guided gig-campaign tool at a band-friendly price?) needs a person with a browser to try Canva and PosterMyWall.

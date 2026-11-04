@@ -1,4 +1,4 @@
-# R-005 Market sizing (Italy, UK, then wider Europe): protocol
+# R-006 Market sizing (Italy, UK, then wider Europe): protocol
 
 Pre-registered before any search. After the first search, only the **Deviations** section changes. Method: `docs/research/framework.md`.
 
@@ -72,4 +72,4 @@ One long session plus the skeptic run. Stop at the box and report what was left.
 
 ## Deviations
 
-- 2026-11-04: renumbered from R-004 to R-005 before merge because another study took R-004 in parallel. No effect on content.
+- 2026-11-04: renumbered from R-004 to R-006 before merge because parallel studies took R-004 and R-005. No effect on content.
