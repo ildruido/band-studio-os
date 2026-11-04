@@ -2,6 +2,14 @@
 
 Newest first. Each entry: id, date, decision, why, alternatives, who decided, status (`active`, `superseded by D-0NN`, `revisited`).
 
+### D-009 V1 is export-only, on a connector-based architecture
+- **Date:** 2026-11-04
+- **Decision:** V1 outputs a ready-to-post campaign folder; the driver posts by hand. The architecture must be multi-channel, composable and connector-based from the start, so publishing channels and other integrations can be added incrementally toward the fully integrated vision. This is a requirement for the architecture handoff.
+- **Why:** V1 needs to prove output quality, and manual posting keeps band approval in the loop. Building connectors in from the start avoids a rewrite when direct publishing arrives.
+- **Alternatives:** One-tap share to Instagram; full auto-scheduling on all channels.
+- **Decided by:** Ale, on Claude's recommendation (plus the architecture requirement)
+- **Status:** active
+
 ### D-008 Monetization: pay per campaign, then subscription, freemium and add-ons later
 - **Date:** 2026-11-04
 - **Decision:** Long-run model is freemium. For early adopters, casual users can pay per campaign; regular users move to a monthly subscription. Add-ons and a freemium tier can be layered on top later. Pricing details are an open question for the market and hypotheses work.
