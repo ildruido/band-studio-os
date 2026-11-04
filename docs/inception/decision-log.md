@@ -2,6 +2,14 @@
 
 Newest first. Each entry: id, date, decision, why, alternatives, who decided, status (`active`, `superseded by D-0NN`, `revisited`).
 
+### D-015 Add three research types: market analysis, competitor scan, competitive analysis
+- **Date:** 2026-11-04
+- **Decision:** Add three generic type skills on top of the research framework: `market-analysis` (triangulated top-down and bottom-up sizing, assumptions with ranges, sensitivity), `competitor-scan` (direct, indirect, substitutes, DIY, adjacent entrants and dead products, found through several discovery routes and verified at the primary source) and `competitive-analysis` (criteria set before scoring, evidence-linked scores, a mandatory "Where we lose" section). Each pre-registers its hypotheses and type-specific checks, which the skeptic runs. No scan has been run yet.
+- **Why:** Ale asked for dedicated, rigorous harness components for market sizing and for competitor identification and analysis. Market claims are the easiest to inflate.
+- **Alternatives:** Reuse the general `market-sizing` and `competitive-brief` skills as they are (kept as models for the output shape; they lack pre-registration, source verification and a skeptic step). One combined skill (rejected: the three jobs have different hypotheses and sources).
+- **Decided by:** Ale, plan approved on Claude's recommendation
+- **Status:** active
+
 ### D-014 Research priorities approved; driver interviews designed and parked
 - **Date:** 2026-11-04
 - **Decision:** Ale approved the ranking of hypotheses in the [research plan](../research/research-plan.md) (riskiest three: H-01 output feels like "us", H-03 willingness to pay, H-02 the driver exists and hurts) and its three experiments, as proposed. Recruitment and the tests themselves are postponed. For now only the first test, the driver interviews (R-003), is designed in full; it is parked until Ale says go. The blind output test and price test stay at plan level.
