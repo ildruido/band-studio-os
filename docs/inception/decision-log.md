@@ -2,6 +2,14 @@
 
 Newest first. Each entry: id, date, decision, why, alternatives, who decided, status (`active`, `superseded by D-0NN`, `revisited`).
 
+### D-019 A native app is wanted, but much later than V1
+- **Date:** 2026-11-04
+- **Decision:** V1 is a phone-first web experience. A native app is a future goal, added well after V1, not a permanent non-goal.
+- **Why:** Ale corrected the draft assumption "no native app until demand is proven": the app is wanted, only later.
+- **Alternatives:** Native app in V1 (rejected: team and cash limits, D-016, D-017); never build one.
+- **Decided by:** Ale
+- **Status:** active
+
 ### D-018 V1 has no AI video; a short-video proof of concept comes right after
 - **Date:** 2026-11-04
 - **Decision:** V1 makes images (flyers, stories, carousels) and simple template motion synced to audio. AI-generated video is not in V1. A short-video proof of concept to prove feasibility and cost is the first thing after V1 scope is set.
