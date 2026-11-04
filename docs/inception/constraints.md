@@ -1,6 +1,6 @@
 # Constraints and non-goals: Band Studio OS (working title)
 
-Decisions: D-016 to D-018 (new here), plus D-005 to D-014 in the [decision log](decision-log.md). Items marked **(Assumption)** were not decided by Ale; they are Claude's proposals for Ale to review.
+Decisions: D-016 to D-019 (new here), plus D-005 to D-014 in the [decision log](decision-log.md). Items marked **(Assumption)** were not decided by Ale; they are Claude's proposals for Ale to review.
 
 ## Constraints
 
@@ -29,7 +29,7 @@ Decisions: D-016 to D-018 (new here), plus D-005 to D-014 in the [decision log](
 - **Managers, agencies, labels or multi-band accounts as users.** (Assumption, follows D-005)
 - **Team features beyond driver and reviewers**, such as roles, permissions and billing seats. (Assumption)
 - **Music creation, mixing, distribution or streaming-platform tools.** The product promotes gigs; it does not make or release music. (Assumption)
-- **A native app or app-store launch.** A web, phone-first experience is enough until demand is proven. (Assumption)
+- **A native app or app-store launch in V1.** V1 is a phone-first web experience. A native app is wanted, but much later (D-019).
 - **Genre-specific features.** No genre limit and no genre-only build (D-007).
 - **Paid acquisition at scale.** Cash limit (D-017) allows small tests only. (Assumption)
 
