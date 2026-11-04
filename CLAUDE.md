@@ -5,7 +5,7 @@
 - Interview Ale one question at a time, each with a recommended answer.
 - English for all docs.
 - One PR per artifact. Typos and decision log entries may go straight to `main`.
-- Merge your own PR as soon as the task is done and CI is green. This repo has no CI yet (docs only): merge anyway and flag that as a risk.
+- Merge your own PR as soon as the task is done and CI is green. The `Harness` workflow checks harness and docs PRs. There are no code tests yet (inception), so say so when you merge.
 - Log every product decision in [docs/inception/decision-log.md](docs/inception/decision-log.md).
 - `app-studio` is the build-phase harness. Read it, but never change it from here. Its core (v0.4.0) was installed early, only so the health check and the `Harness` workflow guard this repo during inception. The build-phase skills (`build-feature`, `release`, `test-handoff`) aren't used until inception closes. `new-app` then adds the stack packs and merges the rest of the template into this file.
 
