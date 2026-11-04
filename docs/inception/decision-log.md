@@ -2,6 +2,13 @@
 
 Newest first. Each entry: id, date, decision, why, alternatives, who decided, status (`active`, `superseded by D-0NN`, `revisited`).
 
+### D-003 Keep inception skills generic via an Inception profile
+- **Date:** 2026-11-04
+- **Decision:** Product-specific facts live in the Inception profile section of `CLAUDE.md`. The six inception skills stay generic, so they can be upstreamed to `app-studio` unchanged if they prove effective.
+- **Why:** `app-studio`'s core must not name an app (`core-lint`). Its skills read an App profile in the same way.
+- **Decided by:** Ale, on Claude's recommendation
+- **Status:** active
+
 ### D-002 Inception exit criteria
 - **Date:** 2026-11-04
 - **Decision:** Inception closes when the 11 exit criteria in [workflow.md](workflow.md) and project memory are met and Ale signs off.
