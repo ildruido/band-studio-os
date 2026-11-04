@@ -14,7 +14,7 @@ Status values: `not started`, `in progress`, `done`, `ongoing`.
 | 6 | Architecture-phase handoff | not started | |
 | 7 | Target users and personas | in progress | Provisional (speculative) personas written: [personas.md](personas.md). They need interviews to firm up (see the [research plan](../research/research-plan.md)) |
 | 8 | Success metrics | not started | |
-| 9 | Constraints and non-goals | in progress | Draft in [constraints.md](constraints.md); D-016 to D-019 set team, budget, video and native app timing. Awaiting Ale's review of the rest |
+| 9 | Constraints and non-goals | done | [constraints.md](constraints.md), agreed by Ale (D-016 to D-020) |
 | 10 | Decision log kept current | ongoing | See [decision-log.md](decision-log.md) |
 | 11 | Ale's sign-off | not started | Last step, via `exit-gate` |
 
