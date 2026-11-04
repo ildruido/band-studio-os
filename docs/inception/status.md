@@ -25,6 +25,8 @@ Status values: `not started`, `in progress`, `done`, `ongoing`.
 
 ## Risks
 
+- The target group's size and pain are still unproven by desk research (R-001, R-002). Interviews with Italian band drivers are the next study. Kill-criteria flags on H1 and H3 were read as "not found" (D-013).
+- Page fetch tool is blocked in the cloud environment; research opens pages with `curl`. Reddit and Facebook groups are unreachable.
 - The research guardrails are untested: R-001 is their first run, so expect to tune them after it.
 - Standard-tier research uses one extra agent run (the skeptic), deep tier two. That costs usage on the Pro plan.
 - CI covers docs and harness files only; there are no code tests during inception.

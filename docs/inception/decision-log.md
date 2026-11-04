@@ -2,6 +2,22 @@
 
 Newest first. Each entry: id, date, decision, why, alternatives, who decided, status (`active`, `superseded by D-0NN`, `revisited`).
 
+### D-013 After R-001, run a light size check before drafting personas
+- **Date:** 2026-11-04
+- **Decision:** R-001 returned "Needs primary research": no hard count of bands in Italy or the UK, and thin first-hand voices. Ale chose a short follow-up size check (R-002, light tier, H1 only) before personas. The R-001 kill-criteria flags for H1 and H3 are read as "not found", not "contradicted" (this is the override the framework asks Ale to log). Provisional personas follow R-002, tagged evidence or assumption.
+- **Why:** Ale asked to be sure the market exists. A head count is the cheapest gap to close, and it changes how far the personas can be trusted.
+- **Alternatives:** Draft provisional personas now; pause and reshape the target group.
+- **Decided by:** Ale, on Claude's recommendation
+- **Status:** active
+
+### D-012 Launch markets: Italy first, then the UK, then the rest of Europe
+- **Date:** 2026-11-04
+- **Decision:** Research and early testing prioritise the Italian market, then the UK, then Western, Northern and Eastern Europe. The persona reality check (R-001) is scoped in that order, with Italy as the primary population.
+- **Why:** Ale chose it for ease of initial testing.
+- **Alternatives:** UK + US in English only (Claude's recommendation; Ale preferred Italy first); other English-speaking markets; global.
+- **Decided by:** Ale
+- **Status:** active
+
 ### D-011 Personas are grounded in a desk-research reality check
 - **Date:** 2026-11-04
 - **Decision:** Before any persona is written, a reality check (study R-001, `persona-validation` part A, standard tier) tests whether the target users exist in meaningful numbers, do the job themselves, feel the pain, find today's workarounds lacking, and care about the product's angle. Personas are built from its evidence, tag every trait as evidence or assumption, and pass an evidence audit (part B) before their PR. The deeper market scan (artifact 3) stays after personas.

@@ -139,4 +139,5 @@ Each study gets a folder `docs/research/R-NNN-<slug>/` holding `protocol.md` (co
 
 | Id | Study | Type | Tier | Verdict |
 | --- | --- | --- | --- | --- |
-| — | None yet. | | | |
+| R-001 | [Persona reality check](R-001-persona-reality-check/protocol.md) | Persona validation | standard | Needs primary research (skeptic review pending) |
+| R-002 | [Band count size check](R-002-band-count-size-check/protocol.md) | Persona validation (H1 follow-up) | light | Needs primary research (H1 insufficient) |
