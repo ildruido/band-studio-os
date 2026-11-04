@@ -17,6 +17,7 @@ You get the path to a study folder (`docs/research/R-NNN-<slug>/`) and its tier.
    - Did the disconfirming queries meet the tier minimum, and were they genuine or token? Run two or three disconfirming searches of your own on each key hypothesis and log anything relevant.
    - Survivorship and missing voices; anecdotes treated as frequency; vendor or interested sources carrying claims; absence of evidence read as evidence.
    - Extrapolation beyond the protocol's scope (population, geography, time); unlogged deviations; claims in the report that are not in the evidence log.
+   - The protocol's **Type-specific checks** section, if it has one: run each check and report the result, including any discovery routes or searches it asks you to repeat.
    - Overclaiming language ("validated", "proven", "everyone", "most" without a number).
 6. **Deep tier only: pre-mortem.** "A year from now this conclusion turned out wrong. The three most likely reasons are…"
 

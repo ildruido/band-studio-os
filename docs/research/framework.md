@@ -23,6 +23,9 @@ The framework makes that hard to do by accident:
 | --- | --- | --- |
 | Any research without a type skill | `research-protocol` | chosen per study |
 | Persona validation: reality check before personas, evidence audit after | [`persona-validation`](../../.claude/skills/persona-validation/SKILL.md) | standard |
+| Market analysis and sizing: triangulated top-down and bottom-up, assumptions with ranges | [`market-analysis`](../../.claude/skills/market-analysis/SKILL.md) | standard (deep for go/no-go) |
+| Competitor identification and scan: direct, indirect, substitutes, DIY, dead products | [`competitor-scan`](../../.claude/skills/competitor-scan/SKILL.md) | standard |
+| Competitive analysis: criteria-first comparison of verified competitors | [`competitive-analysis`](../../.claude/skills/competitive-analysis/SKILL.md) (needs a finished scan) | standard (deep for positioning bets) |
 
 Other kinds of research (for example interviews, prototype tests or pricing tests) get their own type skill, built the same way.
 
