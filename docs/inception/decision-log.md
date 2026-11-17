@@ -2,6 +2,14 @@
 
 Newest first. Each entry: id, date, decision, why, alternatives, who decided, status (`active`, `superseded by D-0NN`, `revisited`).
 
+### D-024 App profile Phase is discovery; undecided values say TBD
+- **Date:** 2026-11-17
+- **Decision:** The App profile's Phase is `discovery` (harness 0.22.x). Values not decided yet (stack, release target, capabilities, AI plan, access model, storage shape) say TBD instead of "none yet" or "not applicable yet". AI stays off and no modules are on. The `CLAUDE.md` rule about `app-studio` now allows `harness-idea` issues there; edits and PRs there stay off-limits.
+- **Why:** Phase `discovery` is how the harness (0.22.0+) says "no stack yet, nothing to build", so its health check no longer treats missing values as gaps.
+- **Alternatives:** Stay with free-text "Inception" values (rejected: the harness can't read them).
+- **Decided by:** Ale
+- **Status:** active
+
 ### D-023 Move to harness 0.18.3 without feature modules
 - **Date:** 2026-11-17
 - **Decision:** Band Studio OS moves from harness 0.4.1 to 0.18.3. No AI, sign-in or roadmap module is switched on (nothing exists to run them yet); the App profile records AI off, and Access model and Storage shape as not applicable until the architecture handoff. The harness check workflow now runs on every PR so PRs can merge by themselves. Nothing is written to Ale's user-level Claude settings.
