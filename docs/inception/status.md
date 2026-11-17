@@ -31,5 +31,5 @@ Status values: `not started`, `in progress`, `done`, `ongoing`.
 - The research guardrails are untested: R-001 is their first run, so expect to tune them after it.
 - Standard-tier research uses one extra agent run (the skeptic), deep tier two. That costs usage on the Pro plan.
 - CI covers docs and harness files only; there are no code tests during inception.
-- Harness moved to 0.18.3 (D-023). The `Harness` check now runs on every PR. Main must require the `health` check in GitHub settings (one-time click by Ale) so PRs can merge by themselves.
+- Harness moved to 0.18.3 (D-023, PR #24; self-merge proof PR #25). The `Harness` check now runs on every PR. Main must require the `health` check in GitHub settings (one-time click by Ale) so PRs can merge by themselves.
 - Canva, Adobe Express and some other sites block automated access from the cloud environment. R-004's key question (is there already a guided gig-campaign tool at a band-friendly price?) needs a person with a browser to try Canva and PosterMyWall.
