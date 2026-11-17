@@ -1,6 +1,6 @@
 # Band Studio OS — project instructions
 
-**Phase: Inception.** No production code until Ale signs off on the exit gate. Follow [docs/inception/workflow.md](docs/inception/workflow.md) and its skills in `.claude/skills/`.
+**Phase: Inception** (App profile Phase: discovery). No production code until Ale signs off on the exit gate. Follow [docs/inception/workflow.md](docs/inception/workflow.md) and its skills in `.claude/skills/`.
 
 - Ask Ale only product decisions, one question at a time, each with a recommended answer. Decide technical details yourself and record them in the PR description.
 - English everywhere: docs, commits, PRs and chat.
@@ -9,26 +9,27 @@
 - Keep [docs/inception/status.md](docs/inception/status.md) current: update it in the same PR whenever an artifact's status or an open PR/risk changes.
 - Every piece of research follows [docs/research/framework.md](docs/research/framework.md) and the `research-protocol` skill, during and after inception.
 - Log every product decision in [docs/inception/decision-log.md](docs/inception/decision-log.md) in the same turn. This decision log stays the home for product decisions after inception too.
-- `app-studio` is the build-phase harness. Read it, but never change it from here. Its core (v0.4.1, pinned in `.claude/studio/lock.json`) was installed early, only so the health check and the `Harness` workflow guard this repo during inception. The build-phase skills (`build-feature`, `release`, `test-handoff`) aren't used until inception closes. `new-app` then adds the stack packs and merges the rest of the template into this file.
+- `app-studio` is the build-phase harness. Read it, but never change it from here (no edits or PRs). An idea for improving the harness, including our discovery and inception skills once they're proven, goes through the `harness-idea` skill, which opens an issue there. Pull harness updates only when asked, with `harness-sync`. Its core (v0.4.1, pinned in `.claude/studio/lock.json`) was installed early, only so the health check and the `Harness` workflow guard this repo during inception. The build-phase skills (`build-feature`, `release`, `test-handoff`) aren't used until inception closes. `new-app` then adds the stack packs and merges the rest of the template into this file.
 
 ## App profile
 
-Read by the app-studio harness skills and its health check. Values marked "Inception" are decided during inception and filled in by `new-app` at sign-off.
+Read by the app-studio harness skills and its health check. Values marked TBD are decided during inception and filled in by `new-app` at sign-off.
 
 | Field          | Value |
 | -------------- | ----- |
 | App            | Band Studio OS (working title) |
+| Phase          | discovery |
 | Id prefix      | `BS` (backlog items are `BS-001`, `BS-002`, …) |
-| Stack          | Inception: no stack yet (chosen in the architecture handoff) |
+| Stack          | TBD (not decided yet; chosen in the architecture handoff) |
 | User           | Ale, as the active member of an emergent indie or rock band |
 | Repo           | https://github.com/ildruido/band-studio-os (private) |
-| Release target | Inception: none |
+| Release target | TBD (not decided yet) |
 | Preview target | none |
-| Capabilities   | Inception: none (no app code yet) |
-| AI plan        | Inception: decided in the architecture handoff |
-| AI             | off (Inception: not decided yet, architecture handoff; no AI module on) |
-| Access model   | Inception: not applicable yet (no app, no sign-in); decided in the architecture handoff |
-| Storage shape  | Inception: not applicable yet (no app code); decided in the architecture handoff |
+| Capabilities   | TBD (not decided yet) |
+| AI plan        | TBD (not decided yet; architecture handoff) |
+| AI             | off (no AI module on) |
+| Access model   | TBD (not decided yet; architecture handoff) |
+| Storage shape  | TBD (not decided yet; architecture handoff) |
 | Decision log   | `docs/inception/decision-log.md` (stays the home for product decisions after inception) |
 
 ### Domain rules
@@ -38,7 +39,7 @@ Read by the app-studio harness skills and its health check. Values marked "Incep
 
 ### Stack notes
 
-- **Build / QA / Release / Preview:** Inception: none yet.
+- **Build / QA / Release / Preview:** TBD (not decided yet).
 
 ## Inception profile
 
