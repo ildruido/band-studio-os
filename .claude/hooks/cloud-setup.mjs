@@ -37,8 +37,8 @@ if (existsSync(lock) && mtime(join(root, "node_modules", ".package-lock.json")) 
 const browsers = "/opt/pw-browsers";
 if (process.env.CLAUDE_ENV_FILE && existsSync(browsers)) {
   const dir = readdirSync(browsers).find((n) => /^chromium-\d+$/.test(n));
-  const exe = dir && join(browsers, dir, "chrome-linux", "chrome");
-  if (exe && existsSync(exe)) appendFileSync(process.env.CLAUDE_ENV_FILE, `export PW_CHROMIUM=${exe}\n`);
+  const exe = dir && ["chrome-linux64", "chrome-linux"].map((o) => join(browsers, dir, o, "chrome")).find(existsSync);
+  if (exe) appendFileSync(process.env.CLAUDE_ENV_FILE, `export PW_CHROMIUM=${exe}\n`);
 }
 
 // 3. The app's own setup.

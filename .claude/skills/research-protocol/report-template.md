@@ -1,6 +1,6 @@
 # R-NNN <study title>: report
 
-Protocol: [protocol.md](protocol.md), pre-registered in commit <sha> on <date>. Tier: <tier>. Method: `docs/research/framework.md`.
+Protocol: `protocol.md`, pre-registered in commit <sha> on <date>. Tier: <tier>. Method: `docs/research/framework.md`.
 
 ## Verdict
 

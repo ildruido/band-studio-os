@@ -38,6 +38,26 @@
             "timeout": 60
           }
         ]
+      },
+      {
+        "matcher": "mcp__.*github.*__merge_pull_request",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .claude/hooks/check.mjs merge",
+            "timeout": 30
+          }
+        ]
+      },
+      {
+        "matcher": "mcp__.*github.*__(push_files|create_or_update_file|delete_file)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .claude/hooks/check.mjs write",
+            "timeout": 30
+          }
+        ]
       }
     ],
     "PostToolUse": [

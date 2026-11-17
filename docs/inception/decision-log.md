@@ -2,6 +2,14 @@
 
 Newest first. Each entry: id, date, decision, why, alternatives, who decided, status (`active`, `superseded by D-0NN`, `revisited`).
 
+### D-023 Move to harness 0.18.3 without feature modules
+- **Date:** 2026-11-17
+- **Decision:** Band Studio OS moves from harness 0.4.1 to 0.18.3. No AI, sign-in or roadmap module is switched on (nothing exists to run them yet); the App profile records AI off, and Access model and Storage shape as not applicable until the architecture handoff. The harness check workflow now runs on every PR so PRs can merge by themselves. Nothing is written to Ale's user-level Claude settings.
+- **Why:** Every app repo inherits the harness from `app-studio`. The inception skills, docs and research stay as they are.
+- **Alternatives:** Stay on 0.4.1 (rejected: drifts from the single source of truth).
+- **Decided by:** Ale, on Claude's recommendation
+- **Status:** active
+
 ### D-022 No upfront market-size target; discover a realistic one from the sizing study
 - **Date:** 2026-11-04
 - **Decision:** The market sizing study ([R-006](../research/R-006-market-sizing/report.md)) sets no minimum market size or revenue threshold in advance. Instead it reports ranges and an income ladder (paying bands needed for 10k, 30k, 60k and 100k EUR a year). A target is chosen later from that ladder and from primary research.
