@@ -29,6 +29,7 @@ Read by the app-studio harness skills and its health check. Values marked "Incep
 | AI             | off (Inception: not decided yet, architecture handoff; no AI module on) |
 | Access model   | Inception: not applicable yet (no app, no sign-in); decided in the architecture handoff |
 | Storage shape  | Inception: not applicable yet (no app code); decided in the architecture handoff |
+| Decision log   | `docs/inception/decision-log.md` (stays the home for product decisions after inception) |
 
 ### Domain rules
 
@@ -67,3 +68,7 @@ Music copyright, likeness and image rights, AI generation cost (video and media)
 ### Prototype look and feel
 
 Gritty and subcultural, phone-first. Fake data uses realistic band names, venues and flyers.
+
+## Writing for Ale
+
+Before saying something is done, check it, and say plainly what you did not check (for example, "no code tests ran" or "not tried on a phone").
