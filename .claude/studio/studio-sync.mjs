@@ -73,6 +73,25 @@ export function hashFile(file) {
   return hashText(readFileSync(file, "utf8"));
 }
 
+const INSTRUCTIONS_TEMPLATE = "plugins/studio/templates/project-instructions.md";
+
+/** Hash of the Project instructions template text (below its first `---` line), or null if absent. */
+export function instructionsHash(studio) {
+  const p = join(studio, INSTRUCTIONS_TEMPLATE);
+  if (!existsSync(p)) return null;
+  const text = readFileSync(p, "utf8").replace(/\r\n/g, "\n");
+  const i = text.indexOf("\n---\n");
+  return hashText((i < 0 ? text : text.slice(i + 5)).trim());
+}
+
+/** Lines telling an app its Project instructions may be behind the template, with a ready prompt. */
+export function instructionsNote() {
+  return [
+    "Project instructions template changed in app-studio (or this app never recorded a review). Project instructions live in Project settings, so a sync can't update them: ask your coordinator to compare and update. Ready prompt:",
+    `  "Compare this Project's instructions with app-studio's ${INSTRUCTIONS_TEMPLATE} (the text below its --- line). Add the rules that are missing or changed, keep everything specific to this app, never replace the whole text. Update the instructions yourself, tell the App Creator in one line what changed, then have a thread run: node .claude/studio/studio-sync.mjs ack instructions (and commit the lock)."`,
+  ];
+}
+
 function listFiles(dir, { dotfiles = false } = {}) {
   if (!existsSync(dir)) return [];
   // Dotfiles (.DS_Store, editor swap files) are never part of the harness; pack starters keep
@@ -327,6 +346,7 @@ function writeLock(app, lock) {
   const out = { studio: lock.studio };
   if (lock.packs && Object.keys(lock.packs).length) out.packs = sortKeys(lock.packs);
   if (lock.app) out.app = lock.app;
+  if (lock.instructions) out.instructions = lock.instructions;
   out.files = sortKeys(lock.files);
   if (lock.starters && Object.keys(lock.starters).length) out.starters = sortKeys(lock.starters);
   mkdirSync(dirname(join(app, LOCK)), { recursive: true });
@@ -377,6 +397,8 @@ export function compare(app, studio) {
     }
     report.newStarters = Object.keys(starters).filter((p) => !(p in (lock.starters ?? {})) && localHash(app, p) === null);
     report.partners = partnerGaps(studio, packs);
+    const ih = instructionsHash(studio);
+    report.instructionsChanged = !!ih && lock.instructions !== ih;
   }
   return report;
 }
@@ -472,6 +494,85 @@ export function pull(app, studio, { force = false, patch = true } = {}) {
   return result;
 }
 
+// Harness-owned sections of the app's CLAUDE.md: the template wraps them in
+// `<!-- studio:begin NAME ... -->` / `<!-- studio:end NAME -->`, and a pull replaces what is between the
+// markers with the template's text. Everything outside the markers stays the app's. An app from before the
+// markers existed gets them once, where the known first and last lines of the section are found (`from`
+// to the line before `until`); if those lines aren't found it is left alone and reported.
+const OWNED_BEGIN = /^<!--\s*studio:begin\s+([\w-]+)\b.*-->\s*$/;
+// Exact wording the Roles bullets (first three) had in earlier templates, before they were harness-owned. Only an exact match is rewritten.
+const ROLES_KNOWN = [
+  // before 0.24.2, until e74cd26..78277da era (shorter "Ask Ale" line)
+  ["- **Ale (PM and tester).** Describes requirements, sets priority by ordering the backlog, tests releases and reports results. Ale does not write code, run commands or manage git. The few things only Ale can do (creating a repo, adding a repository secret, a host's settings) Claude hands over as exact clicks.",
+    "- **Claude (engineer).** Owns all code, tests, versioning, releases and the harness. Turns Ale's words into PRD and backlog changes, builds, ships and hands over a test script.",
+    "- Ask Ale only when a requirement is genuinely ambiguous or a decision is product-level. Everything technical is ours to decide; record the decision in the PR description or `docs/PRD.md` \"Decisions\"."],
+  // 0.23.x to 0.24.1
+  ["- **Ale (PM and tester).** Describes requirements, sets priority by ordering the backlog, tests releases and reports results. Ale does not write code, run commands or manage git. The few things only Ale can do (creating a repo, adding a repository secret, a host's settings) Claude hands over as exact clicks.",
+    "- **Claude (engineer).** Owns all code, tests, versioning, releases and the harness. Turns Ale's words into PRD and backlog changes, builds, ships and hands over a test script.",
+    "- Ask Ale only when a requirement is genuinely ambiguous or a decision is product-level. Ask one question at a time, each with a recommended answer and one line on why. Everything technical is ours to decide."],
+  // 0.24.2 (persona wording, not yet marked)
+  ["- **The App Creator (PM) and the Tester.** The App Creator is also the Tester unless someone else tests. The App Creator describes requirements and sets priority by ordering the backlog; the Tester tests releases and reports results. Neither writes code, runs commands or manages git. The few things only the Admin can do (creating a repo, adding a repository secret, a host's settings) Claude hands over as exact clicks.",
+    "- **Claude (engineer).** Owns all code, tests, versioning, releases and the harness. Turns the App Creator's words into PRD and backlog changes, builds, ships and hands over a test script.",
+    "- Ask the App Creator only when a requirement is genuinely ambiguous or a decision is product-level. Ask one question at a time, each with a recommended answer and one line on why. Everything technical is ours to decide."],
+];
+const OWNED_LEGACY = { "merge-rule": { from: /^- \*\*Merging a PR\*\*/, until: /^- \*\*The checks\.\*\*/ }, roles: { known: ROLES_KNOWN } };
+
+function ownedSection(lines, name) {
+  const b = lines.findIndex((l) => OWNED_BEGIN.test(l) && l.match(OWNED_BEGIN)[1] === name);
+  if (b < 0) return null;
+  const e = lines.findIndex((l, i) => i > b && new RegExp(`^<!--\\s*studio:end\\s+${name}\\s*-->\\s*$`).test(l));
+  return e < 0 ? null : { b, e };
+}
+
+/** Brings the template's harness-owned sections into `lines` (edited in place); returns what changed. */
+export // The writing section is headed "Writing for Ale" (old) or "Writing for the App Creator" (new); both are accepted.
+const WRITING_HEADING = /^##\s+Writing for (?:Ale|the App Creator)\b/;
+
+function syncOwnedSections(lines, tplLines) {
+  const done = [];
+  for (const l of tplLines) {
+    const m = l.match(OWNED_BEGIN);
+    if (!m) continue;
+    const name = m[1];
+    const t = ownedSection(tplLines, name);
+    if (!t) continue;
+    const want = tplLines.slice(t.b, t.e + 1);
+    const mine = ownedSection(lines, name);
+    if (mine) {
+      const have = lines.slice(mine.b, mine.e + 1);
+      if (have.join("\n") !== want.join("\n")) {
+        lines.splice(mine.b, have.length, ...want);
+        done.push(`CLAUDE.md: harness-owned section '${name}' updated to the template's wording`);
+      }
+      continue;
+    }
+    const legacy = OWNED_LEGACY[name];
+    if (legacy?.known) {
+      // Exact-match migration: the block is wrapped and replaced only when it is word for word a past template default.
+      const hit = legacy.known.map((k) => ({ k, at: lines.findIndex((x, i) => x === k[0] && k.every((y, n) => lines[i + n] === y)) })).find((h) => h.at >= 0);
+      if (!hit) {
+        done.push(`CLAUDE.md: section '${name}' has custom wording, so it was left alone; merge it by hand from the template (app-studio plugins/studio/templates/CLAUDE.md) or delete the Roles bullets and pull again`);
+        continue;
+      }
+      lines.splice(hit.at, hit.k.length, ...want);
+      done.push(`CLAUDE.md: harness-owned section '${name}' marked and updated to the template's wording`);
+      continue;
+    }
+    const from = legacy ? lines.findIndex((x) => legacy.from.test(x)) : -1;
+    const stop = from < 0 ? -1 : lines.findIndex((x, i) => i > from && (legacy.until.test(x) || /^##\s/.test(x)));
+    const until = stop >= 0 && legacy.until.test(lines[stop]) ? stop : -1;
+    if (until < 0) {
+      done.push(`CLAUDE.md: section '${name}' not found where expected; merge it by hand from the template (app-studio plugins/studio/templates/CLAUDE.md)`);
+      continue;
+    }
+    let end = until;
+    while (end > from + 1 && lines[end - 1].trim() === "") end--;
+    lines.splice(from, end - from, ...want);
+    done.push(`CLAUDE.md: harness-owned section '${name}' marked and updated to the template's wording`);
+  }
+  return done;
+}
+
 /**
  * Template wording that apps must get through a routine pull, though CLAUDE.md is the app's own file:
  * the App profile's "Decision log" row and the "say plainly what you did not check" line. Each is
@@ -503,9 +604,17 @@ export function patchProfile(app, studio) {
     }
   }
 
+  // Rename phase B: an app's old heading "Writing for Ale" becomes the template's heading; the text under it is untouched.
+  const oldHead = lines.findIndex((l) => /^##\s+Writing for Ale\s*$/.test(l));
+  const newHead = tplLines.find((l) => /^##\s+Writing for the App Creator\s*$/.test(l));
+  if (oldHead >= 0 && newHead && !lines.some((l) => l.trim() === newHead)) {
+    lines[oldHead] = newHead;
+    done.push("CLAUDE.md: heading 'Writing for Ale' renamed to 'Writing for the App Creator' (text under it untouched)");
+  }
+
   const sentence = tplLines.find((l) => /did not check/i.test(l));
   if (sentence && !lines.some((l) => /did not check/i.test(l))) {
-    const h = lines.findIndex((l) => /^##\s+Writing for Ale\b/.test(l));
+    const h = lines.findIndex((l) => WRITING_HEADING.test(l));
     if (h >= 0) {
       let end = h + 1;
       while (end < lines.length && !/^##\s/.test(lines[end])) end++;
@@ -513,10 +622,12 @@ export function patchProfile(app, studio) {
       lines.splice(end, 0, "", sentence);
     } else {
       while (lines.length && lines[lines.length - 1].trim() === "") lines.pop();
-      lines.push("", "## Writing for Ale", "", sentence, "");
+      lines.push("", tplLines.find((l) => WRITING_HEADING.test(l)) ?? "## Writing for the App Creator", "", sentence, "");
     }
-    done.push("CLAUDE.md: line 'say plainly what you did not check' added to Writing for Ale");
+    done.push("CLAUDE.md: line 'say plainly what you did not check' added to the writing section");
   }
+
+  done.push(...syncOwnedSections(lines, tplLines));
 
   if (done.length) {
     let text = lines.join("\n");
@@ -529,6 +640,9 @@ export function patchProfile(app, studio) {
 export function install(app, studio, opts) {
   const result = pull(app, studio, { ...opts, patch: false }); // a first copy never edits an app's own CLAUDE.md
   result.templates = [];
+  const lock = readLock(app);
+  const ih = instructionsHash(studio);
+  if (lock && ih && !lock.instructions && !existsSync(join(app, "CLAUDE.md"))) writeLock(app, { ...lock, instructions: ih }); // a new app gets the current template pasted by new-app
   for (const [from, to] of TEMPLATES) {
     if (existsSync(join(app, to))) continue;
     mkdirSync(dirname(join(app, to)), { recursive: true });
@@ -627,9 +741,19 @@ export function removePacks(app, studio, names, { force = false } = {}) {
 /** Marks starter files as reviewed against app-studio: their notes stop until the next change. */
 export function ack(app, studio, paths = []) {
   const lock = readLock(app);
-  if (!lock?.starters) return [];
-  const starters = starterFiles(studio, Object.keys(lock.packs ?? {}), lock.app ?? defaultVars(app));
+  if (!lock) return [];
   const done = [];
+  const ih = instructionsHash(studio);
+  if (paths.includes("instructions") && ih && lock.instructions !== ih) {
+    lock.instructions = ih;
+    done.push("instructions");
+  }
+  paths = paths.filter((x) => x !== "instructions");
+  if (!lock.starters || (done.length && !paths.length)) {
+    if (done.length) writeLock(app, lock);
+    return done;
+  }
+  const starters = starterFiles(studio, Object.keys(lock.packs ?? {}), lock.app ?? defaultVars(app));
   for (const [path, rec] of Object.entries(lock.starters)) {
     if (paths.length && !paths.map((x) => x.replaceAll("\\", "/")).includes(path)) continue;
     const m = starters[path];
@@ -728,7 +852,7 @@ export function phaseOf(app) {
 }
 
 const DISCOVERY_STOP =
-  "this app is in discovery (App profile, Phase): no stack is chosen, so there is nothing to build, test or release yet. Finish the requirements, then Ale says \"start building\" and the new-app skill's \"Start building\" section switches Phase to build";
+  "this app is in discovery (App profile, Phase): no stack is chosen, so there is nothing to build, test or release yet. Finish the requirements, then the App Creator says \"start building\" and the new-app skill's \"Start building\" section switches Phase to build";
 
 /** Fields that must be real even in discovery: they identify the app. */
 const IDENTITY_FIELDS = ["App", "Id prefix", "Repo", "Phase"];
@@ -754,7 +878,7 @@ export function phaseProblems(app) {
 
 /**
  * True when the app uses AI and anyone can get in (open sign-up or no login), so anyone can spend
- * its AI: the owner must record an AI public use decision (Ale, #88). The harness never picks it.
+ * its AI: the owner must record an AI public use decision (#88). The harness never picks it.
  */
 function aiPublic(section) {
   const ai = aiValue(section) ?? "";
@@ -1249,6 +1373,7 @@ function run(argv) {
     if (r.newStarters?.length) notes.push(...list(`pack starter files new in app-studio (${r.held ? "held back" : "pull adds them"})`, r.newStarters));
     if (r.held && (r.starters.length || r.newStarters?.length)) notes.push(`Pack starter files are held back: ${r.held}.`);
     if (r.partners?.length) notes.push(...r.partners.map((g) => `Module: ${g}.`));
+    if (r.instructionsChanged) notes.push(...instructionsNote());
     if (gaps.length)
       notes.push("The App profile in CLAUDE.md still has unfilled placeholders:", ...gaps.map((g) => `  ${g}`));
     if (!drift(r)) {
@@ -1333,6 +1458,8 @@ function run(argv) {
       console.error(e.message);
       return 1;
     }
+    const lock = readLock(app);
+    const ih = instructionsHash(studio);
     const lines = [
       `Studio harness v${studioVersion(studio)} ${opts.cmd === "install" ? "installed in" : "pulled into"} ${app}.`,
       ...list("updated", r.written),
@@ -1344,6 +1471,7 @@ function run(argv) {
       ...(r.held?.length ? [`  pack starters held back (${r.holdReason}): ${r.held.join(", ")}`] : []),
       ...list("pack starters changed upstream but edited here (merge by hand, then ack)", r.starterNotes ?? []),
       ...list("skipped (changed here; move the change to app-studio, or pass --force)", r.skipped),
+      ...(opts.cmd === "pull" && ih && lock?.instructions !== ih ? instructionsNote() : []),
     ];
     console.log(lines.join("\n"));
     return r.skipped.length ? 1 : 0;

@@ -70,6 +70,6 @@ Music copyright, likeness and image rights, AI generation cost (video and media)
 
 Gritty and subcultural, phone-first. Fake data uses realistic band names, venues and flyers.
 
-## Writing for Ale
+## Writing for the App Creator
 
 Before saying something is done, check it, and say plainly what you did not check (for example, "no code tests ran" or "not tried on a phone").
