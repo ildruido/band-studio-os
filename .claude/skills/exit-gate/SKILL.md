@@ -1,6 +1,6 @@
 ---
 name: exit-gate
-description: Check the 11 inception exit criteria against the repo and report what is done, partial or missing. Use when Ale asks where inception stands, or before asking for the final sign-off.
+description: Check the 11 inception exit criteria against the repo and report what is done, partial or missing. Use when the product owner asks where inception stands, or before asking for the final sign-off.
 ---
 
 # Exit gate
@@ -21,7 +21,7 @@ Product-specific facts (product, users, principles, key concepts, market segment
    8. Success metrics
    9. Constraints and non-goals
    10. Decision log current (every artifact's decisions are logged)
-   11. Ale's final sign-off
+   11. the product owner's final sign-off
 3. **Check consistency** across artifacts: the MVP serves the primary persona, metrics measure the MVP's value, constraints are respected, and the riskiest hypotheses have a test or a prototype.
-4. **Write** `docs/inception/exit-gate.md` with the table and the gaps, and tell Ale the next one or two steps.
-5. **Sign-off.** When 1 to 10 are `done`, ask Ale for sign-off on a decision card. On a yes, log it as a decision and mark criterion 11 `done`.
+4. **Write** `docs/inception/exit-gate.md` with the table and the gaps, and tell the product owner the next one or two steps.
+5. **Sign-off.** When 1 to 10 are `done`, ask the product owner for sign-off on a decision card. On a yes, log it as a decision and mark criterion 11 `done`.
