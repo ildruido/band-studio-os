@@ -3,11 +3,15 @@
 //
 //   node studio-sync.mjs install [--app <dir>] [--studio <dir>]   first copy into an app, plus templates
 //   node studio-sync.mjs check   [--app <dir>] [--studio <dir>] [--warn]
+//   node studio-sync.mjs inventory [--app <dir>] [--studio <dir>]   read-only look at an existing app before it migrates (migrate-app skill)
 //   node studio-sync.mjs health  [--app <dir>] [--studio <dir>]   is the harness sound? (pre-commit hook, CI)
+//   node studio-sync.mjs release-gate [--app <dir>]   exit 1 while the access model, or an AI public use decision it needs, is blank (release skill)
 //   node studio-sync.mjs pull    [--app <dir>] [--studio <dir>] [--force]
-//   node studio-sync.mjs pack add <name...> [--slug <kebab>] [--title <Name>]   add stack packs (packs/ in app-studio)
+//   node studio-sync.mjs pack add <name...> [--slug <kebab>] [--title <Name>]   add stack packs or feature modules (packs/ in app-studio)
 //   node studio-sync.mjs pack remove <name...> [--force]   drop stack packs the app no longer uses
 //   node studio-sync.mjs ack [<path...>]    mark pack starter files as reviewed against app-studio
+//   node studio-sync.mjs hooks   [--app <dir>]   turn on the harness hooks that don't depend on where a session
+//                                                 starts (every command but install does this too)
 //
 // Runs from app-studio (scripts/studio-sync.mjs, app defaults to the current folder) or from an
 // app's copy (.claude/studio/studio-sync.mjs, app-studio defaults to $STUDIO_DIR, then ../app-studio).
@@ -18,11 +22,17 @@
 // check only notes when app-studio's version changed, and pull refreshes the ones left unedited).
 // health fails (exit 1) on what would mislead a session: shared files edited or missing here, an
 // unfilled App profile, harness hooks missing from settings.json, malformed app skills or agents,
-// broken links in the docs. Being behind app-studio is only a note: it never blocks a commit or PR.
+// broken links in the docs (and in the app's own .claude/ Markdown), a missing Harness workflow.
+// Being behind app-studio is only a note: it never blocks a commit or PR.
+// Every command run in an app also turns on the hooks that work wherever a session starts: the git
+// pre-commit hook (core.hooksPath), and in a cloud session the app's Claude Code hooks forwarded to
+// the parent folder, which is the session's top folder when several repos are attached.
 // Exit codes: 0 in step, 1 drift or skipped files, 2 usage error. --warn always exits 0 and prints
 // only when something needs attention (for a SessionStart hook).
+import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import {
+  chmodSync,
   copyFileSync,
   existsSync,
   mkdirSync,
@@ -34,6 +44,7 @@ import {
   writeFileSync,
 } from "node:fs";
 import { basename, dirname, join, relative, resolve, sep } from "node:path";
+import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 
 const LOCK = ".claude/studio/lock.json";
@@ -86,14 +97,101 @@ export function studioVersion(studio) {
     .version;
 }
 
+/**
+ * The version the master copy is on, when its CHANGELOG entry says "Live check: pending": released,
+ * but not yet confirmed in the studio-scratch Project. Apps must not pull it until a later commit
+ * on main changes the line to "Live check: passed". No changelog or no marker means no gate.
+ */
+export function livePending(studio) {
+  const file = join(studio, "CHANGELOG.md");
+  if (!existsSync(file)) return null;
+  const version = studioVersion(studio);
+  const text = readFileSync(file, "utf8").replace(/\r\n/g, "\n");
+  const start = text.indexOf(`\n## [${version}]`);
+  if (start < 0) return null;
+  const end = text.indexOf("\n## [", start + 1);
+  const entry = text.slice(start, end < 0 ? undefined : end);
+  return /^[\s>*_-]*Live check:\s*\**\s*pending/im.test(entry) ? version : null;
+}
+
 // ---------- stack packs ----------
 
 const packDir = (studio, name) => join(studio, "packs", name);
 
+// A pack's `kind`: "stack" (how the app is built and shipped; the default) or "module" (a feature
+// the app opts into, e.g. `ai`). Both install the same way; the kind only tells them apart.
+const KINDS = ["stack", "module"];
+
 export function readPack(studio, name) {
   const file = join(packDir(studio, name), "pack.json");
   if (!existsSync(file)) throw new Error(`No pack named "${name}" in app-studio (packs/).`);
-  return JSON.parse(readFileSync(file, "utf8"));
+  const pack = JSON.parse(readFileSync(file, "utf8"));
+  if (pack.kind !== undefined && !KINDS.includes(pack.kind))
+    throw new Error(`Pack "${name}" has kind "${pack.kind}"; use ${KINDS.map((k) => `"${k}"`).join(" or ")}.`);
+  return pack;
+}
+
+export const packKind = (studio, name) => readPack(studio, name).kind ?? "stack";
+
+// Platform methods a module adds (its pack.json `platformMethods`, e.g. the ai module's `sample`).
+// An app that calls one without that module has old platform files that still declare it; new
+// starter files from app-studio would drop it and break the build, so pull holds them back.
+const CODE_DIRS = ["src", "tests", "e2e"];
+const CODE_FILE = /\.(ts|tsx|js|mjs)$/;
+// The harness's own platform tests (tests/unit/platform.test.ts, artifact-platform.test.ts, ...) call every method.
+const PLATFORM_TEST = /^tests\/(?:.*\/)?[^/]*platform[^/]*\.test\.[a-z]+$/;
+
+/**
+ * Modules the app calls into without having them: [{ pack, methods }]. Only the app's own code
+ * counts: the platform layer (src/platform/), its platform tests and harness starter files the app never edited are
+ * the harness's old copies (they may call the old built-in AI), not the app using AI.
+ */
+export function missingModules(app, studio, packs) {
+  const wanted = listPacks(studio)
+    .filter((n) => !packs.includes(n))
+    .map((n) => ({ pack: n, methods: readPack(studio, n).platformMethods ?? [] }))
+    .filter((m) => m.methods.length);
+  if (!wanted.length) return [];
+  const starters = readLock(app)?.starters ?? {};
+  const code = CODE_DIRS.flatMap((d) => listFiles(join(app, d)))
+    .filter((f) => CODE_FILE.test(f))
+    .filter((f) => {
+      const rel = toPosix(relative(app, f));
+      return !rel.startsWith("src/platform/") && !PLATFORM_TEST.test(rel) && !(rel in starters && localHash(app, rel) === starters[rel].installed);
+    })
+    .map((f) => readFileSync(f, "utf8"))
+    .join("\n");
+  return wanted
+    .map(({ pack, methods }) => ({
+      pack,
+      methods: methods.filter((m) => new RegExp(`\\.\\s*${m}\\s*\\(`).test(code)),
+    }))
+    .filter((m) => m.methods.length);
+}
+
+/** Why pull holds back starter files, or null: "the app calls sample() (ai module): run pack add ai first". */
+export function holdReason(missing) {
+  if (!missing.length) return null;
+  const calls = missing.map((m) => `${m.methods.map((x) => `${x}()`).join(", ")} (${m.pack} module)`).join("; ");
+  return `the app calls ${calls} but doesn't have the module: run pack add ${missing.map((m) => m.pack).join(" ")} first`;
+}
+
+/** Modules whose stack partner is missing (pack.json `alsoWith`: { "web": "ai-web" }). */
+export function partnerGaps(studio, packs) {
+  const gaps = [];
+  for (const n of packs) {
+    const also = readPack(studio, n).alsoWith ?? {};
+    for (const [stack, partner] of Object.entries(also))
+      if (packs.includes(stack) && !packs.includes(partner)) gaps.push(`${n} on ${stack} needs ${partner} too: run pack add ${partner}`);
+  }
+  return gaps;
+}
+
+/** Names split by kind, for messages: "artifact, base, web; modules: ai". */
+function byKind(studio, names) {
+  const modules = names.filter((n) => packKind(studio, n) === "module");
+  const stacks = names.filter((n) => !modules.includes(n));
+  return [stacks.join(", "), modules.length && `modules: ${modules.join(", ")}`].filter(Boolean).join("; ");
 }
 
 export function listPacks(studio) {
@@ -119,6 +217,23 @@ export function packClosure(studio, names) {
 // Function replacers: a "$" in a name is text, not a replacement pattern.
 const fill = (text, vars) =>
   text.replaceAll("{{slug}}", () => vars.slug).replaceAll("{{title}}", () => vars.title);
+
+// Filling in a long app name can push a starter line past Prettier's width, and `npm run check` would
+// fail on a brand-new app. So a code file whose text changed is formatted with the base pack's own
+// Prettier settings, here, before it is hashed and written. If Prettier isn't installed the file is
+// left as filled in (`npm run format` fixes it).
+const formatted = new Map();
+function formatFilled(studio, path, text, original) {
+  if (text === original || !/\.(ts|tsx|js|mjs)$/.test(path)) return text;
+  const config = join(packDir(studio, "base"), "starter", ".prettierrc.json");
+  if (!existsSync(config)) return text;
+  const key = `${path}\0${text}`;
+  if (!formatted.has(key)) {
+    const res = spawnSync("prettier", ["--config", config, "--stdin-filepath", path], { input: text, encoding: "utf8" });
+    formatted.set(key, res.status === 0 && res.stdout ? res.stdout : text);
+  }
+  return formatted.get(key);
+}
 
 export function checkVars({ slug, title }) {
   if (!/^[a-z0-9][a-z0-9-]*$/.test(slug))
@@ -167,7 +282,8 @@ export function starterFiles(studio, packs, vars, all = packs) {
     for (const src of listFiles(base, { dotfiles: true })) {
       const path = toPosix(relative(base, src));
       if ((superseded[path] ?? []).some((other) => all.includes(other))) continue;
-      const text = fill(readFileSync(src, "utf8"), vars);
+      const raw = readFileSync(src, "utf8");
+      const text = formatFilled(studio, path, fill(raw, vars), raw);
       if (path in files) throw new Error(`Packs ${files[path].pack} and ${name} both ship ${path}.`);
       files[path] = { pack: name, src, text, hash: hashText(text) };
     }
@@ -247,13 +363,19 @@ export function compare(app, studio) {
     for (const path of Object.keys(lock.files)) if (!(path in master)) report.removed.push(path);
     // Starter files are the app's own; a changed one in app-studio is a note, never drift.
     const vars = lock.app ?? defaultVars(app);
-    const starters = starterFiles(studio, Object.keys(lock.packs ?? {}), vars);
+    const packs = Object.keys(lock.packs ?? {});
+    const starters = starterFiles(studio, packs, vars);
+    const held = holdReason(missingModules(app, studio, packs));
+    if (held) report.held = held;
     for (const [path, rec] of Object.entries(lock.starters ?? {})) {
       const m = starters[path];
       if (!m || m.hash === rec.seen) continue;
       const cur = localHash(app, path);
-      report.starters.push({ path, pack: rec.pack, refreshable: cur === rec.installed });
+      if (cur === m.hash) continue; // already equals the current starter (e.g. only formatting differed from the last install): nothing to merge
+      report.starters.push({ path, pack: rec.pack, refreshable: !held && cur === rec.installed });
     }
+    report.newStarters = Object.keys(starters).filter((p) => !(p in (lock.starters ?? {})) && localHash(app, p) === null);
+    report.partners = partnerGaps(studio, packs);
   }
   return report;
 }
@@ -277,7 +399,7 @@ export function pull(app, studio, { force = false } = {}) {
   const packs = Object.keys(lock.packs ?? {});
   for (const name of packs) readPack(studio, name); // a pack gone from app-studio fails before any file moves
   const files = { ...lock.files };
-  const result = { written: [], deleted: [], skipped: [], refreshed: [], starterNotes: [] };
+  const result = { written: [], deleted: [], skipped: [], refreshed: [], starterNotes: [], created: [], held: [] };
   const master = masterFiles(studio, packs);
 
   for (const [path, { src, hash }] of Object.entries(master)) {
@@ -309,17 +431,33 @@ export function pull(app, studio, { force = false } = {}) {
     result.deleted.push(path);
   }
 
-  // Pack versions follow what was pulled; starters the app has not touched are refreshed, the
-  // others are noted for a manual merge (then `ack`).
+  // Pack versions follow what was pulled; starters the app has not touched are refreshed, ones a
+  // pack gained are created where nothing is in the way, the others are noted for a manual merge
+  // (then `ack`). All of that is held back while the app calls a module it doesn't have.
   const newLock = { ...lock, studio: studioVersion(studio), files };
   if (packs.length) {
     newLock.packs = Object.fromEntries(packs.map((n) => [n, readPack(studio, n).version]));
     const starters = starterFiles(studio, packs, lock.app ?? defaultVars(app));
     newLock.starters = { ...lock.starters };
+    result.holdReason = holdReason(missingModules(app, studio, packs));
+    for (const [path, m] of Object.entries(starters)) {
+      if (path in (lock.starters ?? {}) || localHash(app, path) !== null) continue;
+      if (result.holdReason) {
+        result.held.push(path);
+        continue;
+      }
+      mkdirSync(dirname(join(app, path)), { recursive: true });
+      writeFileSync(join(app, path), m.text);
+      newLock.starters[path] = { pack: m.pack, installed: m.hash, seen: m.hash };
+      result.created.push(path);
+    }
     for (const [path, rec] of Object.entries(lock.starters ?? {})) {
       const m = starters[path];
       if (!m || m.hash === rec.seen) continue;
-      if (localHash(app, path) === rec.installed) {
+      if (result.holdReason) result.held.push(path);
+      else if (localHash(app, path) === m.hash) {
+        newLock.starters[path] = { pack: rec.pack, installed: m.hash, seen: m.hash }; // already the current starter: record it, nothing to merge
+      } else if (localHash(app, path) === rec.installed) {
         writeFileSync(join(app, path), m.text);
         newLock.starters[path] = { pack: rec.pack, installed: m.hash, seen: m.hash };
         result.refreshed.push(path);
@@ -346,7 +484,7 @@ export function install(app, studio, opts) {
 
 /** Adds stack packs (and what they require): managed files, starter files, package.json entries. */
 export function addPacks(app, studio, names, { slug, title, force = false } = {}) {
-  if (!names.length) throw new Error("Name at least one pack. Available: " + listPacks(studio).join(", "));
+  if (!names.length) throw new Error("Name at least one pack. Available: " + byKind(studio, listPacks(studio)));
   const lock = readLockForPull(app, force);
   if (!lock.studio) throw new Error("Install the harness first (studio-sync.mjs install).");
   const defaults = defaultVars(app);
@@ -365,8 +503,8 @@ export function addPacks(app, studio, names, { slug, title, force = false } = {}
   });
   const result = pull(app, studio, { force });
   result.added = fresh;
-  result.created = [];
   result.kept = [];
+  result.partners = partnerGaps(studio, order);
   result.packageJson = mergePackageJson(app, studio, fresh, vars);
 
   const after = readLock(app);
@@ -384,6 +522,7 @@ export function addPacks(app, studio, names, { slug, title, force = false } = {}
     }
     after.starters = { ...after.starters, [path]: { pack: m.pack, installed: m.hash, seen: m.hash } };
   }
+  result.held = result.held.filter((path) => !(path in starters));
   writeLock(app, after);
   return result;
 }
@@ -451,6 +590,7 @@ function parseArgs(argv) {
   for (let i = 1; i < argv.length; i++) {
     const a = argv[i];
     if (a === "--warn") opts.warn = true;
+    else if (a === "--live-check") opts.liveCheck = true;
     else if (a === "--force") opts.force = true;
     else if (["--app", "--studio", "--slug", "--title"].includes(a)) opts[a.slice(2)] = argv[++i];
     else if (a.startsWith("--")) throw new Error(`Unknown argument: ${a}`);
@@ -489,19 +629,125 @@ const list = (label, paths) =>
     ? [`  ${label}: ${paths.length > 8 ? `${paths.slice(0, 6).join(", ")} and ${paths.length - 6} more` : paths.join(", ")}`]
     : [];
 
-/** Lines of the App profile (CLAUDE.md) that still hold a template placeholder such as `<App name>`. */
-export function profileGaps(app) {
+/** The App profile section of CLAUDE.md, or null when the file or section is missing. */
+function profileSection(app) {
   const file = join(app, "CLAUDE.md");
-  if (!existsSync(file)) return [];
+  if (!existsSync(file)) return null;
   const text = readFileSync(file, "utf8");
   const start = text.indexOf("## App profile");
-  if (start < 0) return [];
+  if (start < 0) return null;
   const end = text.indexOf("\n## ", start + 5);
-  const section = text.slice(start, end < 0 ? undefined : end);
+  return text.slice(start, end < 0 ? undefined : end);
+}
+
+/** The value cell of a profile table row (`| Field | value |`), or null when the row is missing. */
+function profileField(section, field) {
+  for (const line of section.split("\n")) {
+    const cells = line.replace(/\\\|/g, "\u0000").split("|").map((c) => c.replace(/\u0000/g, "|").trim());
+    if (cells[0] === "" && cells[1] === field) return cells[2] ?? "";
+  }
+  return null;
+}
+
+/** The AI row, without the backticks the template shows its value in (`off` counts as off, like the Access model row). */
+const aiValue = (section) => profileField(section, "AI")?.replace(/^`\s*/, "").replace(/\s*`(?=\s|$)/, "") ?? null;
+
+const isPlaceholder = (v) => /^`?<[^<>\n]{2,}>/.test(v);
+/** True when the profile row has no real answer: missing, empty or still the template placeholder. */
+const blankField = (v) => v === null || v === "" || isPlaceholder(v);
+
+/**
+ * True when the app uses AI and anyone can get in (open sign-up or no login), so anyone can spend
+ * its AI: the owner must record an AI public use decision (Ale, #88). The harness never picks it.
+ */
+function aiPublic(section) {
+  const ai = aiValue(section) ?? "";
+  const access = profileField(section, "Access model") ?? "";
+  return /^on\b/i.test(ai) && !isPlaceholder(access) && /signs? up|sign-up|no login|no-login/i.test(access);
+}
+
+const AI_PUBLIC_GAP =
+  "AI is on and anyone can get in (open sign-up or no login), so anyone can spend the app's AI. A usage quota or spend cap is strongly recommended before launch. Ask the owner to decide and record it in the App profile's AI public use row (the cap, or why there is none)";
+
+/** Lines of the App profile (CLAUDE.md) that still hold a template placeholder such as `<App name>`. */
+export function profileGaps(app) {
+  const section = profileSection(app);
+  if (section === null) return [];
+  // The AI plan matters only for an app that uses AI, the AI public use decision only for one anyone can get into.
+  const aiOff = /^off\b/i.test(aiValue(section) ?? "");
+  const needsPublic = aiPublic(section);
   return section
     .split("\n")
     .filter((l) => /(\|\s*|\*\*\s*|^- |^)`?<[^<>\n]{2,}>/.test(l) && !/^Build, QA/.test(l))
+    .filter((l) => !(aiOff && /^\|\s*AI plan\s*\|/.test(l)))
+    .filter((l) => needsPublic || !/^\|\s*AI public use\s*\|/.test(l))
     .map((l) => l.replace(/\s+/g, " ").trim().slice(0, 70));
+}
+
+/**
+ * Feature choices the App profile must record (Features rows): the harness asks and refuses to go on
+ * while they are blank, but never picks the answer. Placeholders are reported by profileGaps.
+ */
+export function featureGaps(app) {
+  const section = profileSection(app);
+  if (section === null) return [];
+  const gaps = [];
+  const ai = aiValue(section);
+  if (ai === null || ai === "") gaps.push("the App profile has no AI row (on or off); ask the owner and record it");
+  else if (!isPlaceholder(ai) && !/^(on|off)\b/i.test(ai)) gaps.push(`the App profile's AI row must start with "on" or "off" (it says "${ai.slice(0, 40)}")`);
+  else if (/^on\b/i.test(ai) && blankField(profileField(section, "AI plan")))
+    gaps.push("AI is on, so the App profile needs an AI plan (whose plan or key pays, and the default model tier)");
+  for (const f of ["Access model", "Storage shape"])
+    if (blankField(profileField(section, f)) && !isPlaceholder(profileField(section, f) ?? ""))
+      gaps.push(`the App profile has no ${f} (${f === "Access model" ? "who can get in" : "per-person documents, shared documents, or something else"}); ask the owner and record it`);
+  const decision = profileField(section, "AI public use");
+  if (aiPublic(section) && blankField(decision) && !isPlaceholder(decision ?? "")) gaps.push(AI_PUBLIC_GAP);
+  return gaps;
+}
+
+/**
+ * Why a release must stop: the access model is missing or blank, or the app has AI and anyone can
+ * get in but no AI public use decision is recorded. Empty when nothing is missing.
+ */
+export function releaseBlockers(app) {
+  const section = profileSection(app);
+  if (section === null) return ["CLAUDE.md has no App profile, so the access model is not recorded"];
+  if (blankField(profileField(section, "Access model")))
+    return ["the App profile's Access model is blank. Ask the owner who can get in (only invited people, anyone who signs up, anyone with no login, or whoever the owner shares it with), record the answer, then release."];
+  const blockers = signInModeMismatches(app, section);
+  if (aiPublic(section) && blankField(profileField(section, "AI public use"))) blockers.push(`${AI_PUBLIC_GAP}, then release.`);
+  return blockers;
+}
+
+/** The server sign-in mode an Access model answer calls for, or null (an artifact app has none). */
+function expectedSignInMode(access) {
+  if (/no[ -]login/i.test(access)) return "none";
+  if (/signs? up|sign-up/i.test(access)) return "open";
+  if (/invite/i.test(access)) return "invite";
+  return null;
+}
+
+/**
+ * A web app's host settings must match the recorded Access model: render.yaml (the live site) and
+ * .github/workflows/ci.yml (the tests and container check) set SIGN_IN_MODE. A site that is more
+ * open than the owner decided, or a render.yaml still saying "choose", must not be released.
+ */
+function signInModeMismatches(app, section) {
+  const want = expectedSignInMode(profileField(section, "Access model") ?? "");
+  if (want === null) return [];
+  const out = [];
+  const files = [
+    ["render.yaml", /key:\s*SIGN_IN_MODE\s*\n\s*value:\s*["']?([^"'\n#]*?)["']?\s*(?:#.*)?$/m, "invite"],
+    [".github/workflows/ci.yml", /^\s*SIGN_IN_MODE:\s*["']?([^"'\n#]*?)["']?\s*(?:#.*)?$/m, null],
+  ];
+  for (const [file, re, absent] of files) {
+    const path = join(app, file);
+    if (!existsSync(path)) continue;
+    const found = readFileSync(path, "utf8").match(re)?.[1].trim() ?? absent;
+    if (found !== null && found !== want)
+      out.push(`${file} sets SIGN_IN_MODE to "${found}" but the App profile's Access model calls for "${want}" (invite = only invited people, open = anyone who signs up, none = no login). Make them agree, then release.`);
+  }
+  return out;
 }
 
 // Hooks every app's .claude/settings.json must wire, as [event, part of the command].
@@ -509,9 +755,83 @@ export const REQUIRED_HOOKS = [
   ["SessionStart", "hooks/cloud-setup.mjs"],
   ["SessionStart", "studio-sync.mjs check"],
   ["PreToolUse", "hooks/check.mjs commit"],
+  ["PreToolUse", "hooks/check.mjs merge"],
+  ["PreToolUse", "hooks/check.mjs write"],
   ["PostToolUse", "hooks/check.mjs lint"],
   ["Stop", "hooks/check.mjs test"],
 ];
+
+// Starter files the app owns but must keep, as [pack, path]: without the Harness workflow, a PR
+// that deletes it (or any docs-only PR) is never checked.
+const REQUIRED_STARTERS = [["base", ".github/workflows/harness.yml"]];
+
+const GIT_HOOKS = ".claude/hooks";
+// Claude Code hooks forwarded to the parent folder in a cloud session, as [event, matcher, check.mjs mode].
+// The git pre-commit hook covers commits, and SessionStart has already run by then.
+export const FORWARDED_HOOKS = [
+  ["PreToolUse", "mcp__.*github.*__merge_pull_request", "merge"],
+  ["PreToolUse", "mcp__.*github.*__(push_files|create_or_update_file|delete_file)", "write"],
+  ["PostToolUse", "Edit|Write|MultiEdit", "lint"],
+  ["Stop", undefined, "test"],
+];
+
+/**
+ * Turns on what works wherever a session starts: the git pre-commit hook, and in a cloud session
+ * (CLAUDE_CODE_REMOTE) the app's hooks forwarded to <parent>/.claude/settings.json. Claude Code loads
+ * settings only from the session's top folder, which is the parent when several repos are attached,
+ * and it usually picks up the file mid-session (best effort). Returns notes; does nothing in CI.
+ */
+export function activateHooks(app, env = process.env) {
+  const notes = [];
+  if (env.CI || !existsSync(join(app, LOCK))) return notes;
+  const hook = join(app, GIT_HOOKS, "pre-commit");
+  if (existsSync(join(app, ".git")) && existsSync(hook)) {
+    const git = (...a) => spawnSync("git", ["-C", app, ...a], { encoding: "utf8" });
+    const cur = (git("config", "--get", "core.hooksPath").stdout ?? "").trim();
+    if (!cur || cur === GIT_HOOKS) {
+      try {
+        chmodSync(hook, 0o755);
+      } catch {
+        // Windows: Git runs hooks through sh, no mode needed.
+      }
+      if (!cur && git("config", "core.hooksPath", GIT_HOOKS).status === 0) notes.push("turned on the git pre-commit health check");
+    } else
+      notes.push(`git core.hooksPath is "${cur}", so the harness pre-commit check is off: call .claude/hooks/pre-commit from that folder's pre-commit hook`);
+  }
+  // An app directly under a system temp folder or the filesystem root has no project folder above
+  // it; forwarding there would leave a stray .claude/settings.json in /tmp.
+  const parent = dirname(app);
+  const sharedParent = parent === dirname(parent) || [tmpdir(), "/tmp", "/var/tmp"].some((t) => resolve(t) === resolve(parent));
+  if (env.CLAUDE_CODE_REMOTE === "true" && !sharedParent) {
+    const file = join(parent, ".claude", "settings.json");
+    const mine = `${toPosix(app)}/.claude/hooks/`;
+    let settings = {};
+    try {
+      settings = existsSync(file) ? JSON.parse(readFileSync(file, "utf8")) : {};
+    } catch {
+      settings = {};
+    }
+    const before = JSON.stringify(settings);
+    settings.hooks ??= {};
+    // The "app-studio apps" cloud environment already runs the app's hooks there (scripts/studio-env.mjs).
+    const viaEnv = JSON.stringify(settings.hooks).includes("studio-env");
+    for (const event of Object.keys(settings.hooks))
+      settings.hooks[event] = settings.hooks[event]
+        .map((g) => ({ ...g, hooks: (g.hooks ?? []).filter((h) => !String(h.command ?? "").includes(mine)) }))
+        .filter((g) => g.hooks.length);
+    for (const [event, matcher, mode] of viaEnv ? [] : FORWARDED_HOOKS)
+      (settings.hooks[event] ??= []).push({
+        ...(matcher ? { matcher } : {}),
+        hooks: [{ type: "command", command: `node "${mine}check.mjs" ${mode}`, timeout: mode === "test" || mode === "lint" ? 300 : 30 }],
+      });
+    if (JSON.stringify(settings) !== before) {
+      mkdirSync(dirname(file), { recursive: true });
+      writeFileSync(file, `${JSON.stringify(settings, null, 2)}\n`);
+      notes.push(`forwarded the app's hooks to ${toPosix(file)} (sessions whose top folder is ${toPosix(parent)})`);
+    }
+  }
+  return notes;
+}
 
 function hookGaps(app) {
   const file = join(app, ".claude/settings.json");
@@ -567,10 +887,14 @@ function ownGaps(app, lock) {
   return gaps;
 }
 
-/** Relative links in CLAUDE.md, README.md and docs/ that point at a file that isn't there. */
-function linkGaps(app) {
+/** Relative links in CLAUDE.md, README.md, docs/ and the app's own .claude/ Markdown that point at a file that isn't there. */
+function linkGaps(app, lock) {
   const files = ["CLAUDE.md", "README.md"].filter((f) => existsSync(join(app, f)));
   for (const f of listFiles(join(app, "docs"))) if (f.endsWith(".md")) files.push(toPosix(relative(app, f)));
+  for (const f of listFiles(join(app, ".claude"))) {
+    const rel = toPosix(relative(app, f));
+    if (rel.endsWith(".md") && !(rel in (lock?.files ?? {}))) files.push(rel);
+  }
   const gaps = [];
   for (const rel of files) {
     const text = readFileSync(join(app, rel), "utf8")
@@ -609,7 +933,10 @@ export function health(app, studio) {
     problems.push('CLAUDE.md has no "## App profile" section (merge it from app-studio\'s templates/CLAUDE.md)');
   const gaps = profileGaps(app);
   if (gaps.length) problems.push(`the App profile in CLAUDE.md still has ${gaps.length} placeholder(s), for example:\n${gaps.slice(0, 3).map((g) => `      ${g}`).join("\n")}`);
-  problems.push(...hookGaps(app), ...ownGaps(app, lock), ...linkGaps(app));
+  problems.push(...featureGaps(app), ...hookGaps(app), ...ownGaps(app, lock), ...linkGaps(app, lock));
+  for (const [pack, file] of REQUIRED_STARTERS)
+    if (lock.packs?.[pack] && !existsSync(join(app, file)))
+      problems.push(`${file} is missing (the ${pack} pack's starter; copy it from app-studio's packs/${pack}/starter/)`);
   const behind = [...r.behind, ...r.added, ...r.removed];
   if (behind.length) notes.push(`behind app-studio v${r.studioVersion} in ${behind.length} file(s); the harness-sync skill brings it in step`);
   if (r.starters.length) notes.push(`pack starter files changed in app-studio: ${r.starters.map((n) => n.path).join(", ")}`);
@@ -617,8 +944,171 @@ export function health(app, studio) {
   return { problems, notes, version: r.version };
 }
 
+/** Signs that an app's AI is its own design, not the ai / ai-web modules (issue #114). */
+export function customAi(app, serverCode = "", studio = null) {
+  const found = [];
+  const own = [...new Set([...serverCode.matchAll(/["'`]\/api\/(coach|ai|chat|assistant)[\w/-]*/g)].map((m) => m[0].slice(1)))];
+  if (own.length) found.push(`own AI route(s) ${own.join(", ")}`);
+  const files = ["src", "tests"].flatMap((d) => listFiles(join(app, d))).filter((f) => CODE_FILE.test(f));
+  // Files that are exact copies of an ai / ai-web (any module) starter are the standard module, not a custom design.
+  const standard = new Map();
+  if (studio) {
+    const vars = readLock(app)?.app ?? defaultVars(app);
+    for (const name of listPacks(studio).filter((n) => packKind(studio, n) === "module"))
+      for (const [path, m] of Object.entries(starterFiles(studio, [name], vars))) standard.set(path, m.hash);
+  }
+  const odd = files.filter((f) => {
+    const rel = toPosix(relative(app, f));
+    if (standard.get(rel) === hashFile(f)) return false;
+    const t = readFileSync(f, "utf8");
+    return rel.startsWith("src/platform/") ? /\bsample\s*\(\s*[^)\s]/.test(t) || /\bsample\s*[:=]\s*(?:async\s*)?\(\s*[^)\s]/.test(t) : /\.sample\(\s*[^)\s]/.test(t);
+  });
+  if (odd.length) found.push(`sample() takes an input of the app's own (the module's takes none): ${odd.slice(0, 3).map((f) => toPosix(relative(app, f))).join(", ")}`);
+  const ledger = listFiles(join(app, "server/migrations")).some((f) => /CREATE TABLE(?: IF NOT EXISTS)?\s+(?!ai_usage\b)\w*usage\w*/i.test(readFileSync(f, "utf8")));
+  if (ledger && found.length) found.push("its own usage ledger table");
+  return found;
+}
+
+/** The CI workflows' job names, and workflows whose pull_request trigger can skip the whole run (issue #114). */
+export function ciFindings(app) {
+  const jobs = [], warnings = [];
+  for (const f of listFiles(join(app, ".github/workflows")).filter((x) => /\.ya?ml$/.test(x))) {
+    const t = readFileSync(f, "utf8");
+    const file = basename(f);
+    const jobsAt = t.search(/^jobs:\s*$/m);
+    if (jobsAt >= 0)
+      for (const m of t.slice(jobsAt).matchAll(/^  ([\w-]+):\s*\n((?:    .*\n|\s*\n)*)/gm)) {
+        const nm = m[2].match(/^    name:\s*["']?([^"'\n#]+?)["']?\s*(?:#.*)?$/m)?.[1];
+        jobs.push(`${nm ?? m[1]} (${file})`);
+      }
+    const pr = t.match(/^  pull_request(?:_target)?:\s*\n((?:    .*\n|\s*\n)*)/m);
+    if (pr && /^\s+paths(?:-ignore)?:/m.test(pr[1]))
+      warnings.push(`${file} skips pull requests by file path (paths / paths-ignore on pull_request): on a notes-only PR the workflow never starts, so a required check from it stays "expected" and blocks auto-merge. Make it start on every PR (filter inside the jobs instead).`);
+  }
+  return { jobs, warnings };
+}
+
+/**
+ * Read-only look at an existing app before it moves to the current harness (issue #36): what it
+ * uses, which modules it needs, how far its own files differ from the starters, what its App
+ * profile, CI and database already have. Changes nothing. Returns the report's lines.
+ */
+export function inventory(app, studio) {
+  const out = [];
+  let lock = null;
+  try {
+    lock = readLock(app);
+  } catch {
+    out.push(`${LOCK} is unreadable; fix or rebuild it (pull --force) before migrating.`);
+  }
+  const has = (p) => existsSync(join(app, p));
+  const read = (p) => (has(p) ? readFileSync(join(app, p), "utf8") : "");
+  const locked = Object.keys(lock?.packs ?? {});
+  const web = locked.includes("web") || has("server");
+  const packs = locked.length ? locked : web ? ["base", "web"] : ["base", "artifact"];
+  out.push(
+    `Inventory of ${app} (read-only; nothing was changed).`,
+    "",
+    "Harness",
+    `  app copy: ${lock ? `v${lock.studio}` : "none (no lock: install it first)"}; app-studio: v${studioVersion(studio)}`,
+    `  packs: ${locked.length ? locked.join(", ") : `none recorded; assuming ${packs.join(" + ")}`}`,
+  );
+
+  // Features the app's own code uses (the same test the sync guard applies).
+  const missing = missingModules(app, studio, packs);
+  const need = missing.map((m) => m.pack);
+  if (need.includes("ai") && web && !packs.includes("ai-web")) need.push("ai-web");
+  const serverCode = listFiles(join(app, "server/src")).filter((f) => CODE_FILE.test(f)).map((f) => readFileSync(f, "utf8")).join("\n");
+  out.push("", "Features in use");
+  out.push(missing.length ? missing.map((m) => `  calls ${m.methods.map((x) => `${x}()`).join(", ")} -> needs the ${m.pack} module`) : ["  no calls to a module's methods found in the app's own code"].flat());
+  if (web) out.push(`  server AI code: ${/\/api\/(ai|coach)|ai_usage|coach_usage|monthly_allowance/.test(serverCode) ? "found (needs ai-web)" : "not found"}`);
+  const mode = read("render.yaml").match(/key:\s*SIGN_IN_MODE\s*\n\s*value:\s*["']?([^"'\n#\s]*)/)?.[1] ?? read(".github/workflows/ci.yml").match(/^\s*SIGN_IN_MODE:\s*["']?([^"'\n#\s]*)/m)?.[1];
+  if (web) out.push(`  sign-in mode setting: ${mode ? mode : "not set (the server then means invite-only, today's behaviour)"}`);
+  out.push(`  roadmap tooling: ${has("scripts/roadmap") ? "present (the app's own; keep it as it is, do not add the roadmap module)" : "none"}`);
+  const custom = customAi(app, serverCode, studio);
+  if (custom.length) {
+    out.push(
+      `  CUSTOM AI DESIGN found: ${custom.join("; ")}`,
+      "  -> NOT a drop-in for the ai / ai-web modules. Switching them on replaces the app's platform and server files and breaks its AI tests; it needs a redesign of the app's AI, decided separately.",
+      "  -> Recommended path: HARNESS ONLY (pull the harness files, record the profile, leave the app's AI and platform code alone; the module swap is a later, separate decision).",
+    );
+  }
+  const toSwitch = custom.length ? [] : need;
+  out.push(`  modules to switch on: ${custom.length ? `none for now (harness only; a redesign would be needed before ${need.join(", ") || "ai, ai-web"})` : need.length ? need.join(", ") : "none"}`);
+  const moduleOf = (n) => { try { return packKind(studio, n) === "module"; } catch { return false; } };
+  const modulesOn = locked.filter(moduleOf);
+  out.push("", "Modules", `  on now: ${modulesOn.length ? modulesOn.join(", ") : "none"}${modulesOn.includes("user") ? " (user = who is signed in)" : ""}`);
+  out.push(`  the code needs, not on yet: ${need.length ? need.join(", ") : "none"}`);
+  out.push(`  roadmap: ${modulesOn.includes("roadmap") ? "module on" : has("scripts/roadmap") ? "the app's own tooling (module off, on purpose)" : "off"}`);
+  out.push(`  sign-in mode: ${web ? (mode ? mode : "not set (the server then means invite-only)") : "not applicable (no server)"}`);
+
+  // Starter files of the packs the app will have, compared with what the app holds today.
+  const target = packClosure(studio, [...new Set([...packs, ...toSwitch])]);
+  const starters = starterFiles(studio, target, lock?.app ?? defaultVars(app));
+  const absent = [], differs = [], same = [];
+  for (const [path, m] of Object.entries(starters)) {
+    const cur = localHash(app, path);
+    (cur === null ? absent : cur === m.hash ? same : differs).push(path);
+  }
+  out.push("", "The app's own files vs the current starters", `  identical: ${same.length}; new for this app: ${absent.length}; differ: ${differs.length}`);
+  out.push(...list("differ (merge by hand, then ack)", differs), ...list("new (added by pull / pack add)", absent));
+  const flows = listFiles(join(app, ".github/workflows")).map((f) => basename(f));
+  out.push("", "CI", `  workflows: ${flows.join(", ") || "none"}`);
+  if (!has(".github/workflows/harness.yml")) out.push("  harness.yml is missing (pull adds it as a new starter)");
+  const ci = ciFindings(app);
+  out.push(`  job names (the required checks must use the app's own): ${ci.jobs.length ? ci.jobs.join(", ") : "none found"}`);
+  out.push(...ci.warnings.map((w) => `  WARNING: ${w}`));
+
+  // Database: an AI usage table under another name would not be reused by ai_001_usage.sql.
+  const usage = new Set();
+  for (const f of listFiles(join(app, "server/migrations")))
+    for (const m of readFileSync(f, "utf8").matchAll(/CREATE TABLE(?: IF NOT EXISTS)?\s+(\w*usage\w*)/gi)) usage.add(m[1]);
+  if (web) {
+    out.push("", "Database");
+    const odd = [...usage].filter((t) => t !== "ai_usage");
+    if (usage.has("ai_usage") && odd.length) {
+      out.push(`  ${odd.join(", ")} and ai_usage both exist (a rename or copy already under way): ai_usage is the module's table; check the allowance data is in it, then ${odd.join(", ")} can be retired later`);
+    } else out.push(
+      usage.size === 0 ? "  no usage table in the migrations (ai_001_usage.sql creates one)" : odd.length ? `  usage table(s) named ${odd.join(", ")}: NOT the module's ai_usage. Stop and ask the owner before migrating (the allowance data would not carry over)` : "  ai_usage and monthly_allowance exist: ai_001_usage.sql changes nothing",
+    );
+  }
+
+  const gaps = [...featureGaps(app), ...profileGaps(app)];
+  const prof = profileSection(app);
+  const answer = (f) => { const v = prof === null ? null : profileField(prof, f); return v === null ? "no row" : blankField(v) ? "not filled in" : v.replace(/`/g, ""); };
+  out.push("", "App profile (CLAUDE.md)");
+  if (prof !== null)
+    out.push(`  AI: ${answer("AI") === "no row" || answer("AI") === "not filled in" ? answer("AI") : aiValue(prof)}`, `  Access model (who can get in): ${answer("Access model")}`, `  Storage shape: ${answer("Storage shape")}`);
+  out.push(...(profileSection(app) === null ? ["  CLAUDE.md has no App profile yet"] : gaps.length ? gaps.map((g) => `  missing: ${g}`) : ["  Features rows are filled in"]));
+  out.push(
+    "",
+    "Suggested order (one branch, one PR; the way back is reverting it)",
+    "  1. pull, and when it says starter files are held back, add the modules in the same branch" + (toSwitch.length ? `: pack add ${toSwitch.join(" ")}` : custom.length ? " (custom AI: harness only, add no AI module)" : ""),
+    "  2. merge the files listed as differing, then ack; run npm run check (and the server checks on the web)",
+    "  3. record AI on / AI plan / Access model / Storage shape in the App profile; health must pass",
+    "  4. prove it: the tests pass and one small follow-up PR merges by itself",
+  );
+  return out;
+}
+
 function main() {
   const argv = process.argv.slice(2);
+  const code = run(argv);
+  if (code === 2 || argv[0] === "ack" || argv[0] === "inventory") return code;
+  let app;
+  try {
+    ({ app } = locate(parseArgs(argv)));
+  } catch {
+    return code;
+  }
+  const notes = activateHooks(app);
+  const quiet = argv.includes("--warn") ? notes.filter((n) => n.includes("is off")) : notes;
+  if (quiet.length) console.log(quiet.map((n) => `Harness hooks: ${n}.`).join("\n"));
+  else if (argv[0] === "hooks") console.log("Harness hooks are on.");
+  return code;
+}
+
+function run(argv) {
   let opts, app, studio;
   try {
     opts = parseArgs(argv);
@@ -641,10 +1131,13 @@ function main() {
       ? [
           "Pack starter files changed in app-studio (the app owns them; use the harness-sync skill):",
           ...r.starters.map(
-            (n) => `  ${n.path} (${n.pack} pack): ${n.refreshable ? "unedited here, pull refreshes it" : "edited here, merge by hand then run ack"}`,
+            (n) => `  ${n.path} (${n.pack} pack): ${n.refreshable ? "unedited here, pull refreshes it" : r.held ? "held back" : "edited here, merge by hand then run ack"}`,
           ),
         ]
       : [];
+    if (r.newStarters?.length) notes.push(...list(`pack starter files new in app-studio (${r.held ? "held back" : "pull adds them"})`, r.newStarters));
+    if (r.held && (r.starters.length || r.newStarters?.length)) notes.push(`Pack starter files are held back: ${r.held}.`);
+    if (r.partners?.length) notes.push(...r.partners.map((g) => `Module: ${g}.`));
     if (gaps.length)
       notes.push("The App profile in CLAUDE.md still has unfilled placeholders:", ...gaps.map((g) => `  ${g}`));
     if (!drift(r)) {
@@ -673,6 +1166,16 @@ function main() {
     return opts.warn ? 0 : 1;
   }
 
+  if (opts.cmd === "release-gate") {
+    const blockers = releaseBlockers(app);
+    if (!blockers.length) {
+      console.log("Release gate: the App profile records the access model (and any decision it calls for).");
+      return 0;
+    }
+    console.log(["Release stopped:", ...blockers.map((b) => `  - ${b}`)].join("\n"));
+    return 1;
+  }
+
   if (opts.cmd === "health") {
     const h = health(app, studio);
     const notes = h.notes.map((n) => `  note: ${n}`);
@@ -682,6 +1185,17 @@ function main() {
     }
     console.log(
       ["Studio harness health check failed:", ...h.problems.map((p) => `  - ${p}`), ...notes].join("\n"),
+    );
+    return 1;
+  }
+
+  // Pull, install and pack add copy what app-studio holds into the app: stop on a release that
+  // hasn't passed its live check. `--live-check` is for the studio-scratch check only.
+  const pending = ["pull", "install"].includes(opts.cmd) || (opts.cmd === "pack" && opts.rest[0] === "add") ? studio && livePending(studio) : null;
+  if (pending && !opts.liveCheck) {
+    console.error(
+      `app-studio v${pending} is not live-checked yet (its CHANGELOG.md entry says "Live check: pending"), so nothing was changed. ` +
+        "Wait until the entry says \"Live check: passed\", or run it with --live-check only for the studio-scratch check.",
     );
     return 1;
   }
@@ -704,6 +1218,8 @@ function main() {
       ...list("deleted", r.deleted),
       ...list("added from templates", r.templates ?? []),
       ...list("pack starters refreshed", r.refreshed ?? []),
+      ...list("pack starters added (new in their pack)", r.created ?? []),
+      ...(r.held?.length ? [`  pack starters held back (${r.holdReason}): ${r.held.join(", ")}`] : []),
       ...list("pack starters changed upstream but edited here (merge by hand, then ack)", r.starterNotes ?? []),
       ...list("skipped (changed here; move the change to app-studio, or pass --force)", r.skipped),
     ];
@@ -745,16 +1261,28 @@ function main() {
     }
     console.log(
       [
-        `Packs added to ${app}: ${r.added.join(", ") || "none new"}.`,
+        `Packs added to ${app}: ${byKind(studio, r.added) || "none new"}.`,
         ...list("managed files", r.written),
         ...list("starter files created", r.created),
         ...list("starter files kept (already there, different)", r.kept),
         ...list("package.json entries added", r.packageJson),
+        ...(r.partners ?? []).map((g) => `  module: ${g}`),
         ...list("skipped (changed here; pass --force)", r.skipped),
       ].join("\n"),
     );
     return r.skipped.length ? 1 : 0;
   }
+
+  if (opts.cmd === "inventory") {
+    if (!studio) {
+      console.error("app-studio not found. Pass --studio <dir> or set STUDIO_DIR.");
+      return 2;
+    }
+    console.log(inventory(app, studio).join("\n"));
+    return 0;
+  }
+
+  if (opts.cmd === "hooks") return 0;
 
   if (opts.cmd === "ack") {
     if (!studio) {
@@ -766,7 +1294,7 @@ function main() {
     return 0;
   }
 
-  console.error("Usage: studio-sync.mjs <install|check|health|pull|pack add|pack remove|ack> [--app <dir>] [--studio <dir>] [--warn] [--force]");
+  console.error("Usage: studio-sync.mjs <install|check|inventory|health|pull|pack add|pack remove|ack|hooks> [--app <dir>] [--studio <dir>] [--warn] [--force] [--live-check]");
   return 2;
 }
 

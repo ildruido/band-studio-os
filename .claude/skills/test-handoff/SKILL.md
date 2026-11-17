@@ -17,11 +17,11 @@ App-specific facts come from the **App profile** in `CLAUDE.md`; `<XX>` below is
    Name only the targets where the change can be seen. When an app ships to several targets (for example an artifact and a web app) and the change shows in only one, test only that one, and say in one line that the others got the same release with nothing new to check. Don't list their links as things to test.
 4. Mention any one-time consent prompt Ale will see, and say whether to allow it.
 5. End with: "Reply with the step numbers that failed and what you saw. A screenshot helps."
-6. Post the script in chat, or as a file when it is longer than about 15 lines. Write in plain English, no technical terms.
+6. Write the script in plain English, no technical terms, and put it in full in your hand-back to the coordinator, which posts it word for word to Ale in the Project chat (Ale does not read threads). Also commit it as a file when it is longer than about 15 lines, but never hand back only a pointer to a file or `docs/BACKLOG.md`. Outside a Project, post it in chat.
 
 ## Part B: process the results
 
-1. For each step Ale reports as passing, tick its criteria. When all criteria of an item pass, move it to **Done** with the release version: add the full item at the top of `docs/BACKLOG-DONE.md` and only its title line under **Done** in `docs/BACKLOG.md`. Remove its id from the **Roadmap** list at the same time.
+1. For each step Ale reports as passing, tick its criteria. When all criteria of an item pass, move it to **Done** with the release version: add the full item at the top of `docs/BACKLOG-DONE.md` and only its title line under **Done** in `docs/BACKLOG.md`. If the app has the `roadmap` module, remove its id from the **Roadmap** list at the same time.
 2. For each failure, create a bug item at the top of **Ready**:
 
    ```md
@@ -36,4 +36,4 @@ App-specific facts come from the **App profile** in `CLAUDE.md`; `<XX>` below is
 
    Each bug is built in a new thread that reads the original item and its PR.
 3. If a report is unclear, ask Ale one specific question instead of guessing.
-4. Commit with `docs(backlog): record test results for vX.Y.Z`, merge via PR, and tell Ale what moved to Done and which bugs are next.
+4. Commit with `docs(backlog): record test results for vX.Y.Z`, merge it via a PR (CLAUDE.md "Git workflow"), and tell Ale what moved to Done and which bugs are next.

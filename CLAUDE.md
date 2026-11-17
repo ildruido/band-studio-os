@@ -26,6 +26,9 @@ Read by the app-studio harness skills and its health check. Values marked "Incep
 | Preview target | none |
 | Capabilities   | Inception: none (no app code yet) |
 | AI plan        | Inception: decided in the architecture handoff |
+| AI             | off (Inception: not decided yet, architecture handoff; no AI module on) |
+| Access model   | Inception: not applicable yet (no app, no sign-in); decided in the architecture handoff |
+| Storage shape  | Inception: not applicable yet (no app code); decided in the architecture handoff |
 
 ### Domain rules
 
