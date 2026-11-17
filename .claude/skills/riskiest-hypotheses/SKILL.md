@@ -1,6 +1,6 @@
 ---
 name: riskiest-hypotheses
-description: Run a quick market scan (competitors, alternatives, pricing, trends) and produce a ranked list of the riskiest hypotheses with a test for each. Use when Ale asks for market research, validation, competitors or risks.
+description: Run a quick market scan (competitors, alternatives, pricing, trends) and produce a ranked list of the riskiest hypotheses with a test for each. Use when the product owner asks for market research, validation, competitors or risks.
 ---
 
 # Riskiest hypotheses
@@ -15,4 +15,4 @@ Product-specific facts (product, users, principles, key concepts, market segment
 4. **Rank them** by impact if wrong × how uncertain we are. Mark the top three to five as riskiest.
 5. **Plan a test for each riskiest one:** a cheap method (interviews, a fake-door test, a prototype test, a cost spike), the pass/fail signal, and which prototype covers it if any.
 6. **Write** `docs/inception/market-and-hypotheses.md`, linking the study report for the evidence: key findings, the strongest evidence against, competitor table, opportunity and differentiation, the hypothesis table (id `H-0N`, statement, risk type, impact, uncertainty, test, signal, status), and sources.
-7. **Ask Ale** one question at a time only about ranking or anything the research could not settle. Then open one PR.
+7. **Ask the product owner** one question at a time only about ranking or anything the research could not settle. Then open one PR.

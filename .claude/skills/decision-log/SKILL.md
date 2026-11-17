@@ -1,6 +1,6 @@
 ---
 name: decision-log
-description: Record, revise or look up a product or process decision in docs/inception/decision-log.md. Use whenever Ale settles a question, changes an earlier decision, or asks why something was decided.
+description: Record, revise or look up a product or process decision in docs/inception/decision-log.md. Use whenever the product owner settles a question, changes an earlier decision, or asks why something was decided.
 ---
 
 # Decision log
@@ -18,11 +18,11 @@ The log is `docs/inception/decision-log.md`, newest first. Entries are never del
    - **Decision:** one or two sentences
    - **Why:** the reason
    - **Alternatives:** options considered and why they were rejected (omit if none)
-   - **Decided by:** Ale / Ale, on Claude's recommendation
+   - **Decided by:** the product owner / the product owner, on Claude's recommendation
    - **Status:** active
    ```
 
-3. Only record what Ale decided or approved. Your own working assumptions go in the artifact's Assumptions section, not here.
+3. Only record what the product owner decided or approved. Your own working assumptions go in the artifact's Assumptions section, not here.
 
 ## Revise a decision
 

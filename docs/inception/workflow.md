@@ -79,7 +79,7 @@ Project skills live in `.claude/skills/`:
 
 | Skill | Use |
 | --- | --- |
-| `inception-interview` | Fill or refine an artifact by interviewing Ale one question at a time |
+| `inception-interview` | Fill or refine an artifact by interviewing the product owner one question at a time |
 | `decision-log` | Record, revise or look up a decision |
 | `research-protocol` | Run any research with the framework's bias guardrails, at a light, standard or deep tier |
 | `persona-validation` | Reality check of the target users before personas (part A), evidence audit of the personas draft (part B) |
