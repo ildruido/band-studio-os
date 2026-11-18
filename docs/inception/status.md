@@ -31,6 +31,6 @@ Status values: `not started`, `in progress`, `done`, `ongoing`.
 - The research guardrails are untested: R-001 is their first run, so expect to tune them after it.
 - Standard-tier research uses one extra agent run (the skeptic), deep tier two. That costs usage on the Pro plan.
 - CI covers docs and harness files only; there are no code tests during inception.
-- App profile Phase set to discovery, undecided values say TBD (D-024). Harness synced to 0.24.9 (latest stable).
+- App profile Phase set to discovery, undecided values say TBD (D-024). Harness synced to 0.28.1 (latest stable; Project instructions review pending with the coordinator).
 - Harness synced to 0.22.1 ( no feature modules, App profile unchanged except the Decision log row pointing at `docs/inception/decision-log.md`). Earlier: harness moved to 0.18.3 (D-023, PR #24; self-merge proof PR #25). The `Harness` check now runs on every PR. Main must require the `health` check in GitHub settings (one-time click by Ale) so PRs can merge by themselves.
 - Canva, Adobe Express and some other sites block automated access from the cloud environment. R-004's key question (is there already a guided gig-campaign tool at a band-friendly price?) needs a person with a browser to try Canva and PosterMyWall.
