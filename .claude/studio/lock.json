@@ -1,5 +1,5 @@
 {
-  "studio": "0.24.5",
+  "studio": "0.24.9",
   "instructions": "261c33db4ab97f97a9032c87855c6190a4d4376cee9a08dad1fceebf6e87e78e",
   "files": {
     ".claude/agents/planner.md": "bc4199574b0b9f1cfbeb6070e656e187c023401194aa51d3d1b4e6a494f45092",
@@ -8,14 +8,14 @@
     ".claude/hooks/check.mjs": "c6918e6618685ca9c32a38bfbe2c77377ad2600af77b79d97cb29e2c47271127",
     ".claude/hooks/cloud-setup.mjs": "6a856f37a92e047893486c9ee7061dcda45f29604b9459daad25b6784f32d1bd",
     ".claude/hooks/pre-commit": "54e4800a520596f24dba9cc538de614882ede7555ff45c083f8432402835866b",
-    ".claude/skills/build-feature/SKILL.md": "efe19a74e6b9a8d4c466891ab967f09a8f971a18e1fe84449982f5b659ebd880",
-    ".claude/skills/harness-idea/SKILL.md": "57915f9adfc8e1ca43c73bb3c5e62edfd3d7a98001e452bb3d5e4d78c600fe01",
-    ".claude/skills/harness-sync/SKILL.md": "71edb63f3d66357e269558936f348f033327b32e7a6a6ff142f9e19573b0aa0f",
-    ".claude/skills/migrate-app/SKILL.md": "2c7bedb6ef2994fcec549a68d5aeb331eea6d682cbec9166d18680255c411c2b",
-    ".claude/skills/new-app/SKILL.md": "b7af781f6baa1f2a49582569ee2a529c6807397b56a17b5316a8d81b9d7f6e7f",
-    ".claude/skills/prd-intake/SKILL.md": "8bc9ce55e161ada17e0a0f460d3cbf0f91bcd3d1839e4e838857614ee6b3ce3f",
-    ".claude/skills/release/SKILL.md": "d705a68af8170b5c1ea7388c619a186807c40e88aecfec8b78042d32c1874720",
-    ".claude/skills/test-handoff/SKILL.md": "5d64ad7b25aa94992c211dec974210c37d9e4512ac5983c26dfd80f1efa96086",
-    ".claude/studio/studio-sync.mjs": "a278d34243531fd40436e12d1189659b6b8076a4442f2e9cc22752c1de251fd7"
+    ".claude/skills/build-feature/SKILL.md": "b3fc27cc3cc7b7370dc5686de3a508b08f6ca034e870e7f9b3704aa92f79a5b2",
+    ".claude/skills/harness-idea/SKILL.md": "30ecc4131694a2e1b4b4595e077f34bd59302db0edf4792c0df76d1e9fbca8dd",
+    ".claude/skills/harness-sync/SKILL.md": "cd0ba99856a406777d7a9893a65d574b758417e695f5807e182803405cef8f05",
+    ".claude/skills/migrate-app/SKILL.md": "606cbb76b320fbd5515e3ea0d03077bde61c33f5e34d594026d776a9907e6114",
+    ".claude/skills/new-app/SKILL.md": "6fbe8782756ad0f45ddba98f8ca88f2995e6e6c2f8d8279a6d4601d31747c6dd",
+    ".claude/skills/prd-intake/SKILL.md": "194aef69b4a97b6e359ad90e263f897fc2036ea4d8fdeadf1324a927ae0bf20d",
+    ".claude/skills/release/SKILL.md": "b1e1360628605aaf80d15efca94257dccafa3cb04a50214500d3e97309ab770d",
+    ".claude/skills/test-handoff/SKILL.md": "15492a670cbd7307b54be2679c085bda98294f9a04cd40b0ac96807054fa0abe",
+    ".claude/studio/studio-sync.mjs": "ef7a33f16b05198295cf8c0027dbe960451a7fd62bb2756b57e4f06dab1eb961"
   }
 }
