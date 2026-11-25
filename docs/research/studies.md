@@ -9,3 +9,4 @@ Index of every study run under the [research framework](framework.md). Add a row
 | R-003 | [Driver interviews](R-003-driver-interviews/protocol.md) | Interviews (experiment E1) | standard | Designed, parked (D-014) |
 | R-004 | [Competitor scan](R-004-competitor-scan/protocol.md) | Competitor scan | standard | Reshape (S1 coverage contradicted by skeptic; S2 needs Ale's hands-on check of Canva) |
 | R-006 | [Market sizing](R-006-market-sizing/protocol.md) | Market analysis | standard | Needs primary research |
+| R-007 | [Canva gap check](R-007-canva-gap-check/protocol.md) | Competitor gap check (R-004 S2 follow-up) | standard | In progress |
