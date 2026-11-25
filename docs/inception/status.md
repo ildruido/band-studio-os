@@ -8,7 +8,7 @@ Status values: `not started`, `in progress`, `done`, `ongoing`.
 | --- | --- | --- | --- |
 | 1 | Refined product foundation doc | in progress | Interview running in thread "Refine product foundation doc" |
 | 2 | Validation, market research, riskiest hypotheses | in progress | R-001 reality check and R-002 size check done, both "Needs primary research" ([R-001](../research/R-001-persona-reality-check/report.md), [R-002](../research/R-002-band-count-size-check/report.md)). [Research plan](../research/research-plan.md) approved (D-014): ranks hypotheses, designs 3 experiments. Driver interviews designed as [R-003](../research/R-003-driver-interviews/protocol.md) and parked; fieldwork postponed. Research types built (D-015: `market-analysis`, `competitor-scan`, `competitive-analysis`). Competitor scan [R-004](../research/R-004-competitor-scan/report.md) run: verdict Reshape (coverage contradicted by the skeptic's search; Canva could not be opened, so the gap question needs Ale's hands-on check). Round 2 widening done ([addendum](../research/R-004-competitor-scan/addendum-1.md)); Ale declined the hands-on Canva check (D-025); [R-007](../research/R-007-canva-gap-check/report.md) replaces it with desk research plus a Gemini Deep Research route (both done, verdict Needs primary research; skeptic live-fetch re-check owed), then competitive analysis [R-005](../research/R-005-competitive-analysis/report.md) done: Reshape (C2 kill criterion triggered by Bandsintown Boost; Ale accepted and calls Boost an indirect reach competitor, D-027; C1 needs primary research; our planned product scores 76.7 against Canva 79.2). Gemini route for R-005 read; with its unopened sources counted as confirmed (D-026), no verdict changes; the quotes are sponsor-accepted, not verified. Market sizing [R-006](../research/R-006-market-sizing/report.md) done: Needs primary research (Italy plus UK revenue range 16k to 6.4M EUR a year, base 446k; income ladder instead of a threshold, D-022) |
-| 3 | MVP definition and roadmap | in progress | [mvp.md](mvp.md) and [roadmap.md](roadmap.md) drafted (D-028, D-029), awaiting Ale's review together |
+| 3 | MVP definition and roadmap | done | [mvp.md](mvp.md) and [roadmap.md](roadmap.md), approved by Ale 2026-11-25 (D-028, D-029). Assumptions to confirm: E2 before build, pilot of 5 to 10 bands |
 | 4 | Prototypes (interactive mock-ups) | not started | |
 | 5 | Project and repo set up; workflow from `app-studio`; next-steps recommendation | in progress | Project, repo, harness core and CI done; next-steps recommendation pending |
 | 6 | Architecture-phase handoff | not started | |
@@ -20,7 +20,6 @@ Status values: `not started`, `in progress`, `done`, `ongoing`.
 
 ## Open PRs awaiting Ale
 
-- MVP PR (draft scope in `mvp.md`) and roadmap PR: both awaiting Ale's review; merge only after his approval.
 - `app-studio` #20 (draft): harness change proposals from the consistency review. Awaiting Ale's review.
 
 ## Risks
