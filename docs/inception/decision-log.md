@@ -2,6 +2,14 @@
 
 Newest first. Each entry: id, date, decision, why, alternatives, who decided, status (`active`, `superseded by D-0NN`, `revisited`).
 
+### D-035 Prototype v2.1: draft later journeys on top of v2, in a separate artifact
+- **Date:** 2026-11-25
+- **Decision:** Prototype v2 stays as confirmed. Prototype v2.1 is a separate artifact that keeps the v2 MVP flow unchanged and adds draft journeys for future functionality in the Gig Wall design: the wall over time (week 1, month 1, month 6, year 1), a "what is next" picker, gig night, after the gig (thank-you carousel), a new-single sheet, a tour sheet, a short-video reel, linked channels ("post it for me"), the Us zine, and the pay moment. Every later screen carries a hazard-tape stripe and a black "Later" tag ("Idea" for gig night). The countdown timeline from the Control Desk is reworked to be light: one dashed line down the wall, a "today" marker, five stops at most, one highlighted next step, no faders or tracks. The thank-you carousel has no photos, following the roadmap's light first version (L1, D-028). Chat mode and Instagram or Bandcamp link reading stay out (D-034).
+- **Why:** Interviewees can see how the product grows and tell the first version from the later ideas, without changing the base Ale confirmed.
+- **Alternatives:** Edit v2 in place (rejected: loses the confirmed baseline).
+- **Decided by:** Ale (direction); Claude (details, to be reviewed by Ale)
+- **Status:** active
+
 ### D-034 Gig Wall is the base for prototype v2; ideas from the other two alternatives are kept for later
 - **Date:** 2026-11-25
 - **Decision:** Alternative A, the Gig Wall ([design-alternatives.md](design-alternatives.md)), is the base design for prototype v2, with the look already adopted in D-032. The Tour Manager ideas (a chat or prompting mode, and reading an Instagram or Bandcamp link to set up identity) are kept on the bench: not in prototype v2, to revisit later. From the Control Desk, only the countdown timeline idea is kept for releases and tours. Ale notes the desk is too heavy on functions, so that idea needs a heavy rethink before it is used.
