@@ -38,3 +38,21 @@ Ale ran [gemini-prompt.md](gemini-prompt.md) in Gemini Deep Research and returne
 - **C4:** unchanged. Authenticity backlash gets one more verified voice (G-02), reinforcing it as a design constraint: output must be clearly the band's own, with the human in the loop.
 - **Matrix:** Mew Design's Italian score becomes 2 (weighted 59.5 excluding unknowns, 41.7 counting unknowns as 0). No ranking changes.
 - **Study verdict:** Reshape (unchanged).
+
+## Re-evaluation: Gemini's unopened sources accepted (D-026)
+
+Ale told us to count Gemini's unopened sources as confirmed (sponsor-accepted, not opened by me; the Reddit voices are grade B as Gemini states). Result:
+
+| Id | Before | Now | Why |
+| --- | --- | --- | --- |
+| C1 Meaningful gap (key) | Insufficient, Low | Insufficient, Low | No timing or identity evidence added. Voices describe doing the job by hand with free Canva; none uses a guided one-flow tool |
+| C2 Durable (key) | Contradicted by criterion (ii) | **Contradicted, unchanged** | Reddit voices show bands already list gigs through Bandsintown ("really good for posting gigs"); that makes Boost adoption plausible. Velveteen still calls it a bad spend for small bands without a ticket margin |
+| C3 Customers would switch | Insufficient, Low | **Contradicted, Low** | Kill criterion: two independent B voices from different communities say a free or cheap general tool is good enough. Met: r/musicians ("Canva is free and simple enough for a grade-schooler"), r/bandmembers ("keep Canva Pro"), r/canva, r/Bluegrass. Low because they are all one platform and say "good enough for the flyer", not for the whole campaign. Not a key hypothesis, so the study verdict does not change, but the product's premise gets weaker. Switching does happen for speed (one r/bandmembers voice moved to PosterMyWall) |
+| C4 Position claimable | Insufficient, Low | Insufficient, Low | Nothing new on who owns the message. Authenticity risk strengthened, see below |
+| Study | Reshape | **Reshape** | Unchanged: C2 still triggers it |
+
+**Where the evidenced pain sits (new).** The B voices complain about hours of short-form video editing, throttled Facebook reach, paid ads they cannot afford, and having no time or energy for social media. They do **not** complain about making the flyer: Canva Free is called easy enough. So the desk evidence points at time spent on content and at reach, and away from poster generation as the main pain. That does not prove the campaign pain is absent (C1 is still open); it means the interviews (E1) must ask unprompted what eats the evenings before showing any flyer.
+
+**Authenticity, reread.** Reddit voices (1.8K upvotes in one thread, unopened) say AI posters turn gig-goers away, a Finnish festival (verified) bans AI art, and the same communities accept template tools. For the reshape: do not sell it as "AI poster generator"; the output must read as the band's own, built from its identity, with a human approving.
+
+**Matrix.** Canva's "low switching effort" score of 3 is now supported by B voices (it was resting on secondary guides). No other score changes; ranking unchanged.

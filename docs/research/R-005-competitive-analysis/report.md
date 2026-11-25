@@ -1,6 +1,6 @@
 # R-005 Competitive analysis: report
 
-Protocol: [protocol.md](protocol.md), pre-registered in commit c8b8266 on 2026-11-25. Tier: standard. Method: `docs/research/framework.md` and the `competitive-analysis` skill. Accessed 2026-11-25. Inputs: [R-004](../R-004-competitor-scan/report.md) and [R-007](../R-007-canva-gap-check/report.md) (evidence ids from them are written `R7-E-nn` and `R4-E-nn`; new ones are `E-nn`). Status: **desk route and skeptic review done; Gemini route read, see [addendum-1.md](addendum-1.md) (most of its sources are Reddit and could not be opened)** ([gemini-prompt.md](gemini-prompt.md)).
+Protocol: [protocol.md](protocol.md), pre-registered in commit c8b8266 on 2026-11-25. Tier: standard. Method: `docs/research/framework.md` and the `competitive-analysis` skill. Accessed 2026-11-25. Inputs: [R-004](../R-004-competitor-scan/report.md) and [R-007](../R-007-canva-gap-check/report.md) (evidence ids from them are written `R7-E-nn` and `R4-E-nn`; new ones are `E-nn`). Status: **desk route and skeptic review done; Gemini route read and, by Ale's decision D-026, its unopened Reddit sources are counted as confirmed: see [addendum-1.md](addendum-1.md)** ([gemini-prompt.md](gemini-prompt.md)).
 
 ## Verdict
 
@@ -10,7 +10,7 @@ Protocol: [protocol.md](protocol.md), pre-registered in commit c8b8266 on 2026-1
 | --- | --- | --- | --- |
 | C1 Meaningful gap (key) | Insufficient evidence | Low | No competitor reaches 3, 3, 2 on cost, time and identity with an independent source, but time is unmeasured everywhere and identity rests on vendor pages plus two reviewers' side remarks |
 | C2 Durable (key) | **Contradicted** (kill criterion (ii) triggered by Boost; Mixed if Ale overrides) | Low | Boost is a shipped, music-specific gig promotion flow (reach, no creative). Independent evidence shows Simplified applies a brand kit and asks approval (E-07), but not a brief-to-multi-format flow, so (i) is not triggered. Nobody has shipped the band-specific creative layer, but nothing shows it is hard to copy |
-| C3 Customers would switch | Insufficient evidence | Low | No readable band voices; Reddit and Facebook are closed to us |
+| C3 Customers would switch | **Contradicted** (after Ale's D-026: Gemini's unopened Reddit voices accepted; Insufficient evidence without them) | Low | Reddit voices from several communities say free Canva is good enough for the flyer; the pain they describe is video, reach and time, not flyer design (addendum 1) |
 | C4 Position claimable | Insufficient evidence | Low | Not shown to be taken: no page I opened states "your gig campaign in your band's voice", but Krumzi (DJs), CapCut's band post page (E-09) and Orphiq are near, and Piktochart's concert poster page was blocked (403) |
 
 ## What to reshape (proposal for Ale)
@@ -19,13 +19,15 @@ Protocol: [protocol.md](protocol.md), pre-registered in commit c8b8266 on 2026-1
 2. **Do not claim the generic flow as ours.** Simplified and Canva AI 2.0 are close to it. The claim has to rest on the band-specific layer, which the blind output test (E2) must prove.
 3. **Re-read R-004's S4** with the same rule (the skeptic's ruling below): it reads Contradicted.
 
+**Reshape proposal, addition after D-026:** the evidenced pain is time spent on content and on reach, not designing the flyer; and AI-made posters carry a reputation risk where template tools do not. So position as the band's own campaign, human-approved, not as an AI poster generator.
+
 ## Strongest evidence against our idea (read first)
 
 1. **Canva wins the pre-registered scoring.** Free to use, known by everyone, 13 to 18 USD for Pro, saved Brand Kit, print PDF (R7-E-03, R7-E-04, R7-E-15). Our product's planned edge (a guided campaign) is only "planned", and in the base case only what exists counts.
 2. **The generic flow is close.** An independent review says Simplified's agent "automatically applies your brand kit" and by default seeks approval before publishing (E-07); it does not show a brief-to-flyer-and-story flow. Canva AI 2.0 aims at the same flow, in preview (R7-E-01, **not re-verified by the skeptic**: the page came back truncated, a live re-check is owed).
 3. **A music-specific design tool already exists for DJs.** Krumzi sells "gig flyer, booking announcement" design with a Brand Kit, a 3-day trial and a 49 USD one-month pass (E-03, E-04). Vendor pages only, but it shows the "band-specific" layer can be built by a small vendor.
 4. **Music-specific reach is being sold by a platform that owns the audience.** Bandsintown's Boost costs from 50 USD per show and needs "no creative" (E-01). It does not replace a flyer, but it competes for the same promotion budget of a band.
-5. **Habit is free.** The cheapest competitor is a free Canva plan, a friend, or nothing. No source measures how much pain that leaves (C3 unproven).
+5. **Habit is free, and bands say so.** Reddit voices (accepted under D-026, not opened by me) call free Canva "simple enough" and keep Canva Pro, and C3 is now Contradicted at Low confidence. The pain they describe is video, reach and time, not the flyer.
 
 ## Criteria and weights
 

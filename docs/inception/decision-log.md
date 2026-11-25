@@ -2,6 +2,14 @@
 
 Newest first. Each entry: id, date, decision, why, alternatives, who decided, status (`active`, `superseded by D-0NN`, `revisited`).
 
+### D-026 Count Gemini's unopened sources as confirmed, and re-evaluate R-007 and R-005
+- **Date:** 2026-11-25
+- **Decision:** Ale told us to treat the sources in Gemini's Deep Research reports that Claude could not open (mostly Reddit threads, which the cloud environment blocks) as confirmed, and to re-evaluate both studies. They are graded as Gemini states them (first-hand voices are grade B), labelled "sponsor-accepted, not opened" in the reports, and each re-evaluation shows what changes. See [R-007 addendum 1](../research/R-007-canva-gap-check/addendum-1.md) and [R-005 addendum 1](../research/R-005-competitive-analysis/addendum-1.md).
+- **Why:** Claude cannot read Reddit from here and Ale can read what Gemini quoted; the voices of band members are exactly the evidence desk research lacked.
+- **Alternatives:** Keep them at "unverified, no weight" (the framework default; Ale overrode it for these sources). The framework rule that a source must be opened by the lead stays in force for all other sources.
+- **Decided by:** Ale
+- **Status:** active
+
 ### D-025 Replace the hands-on Canva check with desk research plus Gemini Deep Research
 - **Date:** 2026-11-25
 - **Decision:** Ale declined the one-hour hands-on check of Canva and PosterMyWall ([hands-on-check.md](../research/R-004-competitor-scan/hands-on-check.md)). Instead the gap against Canva and similar tools (PosterMyWall, Adobe Express, Mew Design, Simplified) is checked by two independent routes under study [R-007](../research/R-007-canva-gap-check/report.md): desk research by Claude, and a Gemini Deep Research report that Ale runs from a neutral prompt. The result feeds the inputs of R-005 (competitive analysis), which is not started.

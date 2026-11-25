@@ -4,6 +4,8 @@ Protocol: [protocol.md](protocol.md), pre-registered in commit 229dce0 on 2026-1
 
 ## Verdict
 
+> **Update 2026-11-25 (D-026):** with Gemini's unopened sources counted as confirmed, G2 reads Mixed (Low) and the study verdict is unchanged: see [addendum-1.md](addendum-1.md). The text below is the original.
+
 **Needs primary research.** Desk research cannot settle the key hypothesis G1. It also points one way worth watching: the pieces and, by vendors' own claims, a "brief in, campaign out" flow now exist as generic products (vendor-only so far). Nobody is shown, by an independent source, doing it for a band's gig. No kill criterion is triggered.
 
 | Id | Verdict | Confidence | Why in one line |
