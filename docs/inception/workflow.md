@@ -45,7 +45,7 @@ All of them live in `docs/inception/`, except research studies, which live in `d
 | 3 | Market scan and riskiest hypotheses | `market-and-hypotheses.md` | `riskiest-hypotheses` | 2 |
 | 4 | Success metrics | `success-metrics.md` | `inception-interview` | 8 |
 | 5 | Constraints and non-goals | `constraints.md` | `inception-interview` | 9 |
-| 6 | MVP definition and roadmap | `mvp-and-roadmap.md` | `inception-interview` + `product-management:write-spec` / `roadmap-update` | 3 |
+| 6 | MVP definition and roadmap | `mvp.md` and `roadmap.md` (two PRs; roadmap derived from the MVP) | `inception-interview` + `product-management:write-spec` / `roadmap-update` | 3 |
 | 7 | Prototypes (interactive mock-ups) | `prototypes.md` (index of Artifact links) | `prototype` | 4 |
 | 8 | Decision log | `decision-log.md` | `decision-log` (ongoing) | 10 |
 | 9 | Architecture handoff (product + meta-architecture) and next steps | `architecture-handoff.md` | `architecture-handoff` | 5, 6 |
@@ -98,5 +98,5 @@ They lean on skills that already exist: `product-management:*` (brainstorm, comp
 At the end of inception:
 
 1. `architecture-handoff` writes the product and meta-architecture input, including the App profile draft (domain rules, capabilities, AI plan) and any extra skills, plugins or agents needed on top of `app-studio`.
-2. After sign-off, `app-studio`'s `new-app` completes the harness already installed here: it adds the stack packs, keeps these docs and skills, and merges its template into `CLAUDE.md`, dropping the inception-only rules. `prd-intake` then reads `mvp-and-roadmap.md` and the decision log directly to write `docs/PRD.md` and `docs/BACKLOG.md`.
+2. After sign-off, `app-studio`'s `new-app` completes the harness already installed here: it adds the stack packs, keeps these docs and skills, and merges its template into `CLAUDE.md`, dropping the inception-only rules. `prd-intake` then reads `mvp.md`, `roadmap.md` and the decision log directly to write `docs/PRD.md` and `docs/BACKLOG.md`.
 3. If this layer worked well, upstream it to `app-studio` as a generic discovery stage (`harness-sync` part B). Until then, `app-studio` stays untouched.
