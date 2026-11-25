@@ -2,6 +2,14 @@
 
 Newest first. Each entry: id, date, decision, why, alternatives, who decided, status (`active`, `superseded by D-0NN`, `revisited`).
 
+### D-030 Prototype v1 scope and language
+- **Date:** 2026-11-25
+- **Decision:** The first prototype is one clickable Artifact page covering the whole approved MVP flow (D-028), phone-first, with canned output and an invented Italian band. The interface is in English; sample content and captions are Italian with an English switch. Artwork is drawn from type, colour and texture, with no photos, because the MVP has no photo upload.
+- **Why:** Ale wants something to show in driver interviews (exit criterion 4). One page, with no setup, opens on any phone. English keeps it readable for Ale and any reviewer while the Italian content keeps the sample realistic for the first market (D-012).
+- **Alternatives:** A fully Italian interface (more work, more to translate if the design changes); several small prototypes, one per screen (harder to show the whole story).
+- **Decided by:** Claude's call within the brief; **Ale to confirm when reviewing the prototype**
+- **Status:** active (pending Ale's review)
+
 ### D-029 The MVP pilot is free; payment is tested separately
 - **Date:** 2026-11-25
 - **Decision:** The first pilot bands use the MVP for free. There is no checkout or invoicing in the MVP. Willingness to pay stays with the E3 price test and a paid-campaign commitment asked at the end of the pilot.
