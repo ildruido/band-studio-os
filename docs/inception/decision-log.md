@@ -2,6 +2,22 @@
 
 Newest first. Each entry: id, date, decision, why, alternatives, who decided, status (`active`, `superseded by D-0NN`, `revisited`).
 
+### D-031 Close prototype v1; refine the UX design before building v2
+- **Date:** 2026-11-25
+- **Decision:** Prototype v1 is closed: the flow works, but the design is too functional and too much like a generic AI app. A separate UX design task refines the design (phone-native feel, realistic look) before a second prototype is built.
+- **Why:** An interview prototype that looks fake or poor undermines what drivers tell us. It has to feel like a real product for a real band.
+- **Alternatives:** Iterate on v1 directly (rejected: the problem is the design approach, not details).
+- **Decided by:** Ale
+- **Status:** active
+
+### D-030 Prototype v1 scope and language
+- **Date:** 2026-11-25
+- **Decision:** The first prototype is one clickable Artifact page covering the whole approved MVP flow (D-028), phone-first, with canned output and an invented Italian band. The interface is in English; sample content and captions are Italian with an English switch. Artwork is drawn from type, colour and texture, with no photos, because the MVP has no photo upload.
+- **Why:** Ale wants something to show in driver interviews (exit criterion 4). One page, with no setup, opens on any phone. English keeps it readable for Ale and any reviewer while the Italian content keeps the sample realistic for the first market (D-012).
+- **Alternatives:** A fully Italian interface (more work, more to translate if the design changes); several small prototypes, one per screen (harder to show the whole story).
+- **Decided by:** Claude's call within the brief; Ale accepted the flow on review
+- **Status:** active (Ale reviewed v1: flow accepted, design to be redone, see D-031)
+
 ### D-029 The MVP pilot is free; payment is tested separately
 - **Date:** 2026-11-25
 - **Decision:** The first pilot bands use the MVP for free. There is no checkout or invoicing in the MVP. Willingness to pay stays with the E3 price test and a paid-campaign commitment asked at the end of the pilot.
