@@ -1,6 +1,6 @@
 # R-007 Canva gap check: report
 
-Protocol: [protocol.md](protocol.md), pre-registered in commit 229dce0 on 2026-11-25. Tier: standard. Method: `docs/research/framework.md`. Accessed 2026-11-25. Status: **desk route done; Gemini route pending** (prompt in [gemini-prompt.md](gemini-prompt.md)). The Gemini section below is filled in when Ale returns the report.
+Protocol: [protocol.md](protocol.md), pre-registered in commit 229dce0 on 2026-11-25. Tier: standard. Method: `docs/research/framework.md`. Accessed 2026-11-25. Status: **both routes done** (desk route and Gemini route, prompt in [gemini-prompt.md](gemini-prompt.md)). The skeptic's live-fetch re-check is still owed.
 
 ## Verdict
 
@@ -8,13 +8,13 @@ Protocol: [protocol.md](protocol.md), pre-registered in commit 229dce0 on 2026-1
 
 | Id | Verdict | Confidence | Why in one line |
 | --- | --- | --- | --- |
-| G1 Gap holds (key) | Insufficient evidence | Low | No tool is shown to meet all three conditions, but Simplified's own pages claim most of them (brief to captions and creative in a saved brand kit, with approval and scheduling, from $19 a month) and no independent source tests it. Canva's own pages could not be opened |
-| G2 Identity fit | Insufficient evidence | Low | One C voice in this log (designers on AI posters in general) says generic; none test these tools on a band's own look, and "Supported" needs medium confidence. R-004's venue and designer voices point the same way but were not re-opened here |
+| G1 Gap holds (key) | Insufficient evidence | Low | No tool is shown to meet all three conditions, but Simplified's own pages claim most of them (brief to captions and creative in a saved brand kit, with approval and scheduling, from $19 a month) and no independent source tests it. Canva's own pages could not be opened. The Gemini route reached the same conclusion from its own sources |
+| G2 Identity fit | Mixed | Low | Independent C voices say Canva output "can read as 'templated'" unless customised (E-23, E-15) and that AI posters are generic (E-12); the same reviewers say it looks polished when customised (E-15). Venue and press pushback is against AI posters, not tested on these tools (E-19 to E-22). No B voices from band drivers could be opened |
 | G3 Canva closing | Insufficient evidence | Low | The kill criterion needs a Canva help page or tutorial, and Canva's pages returned 403, so it could not be tested. One journalist (C) reports a prompt-to-campaign flow in a research preview |
 
 ## Strongest evidence against our hypothesis (read first)
 
-1. **Simplified now describes our flow, for general small businesses.** Its page says: "Brief Riley once. Riley creates your social posts, emails, and campaign assets, keeps everything in your brand, and gets it ready to publish. You review." (E-07). Its pricing page says "Nothing ships until you approve it", lists scheduling, and shows Pro at "$19 per month" billed annually (E-06). That price is not the cost of the whole job: the same page says AI features "are billed as you use them" and plan credits do not roll over, and no credit allowance per campaign is visible. R-004 saw a Starter plan at 79 USD a month; the offer differs now (one earlier data point, so a possible change, not a trend). This is vendor material only (D), unconfirmed by any independent source, and the page does not show a flyer or a 9:16 story, so condition (a) is not shown. It is the closest match to our guided, approve-before-publish flow found so far.
+1. **Simplified now describes our flow, for general small businesses.** Its page says: "Brief Riley once. Riley creates your social posts, emails, and campaign assets, keeps everything in your brand, and gets it ready to publish. You review." (E-07). Its pricing page says "Nothing ships until you approve it", lists scheduling, and shows Pro at "$19 per month" billed annually (E-06). That price is not the cost of the whole job: the same page says AI features "are billed as you use them" and plan credits do not roll over, and no credit allowance per campaign is visible. A 79 USD "campaign-based Starter" plan is also still advertised (E-18). This is vendor material only (D), unconfirmed by any independent source, and the page does not show a flyer or a 9:16 story, so condition (a) is not shown. It is the closest match to our guided, approve-before-publish flow found so far.
 2. **Canva's own AI is moving to the same flow.** Creative Bloq (C, 2026-04-16): "You can instantly generate content in multiple formats, making it a potential time-saver for multi-channel campaigns" and Canva has "a Memory Library. It can remember styles, helping to keep projects on brand" (E-01). Preview only: "currently available as a research preview".
 3. **The cost line is not a barrier.** Canva Pro is 18 USD a month or 144 USD a year (E-03, E-04); PosterMyWall lists 13 USD a month (E-09); Mew Design's Hobby plan shows 5.69 USD a month, billing period not visible (E-08). The sticker prices sit under our 25 EUR line; the cost of a full gig set on credit-metered plans is unknown, so treat this as indicative only.
 
@@ -24,13 +24,13 @@ Ratings are 0 (poor) to 3 (strong) for a non-designer band driver. **n/e** means
 
 | Tool | Time | Cost | Steps (guided?) | Identity fit | Multi-format campaign |
 | --- | --- | --- | --- | --- | --- |
-| Canva | n/e | 3 (Pro 12 to 18 USD, E-03, E-04) | 2 claimed: separate features today (templates, Magic Switch resize on Pro, Brand Kit); one-prompt campaign only in AI 2.0 preview (E-01, E-02) | 2: 1 Brand Kit (3 colours) free, 5 on Pro (E-04); memory claimed (E-01) | n/e (story handling only in unopened Canva help pages, E-05) |
+| Canva | 2 reviewer claim, not a benchmark: "ten minutes" per design, under a minute to resize (E-15); no end-to-end timing | 3 (Pro 12 to 18 USD, E-03, E-04; UK £13 a month or £100 a year per E-15, E-16) | 2 claimed: separate features today (templates, Magic Switch resize on Pro, Brand Kit); one-prompt campaign only in AI 2.0 preview (E-01, E-02) | 2: 1 Brand Kit (3 colours) free, 5 on Pro (E-04); memory claimed (E-01) | n/e (story handling only in unopened Canva help pages, E-05) |
 | PosterMyWall | n/e | 3 claimed (13 USD a month, E-09) | 2 claimed: "Bands" templates, Resize, AI Caption Writer, Content Planner as separate menu tools (E-09) | 2 claimed: Brand Kits listed; limit per plan not opened | 2 claimed |
 | Adobe Express | n/e | n/e (pricing table did not render) | 1 to 2: flyer maker with "Band Flyers" templates and prompt-based template generation; no guided campaign seen (E-10) | 2 claimed: "set up multiple brands" on web (E-10) | 1: scheduling and story crops not seen |
 | Mew Design | n/e | 3 claimed (Hobby 5.69 USD as shown, billing period unknown; 500 credits, E-08) | 2 claimed: poster first, then "ask" for story, square, banner crops (E-11) | 1: upload logo and photos per poster; saved identity across gigs not shown | 2 claimed: poster plus crops; no captions or scheduling seen |
 | Simplified | n/e (vendor claims "15 minutes" a week, E-07) | 2 claimed (Pro 19 USD annual; AI use is credit-metered, so the cost of a campaign is unknown, E-06) | 3 claimed, vendor page only: one brief gives plan, posts, captions, creative, approval, scheduling (E-07) | 2 claimed: "Connect your logo, colors, fonts, and voice once" (E-07); not music specific | 2: Instagram posts and captions shown; flyer and story not shown |
 
-No source gives minutes from gig details to a full set for any tool, so **time is unrated everywhere**. This is the biggest hole in the desk route; only a timed trial or Gemini's sources can fill it.
+No source gives measured minutes from gig details to a full set for any tool. The only figures are one reviewer's claims for Canva (E-15), so **time is unrated for the other four**. Gemini's report also found no end-to-end timing study. Only a timed trial fills this hole.
 
 ## Does anyone say it is good enough, or generic?
 
@@ -57,13 +57,29 @@ No source gives minutes from gig details to a full set for any tool, so **time i
 | E-13 | G2 | neutral | [Sonicbids Canva gig poster tutorial](https://blog.sonicbids.com/tutorial-how-to-create-a-beautiful-gig-poster-when-you-cant-afford-a-graphic-designer) | 2016-01-28 | D (stale) | no | "a lot of these layouts will cost $1 to use" | Opened. Stale, no weight |
 | E-14 | G2 | for | [remio.ai on generic output](https://www.remio.ai/post/canva-ai-design-tools-spark-debate-over-generic-output) | 2026-06-18 | D | no | "Many designers now fear the result will be a wave of low-effort graphics" | Opened. No named tests; excluded |
 
+| E-15 | G1, G2 | neutral | [Whito Canva review](https://whito.co.uk/tools/canva/) | Whito (UK), 2026-03-30, modified 2026-11-23 | C | unknown | "What used to take a designer an hour takes you ten minutes"; "Designs look distinctly "Canva" to anyone who uses the tool regularly"; "No CMYK, no spot colour support, and PDF quality is not print-shop reliable" | Opened via Gemini's citation. A reviewer's claim, not a measured benchmark |
+| E-16 | G1 | neutral | [Wise guide to Canva pricing](https://wise.com/gb/blog/canva-pricing) | Wise, 2025-07-15 | C | no | "The Canva Pro plan costs £13 per month when billed monthly or £100 per year for a single user." | Opened. Older than the others; E-26 shows Canva prices moving in 2026 |
+| E-17 | G1 | against | [SpeedRun Social tools roundup](https://www.speedrunsocial.com/best-ai-social-media-tools-for-small-business) | SpeedRun Social, 2026-08-28 | D (competing vendor: "this is our product") | yes | "Billed annually, Pro read $19 a month ... Clicking Monthly changed the same three to $29"; "Bulk post scheduling is not included on Pro or Business and is sold as an add-on at $19 a month" | Opened. Corroborates E-06; US dollars |
+| E-18 | G1 | against | [Brand Tool Guide Simplified review](https://brandtoolguide.com/simplified-review/) | Sept 2026 | C/D | unknown | "Plan cards recorded in September 2026 ran from $19 a month (Pro, billed yearly) to $149 a month (Growth, billed yearly), with a newer campaign-based "Starter" plan advertised at $79 a month." | Opened |
+| E-19 | G2 | for | [CBC on AI-generated artwork pushback](https://www.cbc.ca/news/canada/nova-scotia/canada-s-music-scene-sees-pushback-against-ai-generated-artwork-9.7324581) | CBC News, Canada, 2025 | C | no | "announced it will not share any AI-generated posters or flyers online or on-site" | Opened. Venue against AI posters, not these tools |
+| E-20 | G2 | for | [Exclaim! on concert posters and AI](https://exclaim.ca/music/article/concert-posters-are-forcing-canadian-venues-into-the-battle-against-ai-art) | Exclaim!, Canada, 2026-10-26 | C | no | "Bands relying on AI-generated gig posters to promote their events could risk losing out on shows" | Opened |
+| E-21 | G2 | for | [Devizine](https://devizine.com/2026/04/23/great-band-shame-about-the-poster-stop-using-ai-for-promotion/) | Devizine, UK, 2026-04-23 | C | no | "Great Band, Shame About the Poster; Stop Using AI For Promotion!" (headline) | Opened; only the headline was checked |
+| E-22 | G2 | for | [Midnight Rebels](https://midnightrebels.com/ai-event-posters-ticket-sales-backlash/) | 2026-07-08 | D (marketing blog) | yes | "Consumers are experiencing severe fatigue from synthetic event flyers" | Opened. No weight |
+| E-23 | G2 | for | [IceAI Canva AI review](https://iceai.co.uk/tools/canva-ai/) | IceAI (UK), 2026-07-01 | C | unknown | "Canva's output can read as 'templated' if you don't invest effort in customising it." | Opened |
+| E-24 | G1, G2 | neutral | [Style Factory Adobe Express vs Canva](https://www.stylefactoryproductions.com/blog/adobe-express-vs-canva) | 2026-11-03 | C | unknown | "Free plan users can't make any brand kits in Adobe Express at all" | Opened |
+| E-25 | G1 | neutral | [Best Social Media Scheduler](https://bestsocialmediascheduler.com/compare/adobe-express-content-scheduler-vs-later) | 2026-10-13 | C/D | unknown | "One connected account per supported network, including YouTube" | Opened. Adobe free-tier scheduling |
+| E-26 | G1 | neutral | [Subscription Playbook on Canva](https://www.subscriptionplaybook.com/pricing-teardowns/canva/) | 2026-10-27 | C | no | "28 Jul 2026: US Pro annual price raised from $144 to $180 ... 11 Sep 2026: Pro returned to $144." | Opened |
+| E-27 | G1 | neutral | [Adobe Express UK pricing](https://www.adobe.com/uk/express/pricing) | Adobe, 2026-11-25 | D | yes | "auto-apply logos and brands to your designs" (Premium) | Opened. Gemini's "£9.98" not found in the readable text; unverified |
+| E-28 | G1 | neutral | [RFP.wiki VistaCreate vs Kittl](https://www.rfp.wiki/design-multimedia/vistacreate/kittl) | undated | D | unknown | "paid Pro tier billed at $10/month when paid annually" | Opened. Lead for R-005 |
+
 ### Excluded or not opened
 
 | Source | Reason |
 | --- | --- |
 | canva.com pages (pricing, help, Magic Design, newsroom), Fast Company, TweakTown, PosterMyWall support centre | HTTP 403 for automated access. Not worked around |
 | Adobe Express pricing table | Loaded by script; did not render |
-| Reddit, Facebook, YouTube | Not tried or unreadable here; no band driver voices (B) in this route |
+| Reddit threads cited by Gemini (r/bandmembers, r/musicians, r/canva, r/Bluegrass and others), Facebook, YouTube | Reddit returned an empty page to a plain request; the B-grade band voices Gemini quotes are unverified |
+| Bristol24/7, G2 reviews (via Gemini) | HTTP 403; not worked around |
 | Lovart comparison, Dreamina comparison | Vendors of competing tools; leads only |
 
 ## What we could not find
@@ -85,7 +101,26 @@ Search results arrive as summaries, so every claim above rests on pages actually
 
 ## Gemini route
 
-Pending. Ale pastes [gemini-prompt.md](gemini-prompt.md) into Gemini Deep Research and returns the report; each claim counts only after its cited source is opened.
+Ale ran [gemini-prompt.md](gemini-prompt.md) in Gemini Deep Research and returned a 14-page report ("Promoting Independent Band Gigs With Current Design and Social Tools", 46 cited sources). The report itself is an AI summary (grade D); only claims whose cited page I opened count. I opened 19 of its cited pages and found the quoted text on 17 (E-15 to E-28 and re-used pages); the rest are under Excluded or not opened.
+
+**What Gemini concluded:** a non-designer can produce flyer, story, post, captions and scheduled posts inside one app for roughly £10 to £13 a month (Canva, Adobe Express, PosterMyWall, VistaCreate), but "no low-budget tool currently generates all five deliverables from a single gig brief in one hands-off flow". Simplified is the closest, with written brand voice, at a higher price and no free plan. It also found that purely AI-made posters meet venue bans and audience fatigue in the UK and Canada, while template tools are accepted. It found no end-to-end timing study.
+
+**Where it agrees with the desk route:** no tool is shown to do the whole job in one guided flow (G1 stays Insufficient evidence, Low, with both routes pointing the same way); Simplified and Canva AI are the nearest threats; sticker prices fit the line; time is unmeasured.
+
+**What it added (all opened):**
+- UK prices: Canva Pro £13 a month or £100 a year (E-15, E-16; E-16 is dated 2025-07-15, so possibly stale). Simplified Pro is 29 USD a month, or 19 USD billed annually, with no free plan, a 1 USD 7-day trial, a written "brand style and voice" on Pro, 10K AI credits as the cap, and bulk scheduling as a 19 USD a month add-on (E-17). The 79 USD "campaign-based Starter" is still advertised (E-18).
+- Canva Free allows one 3-colour Brand Kit, Pro five; Adobe Express free cannot make brand kits (E-24).
+- Scene reaction: a Halifax venue announced it "will not share any AI-generated posters or flyers" (E-19, CBC); Exclaim! says bands relying on AI posters "could risk losing out on shows" (E-20, 2026-10-26); Devizine's headline urges bands to stop using AI for promotion (E-21, 2026-04-23). A promotion blog claims "severe fatigue" with synthetic flyers (E-22, grade D).
+- Reviewer voices on Canva output: "can read as 'templated' if you don't invest effort in customising it" (E-23) and "Designs look distinctly 'Canva'" (E-15). Both are C-grade reviewers; neither tests a band's own look.
+- New leads for R-005: VistaCreate (10 USD a month billed yearly, unlimited Brand Kits, E-28) and Kittl (19 USD a month); no independent tests found.
+
+**Where I could not follow Gemini:**
+- It calls SpeedRun Social "independent audit data". The page says "this is our product" and ranks itself first, so it is a competing vendor (D). Its Simplified price rows match Simplified's own page and Brand Tool Guide (E-18), so I use them only as corroboration.
+- The Reddit quotes (a cover-band promoter saying Canva is good enough; a musician moving to PosterMyWall), the Bristol24/7 article and the G2 reviews could not be opened (Reddit returned an empty page, the others 403). These are the B voices we most wanted, so they stay unverified and carry no weight.
+- Canva's own pages (403). Adobe's UK "£9.98 a month" is script-loaded and not in the page text I could read, so it is unverified.
+- Its 0 to 3 ratings table is Gemini's own judgement. I did not adopt it; ours is the table above.
+
+**Effect on hypotheses:** G1 unchanged (Insufficient evidence, Low). G2 moves from Insufficient to Mixed, Low (voices both ways). G3 unchanged: still no Canva help page or tutorial opened. Study verdict unchanged: **Needs primary research**.
 
 ## Skeptic review
 

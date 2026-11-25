@@ -1,6 +1,6 @@
 # R-007 Gemini Deep Research prompt (route 2)
 
-Written to be neutral: it names no product of ours and does not hint at an expected answer. Ale pastes it into Gemini Deep Research and returns the full report (with its source list) to the thread. Sent on 2026-11-25.
+Written to be neutral: it names no product of ours and does not hint at an expected answer. Ale pastes it into Gemini Deep Research and returns the full report (with its source list) to the thread. Sent on 2026-11-25; the returned report is saved as [gemini-report.pdf](gemini-report.pdf).
 
 ```text
 Research question: how well can an independent music band that promotes its own gigs get a complete, good-looking set of promotion material today using existing design and social tools?
