@@ -21,7 +21,6 @@ Status values: `not started`, `in progress`, `done`, `ongoing`.
 ## Open PRs awaiting Ale
 
 - Prototype v2.1 PR (later journeys): awaiting Ale's review; merge held.
-- [PR #43](https://github.com/ildruido/band-studio-os/pull/43): design alternatives, with Ale's choice recorded. Awaiting Ale's approval to merge.
 - `app-studio` #20 (draft): harness change proposals from the consistency review. Awaiting Ale's review.
 
 ## Risks
