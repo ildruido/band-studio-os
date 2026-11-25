@@ -37,7 +37,7 @@ Ale ran [gemini-prompt.md](gemini-prompt.md) in Gemini Deep Research and returne
 - **C3:** unchanged, Insufficient evidence (Low). The band voices on "free Canva is enough" and on cost are all Reddit and unreadable here. Gemini's picture is plausible, not verified. It is the strongest argument for the interviews (E1).
 - **C4:** unchanged. Authenticity backlash gets one more verified voice (G-02), reinforcing it as a design constraint: output must be clearly the band's own, with the human in the loop.
 - **Matrix:** Mew Design's Italian score becomes 2 (weighted 59.5 excluding unknowns, 41.7 counting unknowns as 0). No ranking changes.
-- **Study verdict:** Needs primary research (Reshape on the literal reading, overridden by Ale, D-027).
+- **Study verdict:** Reshape (unchanged, accepted by Ale, D-027).
 
 ## Re-evaluation: Gemini's unopened sources accepted (D-026)
 
@@ -46,10 +46,10 @@ Ale told us to count Gemini's unopened sources as confirmed. They are **sponsor-
 | Id | Before | Now | Why |
 | --- | --- | --- | --- |
 | C1 Meaningful gap (key) | Insufficient, Low | Insufficient, Low | No timing or identity evidence added. The voices describe doing the job by hand in Canva or PosterMyWall; none describes a guided one-flow tool |
-| C2 Durable (key) | Contradicted by criterion (ii) | **Mixed after Ale's override (D-027); the literal reading is unchanged** | A Reddit voice calls Bandsintown "really good for posting gigs" (bands already use the platform). Velveteen (verified) still calls Boost a bad spend for small bands without a ticket margin |
+| C2 Durable (key) | Contradicted by criterion (ii) | **Contradicted, unchanged (accepted by Ale, D-027)** | A Reddit voice calls Bandsintown "really good for posting gigs" (bands already use the platform). Velveteen (verified) still calls Boost a bad spend for small bands without a ticket margin |
 | C3 Customers would switch | Insufficient, Low | **Insufficient, Low** (leaning against) | The kill criterion needs two independent voices saying a free or cheap tool is good enough for gig promotion. The voices say they make flyers in Canva (a cover-band promoter and an r/canva user, who may not be a band driver) and that Canva is "free and simple enough" as a fallback in an anti-AI thread. That is use, not a judgement of sufficiency, and for the flyer only. Two quotes come from the same r/musicians thread. One r/bandmembers voice moved from Canva to PosterMyWall because it was faster, which cuts the other way. So the kill rule is not met. The voices lean toward habit and free tools, nothing says people would pay or switch |
 | C4 Position claimable | Insufficient, Low | Insufficient, Low | Nothing new on who owns the message |
-| Study | Reshape | **Needs primary research (D-027)** | C2 literally still triggers Reshape; Ale overrode it |
+| Study | Reshape | **Reshape** | Unchanged: C2 triggers it; Ale accepted (D-027) |
 
 **Corrections made after the skeptic.** "Keep Canva Pro" is Gemini's paraphrase tied to an r/musicians thread, not an r/bandmembers voice. r/sheffield is a holiday-market thread, not a band community; r/Bluegrass is second-hand. Gemini gives no dates for these voices.
 

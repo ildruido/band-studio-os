@@ -10,4 +10,4 @@ Index of every study run under the [research framework](framework.md). Add a row
 | R-004 | [Competitor scan](R-004-competitor-scan/protocol.md) | Competitor scan | standard | Reshape (S1 coverage contradicted by skeptic; S2 needs Ale's hands-on check of Canva) |
 | R-006 | [Market sizing](R-006-market-sizing/protocol.md) | Market analysis | standard | Needs primary research |
 | R-007 | [Canva gap check](R-007-canva-gap-check/protocol.md) | Competitor gap check (R-004 S2 follow-up) | standard | Needs primary research (desk and Gemini routes done) |
-| R-005 | [Competitive analysis](R-005-competitive-analysis/protocol.md) | Competitive analysis | standard | Needs primary research (C2 literal kill triggered by Bandsintown Boost, overridden by Ale as an indirect competitor, D-027; C1 unsettled) |
+| R-005 | [Competitive analysis](R-005-competitive-analysis/protocol.md) | Competitive analysis | standard | Reshape (C2 kill criterion triggered by Bandsintown Boost, accepted by Ale, D-027; C1 needs primary research) |

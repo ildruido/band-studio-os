@@ -2,12 +2,12 @@
 
 Newest first. Each entry: id, date, decision, why, alternatives, who decided, status (`active`, `superseded by D-0NN`, `revisited`).
 
-### D-027 Bandsintown Boost is an indirect competitor; R-005 reads Needs primary research
+### D-027 Accept R-005 Reshape: Boost is an indirect reach competitor; position on the creative and identity layer
 - **Date:** 2026-11-25
-- **Decision:** Ale overrode the pre-registered kill rule on R-005's C2 for Bandsintown Boost. Boost's purpose is advertising and audience reach; Band OS is a brand hub that produces several coherent creative artifacts from one identity. So Boost is an **indirect competitor** (a possible later reach connector), not a music-specific campaign-flow competitor, and it does not trigger C2 (ii). C2 reads Mixed (Low); the R-005 verdict is **Needs primary research**. The same reading applies to R-004's S4 (it stays Mixed). General incumbents (Canva, Simplified) still count only when they ship a music- or gig-specific feature.
-- **Why:** Ale's product definition: reach is not our job in V1 (export only, D-009); the creative and identity layer is. The skeptic had ruled the other way on the literal wording of the criterion (Boost is music-specific and recent); the override is Ale's, with this reason.
-- **Alternatives:** Accept the skeptic's literal ruling: C2 Contradicted, study Reshape (recommended by Claude and the skeptic; Ale chose differently).
-- **Decided by:** Ale
+- **Decision:** Ale accepts the R-005 verdict **Reshape**. Bandsintown Boost literally triggers C2's kill rule (music-specific, announced 2026-06-05); Ale describes it as an indirect competitor whose purpose is advertising and reach, while Band OS is a brand hub that produces several coherent creative artifacts. The reshape: position on the creative and identity layer, not on getting the show seen; treat Boost-style reach as a possible later connector; do not sell the product as an AI poster generator. R-004's S4 is read the same way (the skeptic's ruling: general incumbents count only when they ship a music- or gig-specific feature, so Boost counts and S4 reads Contradicted).
+- **Why:** Reach is not the V1 job (export only, D-009). The pre-registered rule forces Reshape and Ale agreed with its meaning rather than overriding it.
+- **Alternatives:** Override and read C2 as Mixed with the study as Needs primary research (offered; not chosen).
+- **Decided by:** Ale ("I probably accept Reshape", after the description of what Reshape means). Wording to be confirmed if he wants a firmer record.
 - **Status:** active
 
 ### D-026 Count Gemini's unopened sources as confirmed, and re-evaluate R-007 and R-005
