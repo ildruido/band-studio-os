@@ -1,6 +1,6 @@
 # MVP definition: Band Studio OS (working title)
 
-Status: **draft for Ale's review.** Decisions: D-028 and D-029 (new), plus D-005 to D-009, D-012, D-018, D-019 and D-027 in the [decision log](decision-log.md). The roadmap (`roadmap.md`, a separate PR) is derived from this document: if the scope here changes, the roadmap is reshaped to match.
+Status: **approved by Ale, 2026-11-25.** Decisions: D-028 and D-029 (new), plus D-005 to D-009, D-012, D-018, D-019 and D-027 in the [decision log](decision-log.md). The roadmap (`roadmap.md`, a separate PR) is derived from this document: if the scope here changes, the roadmap is reshaped to match.
 
 Tags: **(Assumption)** is Claude's proposal, not yet decided or tested.
 
