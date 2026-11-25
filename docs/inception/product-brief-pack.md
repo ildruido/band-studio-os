@@ -174,12 +174,12 @@ The three outputs Ale named, with the blocks each needs (numbers refer to Part 2
 
 ## Part 5: proposed next steps (for Ale to choose from)
 
-1. **Shape of the pack.** One folder, `docs/brief-pack/`, with a short set of plain-language files (one per theme, for example: story, product, market and competition, business and go-to-market, brand and messaging, technical scope, evidence and risks), each saying where its facts come from and how mature they are. This avoids a single huge file and lets an external tool take only what an output needs.
+1. **Shape of the pack (decided by Ale): a folder, with an index and cross-links.** `docs/brief-pack/` holds short plain-language files by theme (for example: story, product, market and competition, business and go-to-market, brand and messaging, technical scope, evidence and risks). An `index.md` lists every file with one line on what it holds and which outputs need it. Files link to each other wherever one builds on another. Each file says where its facts come from and how mature they are, so an external tool can take only what an output needs.
 2. **First fill what already exists** (blocks 1, 3, 4, 5, 8, 12, 23, 26): rewritten in plain language, no bare labels.
 3. **Then ask Ale for the few product decisions** that unlock the rest: name and tagline, whether there is an investor ask, founder story.
 4. **Mark every claim** with its maturity (done, provisional, hypothesis, needs primary research) so decks never present a guess as a fact.
 
-None of this has started. It waits for Ale's review of this document.
+Steps 2 to 4 have not started. They wait for Ale's review of this document.
 
 ## What was not checked
 
