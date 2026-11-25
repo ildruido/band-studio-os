@@ -41,6 +41,7 @@ Kept so Ale can ask for a recap. Newest first. Newest milestones only; earlier o
 
 | Date | Sub-milestone | Where | Notes |
 | --- | --- | --- | --- |
+| 2026-11-25 | Plan to add the discovery ways of working to app-studio, with a code-or-prose second pass | [plan](process-recap/app-studio-plan.md), [code-or-prose pass](process-recap/app-studio-plan-code-or-prose.md) | Plan only: app-studio unchanged, no harness idea filed (Ale decides what to file). Independent review applied to the second pass |
 | 2026-11-25 | Stale inception docs fixed | this file, [studies.md](../research/studies.md), `CLAUDE.md` | R-001 verdict corrected; harness version line made version-free |
 | 2026-11-25 | Inception recap, skill proposals and one-page summary | [process-recap](process-recap/recap.md) | Independent fact-check applied; eight candidate processes, none built (D-041) |
 | 2026-11-25 | Architecture handoff written and independently reviewed | [architecture-handoff.md](architecture-handoff.md) | Recommends the studio web stack plus our own modules; seven spikes; App profile draft |
