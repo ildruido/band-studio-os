@@ -2,6 +2,22 @@
 
 Newest first. Each entry: id, date, decision, why, alternatives, who decided, status (`active`, `superseded by D-0NN`, `revisited`).
 
+### D-029 The MVP pilot is free; payment is tested separately
+- **Date:** 2026-11-25
+- **Decision:** The first pilot bands use the MVP for free. There is no checkout or invoicing in the MVP. Willingness to pay stays with the E3 price test and a paid-campaign commitment asked at the end of the pilot.
+- **Why:** Keeps the build small. Cost: the pilot itself does not test H-03.
+- **Alternatives:** Manual pilot payment by invoice or link (recommended by Claude); built-in checkout.
+- **Decided by:** Ale (chose against Claude's recommendation)
+- **Status:** active
+
+### D-028 The MVP ships setup and pre-gig only
+- **Date:** 2026-11-25
+- **Decision:** The MVP covers gig setup and the pre-gig blitz (flyer, stories, post, captions). Post-gig momentum is not in the MVP and is the first item after it.
+- **Why:** Tests the riskiest bet (output feels like "us") with the least build, and keeps media upload and rights risk out.
+- **Alternatives:** Add a light post-gig thank-you carousel; all three stages.
+- **Decided by:** Ale, on Claude's recommendation
+- **Status:** active
+
 ### D-027 Accept R-005 Reshape: Boost is an indirect reach competitor; position on the creative and identity layer
 - **Date:** 2026-11-25
 - **Decision:** Ale accepts the R-005 verdict **Reshape**. Bandsintown Boost literally triggers C2's kill rule (music-specific, announced 2026-06-05); Ale describes it as an indirect competitor whose purpose is advertising and reach, while Band OS is a brand hub that produces several coherent creative artifacts. The reshape: position on the creative and identity layer, not on getting the show seen; treat Boost-style reach as a possible later connector; do not sell the product as an AI poster generator. R-004's S4 is read the same way (the skeptic's ruling: general incumbents count only when they ship a music- or gig-specific feature, so Boost counts and S4 reads Contradicted).
