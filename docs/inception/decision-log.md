@@ -2,6 +2,14 @@
 
 Newest first. Each entry: id, date, decision, why, alternatives, who decided, status (`active`, `superseded by D-0NN`, `revisited`).
 
+### D-037 Build the Product Brief Pack as nine theme files with a separate red-amber-green gap record
+- **Date:** 2026-11-25
+- **Decision:** Build the pack in `docs/brief-pack/` as an index plus nine short theme files (story, product and roadmap, market and competition, business and go-to-market, brand and messaging, evidence and risks, team and founder, technical brief, partners and press). All 33 components from the inventory get a section with the same template, even where we can only partly fill them or not at all. A source map says which inception document feeds each section. A separate gap record rates every component red, amber or green twice: once for how complete the content is, once for how well it is backed by evidence. The first version is an honest concept-and-plan pack, not a proof pack. Ale told the thread to go ahead without a plan sign-off and to merge each PR when CI is green.
+- **Why:** Presentation material needs one organised source where each claim says how sure we are. Keeping the gap record apart stops caveats leaking into decks or getting lost.
+- **Alternatives:** One file per component (rejected: 33 tiny files are hard to read and to hand to a tool). One long document (rejected: a tool cannot take just what an output needs).
+- **Decided by:** Ale (go-ahead), on Claude's recommendation for the structure
+- **Status:** active
+
 ### D-036 Add a "Product Brief Pack" step before the architecture handoff
 - **Date:** 2026-11-25
 - **Decision:** Add a Product Brief Pack step to inception, just before the architecture handoff. The pack is a set of structured, plain-language documents that holds everything a classic product brief holds, and becomes the single source of truth for generating slide decks, a one-pager, a short video pitch and other stakeholder material (investors, sales and marketing, engineers). Step 1 is two inventories: what inception already produced, and what a brief usually contains, with a gap table ([product-brief-pack.md](product-brief-pack.md)). Shape chosen by Ale: a folder (`docs/brief-pack/`) of short files with an index and cross-links between documents. The pack itself is not built yet and waits for Ale's review.
