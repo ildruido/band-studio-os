@@ -4,7 +4,7 @@ Newest first. Each entry: id, date, decision, why, alternatives, who decided, st
 
 ### D-026 Count Gemini's unopened sources as confirmed, and re-evaluate R-007 and R-005
 - **Date:** 2026-11-25
-- **Decision:** Ale told us to treat the sources in Gemini's Deep Research reports that Claude could not open (mostly Reddit threads, which the cloud environment blocks) as confirmed, and to re-evaluate both studies. They are graded as Gemini states them (first-hand voices are grade B), labelled "sponsor-accepted, not opened" in the reports, and each re-evaluation shows what changes. See [R-007 addendum 1](../research/R-007-canva-gap-check/addendum-1.md) and [R-005 addendum 1](../research/R-005-competitive-analysis/addendum-1.md).
+- **Decision:** Ale told us to treat the sources in Gemini's Deep Research reports that Claude could not open (mostly Reddit threads, which the cloud environment blocks) as confirmed, and to re-evaluate both studies. They are graded as Gemini states them (first-hand voices are grade B), labelled "sponsor-accepted, not opened" in the reports, and each re-evaluation shows what changes. Recorded as sponsor acceptance, not verification; a second skeptic pass found no verdict changes. See [R-007 addendum 1](../research/R-007-canva-gap-check/addendum-1.md) and [R-005 addendum 1](../research/R-005-competitive-analysis/addendum-1.md).
 - **Why:** Claude cannot read Reddit from here and Ale can read what Gemini quoted; the voices of band members are exactly the evidence desk research lacked.
 - **Alternatives:** Keep them at "unverified, no weight" (the framework default; Ale overrode it for these sources). The framework rule that a source must be opened by the lead stays in force for all other sources.
 - **Decided by:** Ale

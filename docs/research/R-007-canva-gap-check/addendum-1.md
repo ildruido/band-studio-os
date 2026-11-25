@@ -13,13 +13,15 @@ Date 2026-11-25. Decision [D-026](../../inception/decision-log.md): Ale told us 
 
 ## What changes
 
+The voices are sponsor-accepted, not independently verified (the second skeptic pass confirmed only that Gemini wrote them). Caveats: r/musicians quotes share one anti-AI thread; r/sheffield is a holiday-market thread, not a band community; r/Bluegrass is second-hand; r/canva's poster may not be a band driver; no dates.
+
 | Id | Before | Now | Why |
 | --- | --- | --- | --- |
-| G1 Gap holds (key) | Insufficient evidence, Low | **Insufficient evidence, Low (direction clearer)** | By the strict test (one guided flow for flyer, story and captions) nobody described using such a flow; bands combine Canva or PosterMyWall steps by hand. But several voices say that is good enough, so the gap may exist without mattering to customers. The kill criterion (a tool meets all three conditions, with an independent tutorial) is still not met |
-| G2 Identity fit | Insufficient evidence, Low | **Mixed, Low** | Against "generic": Canva users say it is fine and bands are told to use Canva instead of AI (four subreddits). For: "templated" and "distinctly Canva" (E-23, E-15), "stock and bland" PosterMyWall templates, and "all look the same" about AI flyers. Equal weight on both sides. Kill criterion (two sources saying on-brand with little rework) is not met: voices say good enough, not on-brand |
-| G3 Canva closing | Insufficient evidence, Low | Unchanged | No voice or page shows a Canva campaign flow; Canva's help pages are still unopened |
+| G1 Gap holds (key) | Insufficient evidence, Low | **Insufficient evidence, Low** | Nobody describes using a guided one-flow tool; bands combine steps by hand in Canva or PosterMyWall. Nothing opened shows a tool meeting all three conditions with an independent tutorial, so the kill criterion is not met |
+| G2 Identity fit | Insufficient evidence, Low | **Insufficient evidence, Low** | One B-style voice (a G2 review: PosterMyWall templates "stock and bland") and "all look the same" about AI flyers are off-target or single; "Canva is fine" does not say on-brand. Neither side reaches the criterion |
+| G3 Canva closing | Insufficient evidence, Low | Unchanged | Canva's help pages are still unopened |
 | Study | Needs primary research | **Needs primary research** | Unchanged |
 
-## New finding that shapes the product
+## Lead for the interviews (not a finding)
 
-Communities that dislike AI-made posters **explicitly accept template tools** (r/Bluegrass, r/sheffield). The reputational risk attaches to "AI-generated", not to "made with a tool". Output that reads as the band's own, assembled with a human in the loop, sits on the accepted side. R-005 carries this into its reshape proposal.
+Communities that dislike AI-made posters seem to accept template tools (r/Bluegrass, r/sheffield; two voices, one outside the band world). If true, the reputation risk attaches to "AI-generated", not to "made with a tool". Worth testing with bands.
