@@ -2,6 +2,22 @@
 
 Newest first. Each entry: id, date, decision, why, alternatives, who decided, status (`active`, `superseded by D-0NN`, `revisited`).
 
+### D-034 Gig Wall is the base for prototype v2; ideas from the other two alternatives are kept for later
+- **Date:** 2026-11-25
+- **Decision:** Alternative A, the Gig Wall ([design-alternatives.md](design-alternatives.md)), is the base design for prototype v2, with the look already adopted in D-032. The Tour Manager ideas (a chat or prompting mode, and reading an Instagram or Bandcamp link to set up identity) are kept on the bench: not in prototype v2, to revisit later. From the Control Desk, only the countdown timeline idea is kept for releases and tours. Ale notes the desk is too heavy on functions, so that idea needs a heavy rethink before it is used.
+- **Why:** Lowest build cost, easiest to show in driver interviews, and the band's own poster is the hero of every screen.
+- **Alternatives:** Tour Manager (best fit with how bands use group chat, but looks like a standard AI chat); Control Desk (clearest plan, too heavy for a time-poor driver).
+- **Decided by:** Ale
+- **Status:** active (refines D-033 and builds on D-032)
+
+### D-033 Explore three full-journey design alternatives before choosing a direction
+- **Date:** 2026-11-25
+- **Decision:** Before prototype v2 is built, three different design alternatives are proposed, each covering the whole journey (onboarding, identity, gig campaigns before, during and after the gig, approval, export and later publishing, payment, video, growth and use-case sections). They are the Gig Wall, the Tour Manager and the Control Desk ([design-alternatives.md](design-alternatives.md)). Claude recommends the Gig Wall with two borrowed ideas. Ale has not chosen yet.
+- **Why:** Prototype v1 was rejected as too functional and too generic (D-031). Choosing a direction only after comparing whole-journey alternatives avoids polishing a look that cannot grow with the product.
+- **Alternatives:** Refine one direction only (the UX direction proposed in D-032).
+- **Decided by:** Ale (asked for the exploration); direction choice pending
+- **Status:** active (the choice is D-034)
+
 ### D-032 Adopt the "band's wall" design direction for prototype v2
 - **Date:** 2026-11-25
 - **Decision:** Prototype v2 follows [ux-direction.md](ux-direction.md): one decision per screen (pick between two, fill a sentence, swipe a poster), a fixed backstage look (concrete grey, black ink, yellow tape, photocopy grain) and all colour coming from the band's own artwork. The Grit slider, the reference-image upload and the tabbed pack are replaced by either-or taps and a swipeable poster deck.
