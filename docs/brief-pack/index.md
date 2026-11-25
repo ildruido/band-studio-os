@@ -20,6 +20,7 @@ Decision behind it: see the [decision log](../inception/decision-log.md). The in
 | [Technical brief](technical-brief.md) | What an engineer or technical partner needs to know. | Architecture direction, Non-functional needs, Constraints, Integrations, Legal and safety, Open technical questions |
 | [Partners and press](partners-and-press.md) | Short descriptions for outsiders. Not a priority now. | Fact sheet, Partnership angle, Press kit |
 | [Gap record](gaps.md) | Red, amber or green per component, what is missing and how it would be filled | all 33 |
+| [Source map](source-map.md) | Which inception document feeds which section | all 33 |
 
 ## Which output needs which file
 
