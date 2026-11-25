@@ -4,7 +4,7 @@ Index of every study run under the [research framework](framework.md). Add a row
 
 | Id | Study | Type | Tier | Verdict |
 | --- | --- | --- | --- | --- |
-| R-001 | [Persona reality check](R-001-persona-reality-check/protocol.md) | Persona validation | standard | Reshape (S1 coverage contradicted by skeptic; S2 needs Ale's hands-on check of Canva) |
+| R-001 | [Persona reality check](R-001-persona-reality-check/protocol.md) | Persona validation | standard | Needs primary research (H1 to H6 all insufficient evidence; H1 and H3 kill criteria triggered by absence, read as "not found", D-013) |
 | R-002 | [Band count size check](R-002-band-count-size-check/protocol.md) | Persona validation (H1 follow-up) | light | Needs primary research (H1 insufficient) |
 | R-003 | [Driver interviews](R-003-driver-interviews/protocol.md) | Interviews (experiment E1) | standard | Designed, parked (D-014) |
 | R-004 | [Competitor scan](R-004-competitor-scan/protocol.md) | Competitor scan | standard | Reshape (S1 coverage contradicted by skeptic; S2 needs Ale's hands-on check of Canva) |
