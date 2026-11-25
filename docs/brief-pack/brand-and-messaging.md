@@ -36,14 +36,14 @@ Part of the [Product Brief Pack](index.md). The product's own brand is **mostly 
 **What exists**
 - **The look of the app ("the band's wall"):** concrete grey, black ink, yellow tape, photocopy grain. Archivo for headlines and Courier Prime for diary-style detail. Deliberate imperfection, because real gig posters are photocopied. No gradients, glass or emoji. The app owns no colour: the band's artwork supplies it.
 - **A visual board** of the direction and a board comparing three journey designs, both viewable in a browser.
-- **Clickable phone prototypes** (second version, and 2.1 with draft later journeys).
+- **Clickable phone prototypes** (second version, 2.1 with draft later journeys, and 2.2, the version built for test sessions with a pitch page, onboarding and the Identity Studio).
 - Sample posters inside the prototypes are **drawn by code with canned content**. They are not output of the real product and must not be shown as such.
 
 **What does not exist:** logo, product colours and fonts as a brand (the fonts above are the app's), screenshots of real generated output, a product video, a demo recording.
 
 **Links:** [UX direction and board](../inception/ux-direction.md), [design alternatives](../inception/design-alternatives.md), [prototypes](../inception/prototypes.md).
 
-**How sure are we:** the look is *Decided* for the prototype stage; "approved for now". Not shown to bands.
+**How sure are we:** the look is *Decided* for the prototype stage; "approved for now". Not yet shown to bands (v2.2 is built for that).
 
 **Comes from:** [UX direction](../inception/ux-direction.md), [prototypes](../inception/prototypes.md), [design alternatives](../inception/design-alternatives.md)
 

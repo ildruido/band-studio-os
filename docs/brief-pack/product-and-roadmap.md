@@ -50,10 +50,11 @@ Part of the [Product Brief Pack](index.md). Start with [Story](story.md) for the
 - **The look:** concrete grey, black ink, yellow tape and photocopy grain, as if the app were the band's own gig wall. The app has no colour of its own: all colour comes from the band's artwork, so the poster is always the star. No gradients, no glass, no emoji. Approved by Ale for now.
 - **The journey design:** three whole-journey designs were compared (a gig wall, a tour manager and a control desk). Ale chose the **gig wall** as the base and keeps ideas from the other two for later.
 - **Prototype, second version:** the first-version flow in the chosen design, one decision per screen: pick between two looks, fill one sentence, swipe through posters, bandmates tap "Nope" or "Yes, post it". Confirmed by Ale.
-- **Prototype, version 2.1:** adds draft later journeys, clearly marked "Later". Waiting for Ale's review at the time of writing.
+- **Prototype, version 2.1:** adds draft later journeys, clearly marked "Later".
+- **Prototype, version 2.2 (the one for test sessions):** adds a home page that pitches the product, a three-step setup (band name and city, who is in the band, where it promotes), and an **Identity Studio** of seven chapters with one question per screen: the sound, influences, vibe, tone of voice, look, what is never you, and lore. The answers show up on the posters and captions (the band's own name, hashtags, vibe words, tagline), and a card reads them back as a short description of the band. Navigation is three tabs (Wall, Make, Us), every screen says what it is for, and a facilitator menu jumps to any journey. Good demo material: the setup-to-first-poster path takes a few minutes and shows the band's own name on the artwork.
 - The first prototype was closed: the flow worked, but the design felt like a standard AI app and was rejected as too functional and generic.
 
-**What the prototypes do not prove.** The posters in the prototypes are drawn by code with canned content. They show the experience, not the quality of real generated output, so they are no evidence that output "feels like us". They are not tested on real phones or with real bands yet.
+**What the prototypes do not prove.** The posters in the prototypes are drawn by code with canned content. They show the experience, not the quality of real generated output, so they are no evidence that output "feels like us". Version 2.2 was clicked through in a headless browser at several phone widths, but not on a real phone and not with a real band yet.
 
 **Links:** [UX direction](../inception/ux-direction.md) (board and source inside), [design alternatives](../inception/design-alternatives.md), [prototypes](../inception/prototypes.md).
 
