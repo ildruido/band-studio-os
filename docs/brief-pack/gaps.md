@@ -12,8 +12,8 @@ One row per component of the [Product Brief Pack](index.md). It is kept apart fr
 | [Customer](#customer) | [Story](story.md) | Partly | not yet rated | not yet rated |
 | [Solution and value](#solution-and-value) | [Story](story.md) | Covered | not yet rated | not yet rated |
 | [Positioning](#positioning) | [Story](story.md) | Covered | not yet rated | not yet rated |
-| [Customer-facing story](#customer-story) | [Story](story.md) | Partly | not yet rated | not yet rated |
-| [Scope of version 1](#scope) | [Product and roadmap](product-and-roadmap.md) | Covered | not yet rated | not yet rated |
+| [Customer-facing story](#customer-facing-story) | [Story](story.md) | Partly | not yet rated | not yet rated |
+| [Scope of version 1](#scope-of-version-1) | [Product and roadmap](product-and-roadmap.md) | Covered | not yet rated | not yet rated |
 | [Demo and visuals](#demo-and-visuals) | [Product and roadmap](product-and-roadmap.md) | Partly | not yet rated | not yet rated |
 | [Roadmap and milestones](#roadmap-and-milestones) | [Product and roadmap](product-and-roadmap.md) | Covered | not yet rated | not yet rated |
 | [Technical scope](#technical-scope) | [Product and roadmap](product-and-roadmap.md) | Covered | not yet rated | not yet rated |

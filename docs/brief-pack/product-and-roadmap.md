@@ -20,7 +20,7 @@ Part of the [Product Brief Pack](index.md). Each section below follows the same 
 
 **Must have for:** Investor deck, One-pager, Engineering brief
 
-**Gap record:** [Scope of version 1](gaps.md#scope)
+**Gap record:** [Scope of version 1](gaps.md#scope-of-version-1)
 
 ## Demo and visuals
 

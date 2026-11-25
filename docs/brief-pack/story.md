@@ -84,4 +84,4 @@ Part of the [Product Brief Pack](index.md). Each section below follows the same 
 
 **Must have for:** Band / marketing deck, Sales brief · **Nice to have for:** Video pitch
 
-**Gap record:** [Customer-facing story](gaps.md#customer-story)
+**Gap record:** [Customer-facing story](gaps.md#customer-facing-story)
