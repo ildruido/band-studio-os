@@ -2,6 +2,14 @@
 
 Newest first. Each entry: id, date, decision, why, alternatives, who decided, status (`active`, `superseded by D-0NN`, `revisited`).
 
+### D-042 Prototype v2.2: user-ready version with a pitch, onboarding, a deeper Identity Studio and a session menu
+- **Date:** 2026-11-25
+- **Decision:** Build prototype v2.2 as a new artifact (v2 and v2.1 stay). It adds a home page that pitches the product, a three-step band setup, an Identity Studio of seven question chapters (sound, influences, vibe, tone of voice, look, never, lore) whose answers change the posters and captions, three-tab navigation (Wall, Make, Us), a heading and one-line purpose on every screen, and a facilitator "session menu" that jumps to any journey. Chat mode and reading Instagram or Bandcamp links stay out (D-034).
+- **Why:** Ale wants to put the prototype in front of real bands and watch how they react to each use case, so every journey has to be reachable and its goal obvious.
+- **Alternatives:** Keep growing v2.1 (rejected: no pitch, no onboarding, shallow identity, hard to jump between journeys).
+- **Decided by:** Ale (direction, "don't stop for confirmation"); Claude (details)
+- **Status:** active
+
 ### D-041 Write an inception recap and propose eight skill candidates; build none yet
 - **Date:** 2026-11-25
 - **Decision:** After the architecture handoff merged, write a recap of the inception process (for AI readers), a proposal of repeatable processes to distil into skills, and a one-page human version, all in [process-recap](process-recap/recap.md). The proposals are not built; any that belong in the harness go through `harness-idea` as issues only. An independent agent fact-checked the documents against the repo and its corrections were applied.
