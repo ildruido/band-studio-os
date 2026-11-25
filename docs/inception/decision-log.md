@@ -2,6 +2,14 @@
 
 Newest first. Each entry: id, date, decision, why, alternatives, who decided, status (`active`, `superseded by D-0NN`, `revisited`).
 
+### D-033 Explore three full-journey design alternatives before choosing a direction
+- **Date:** 2026-11-25
+- **Decision:** Before prototype v2 is built, three different design alternatives are proposed, each covering the whole journey (onboarding, identity, gig campaigns before, during and after the gig, approval, export and later publishing, payment, video, growth and use-case sections). They are the Gig Wall, the Tour Manager and the Control Desk ([design-alternatives.md](design-alternatives.md)). Claude recommends the Gig Wall with two borrowed ideas. Ale has not chosen yet.
+- **Why:** Prototype v1 was rejected as too functional and too generic (D-031). Choosing a direction only after comparing whole-journey alternatives avoids polishing a look that cannot grow with the product.
+- **Alternatives:** Refine one direction only (the UX direction proposed in D-032).
+- **Decided by:** Ale (asked for the exploration); direction choice pending
+- **Status:** active (the direction choice will be logged as its own entry)
+
 ### D-031 Close prototype v1; refine the UX design before building v2
 - **Date:** 2026-11-25
 - **Decision:** Prototype v1 is closed: the flow works, but the design is too functional and too much like a generic AI app. A separate UX design task refines the design (phone-native feel, realistic look) before a second prototype is built.
