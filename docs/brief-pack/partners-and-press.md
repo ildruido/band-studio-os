@@ -2,54 +2,54 @@
 
 > Short descriptions for outsiders. Not a priority now.
 
-Part of the [Product Brief Pack](index.md). Each section below follows the same template: what goes here, the text in plain words, key facts, how sure we are, where it comes from, who needs it, and a link to its row in the [gap record](gaps.md).
-
-**Template status:** scaffolding only. Sections are empty until the content is transferred from inception.
+Part of the [Product Brief Pack](index.md).
 
 ## Fact sheet
 
-*What goes here:* A short boilerplate and a fact sheet: what, who, where, since when.
+**Boilerplate (draft, for Ale to approve):** Band Studio OS (working title) helps small independent bands promote their gigs. A band describes itself once, enters a gig, and gets a ready-to-post set of material in its own voice, which bandmates approve from their phones. Nothing is published without the band's approval. It is being built part time by one person, starting in Italy.
 
-**In plain words:** *To fill.*
+| Fact | Value |
+| --- | --- |
+| Name | Band Studio OS (working title, not final) |
+| What it is | A phone-first web app for gig promotion by independent bands |
+| Who it is for | The one active member of a small indie or rock band (genre is not limited) |
+| Stage | Concept phase: research and prototypes done, no product built, no band has used it |
+| First market | Italy, then the UK, then the rest of Europe |
+| First version | Pre-gig campaign pack (flyer, stories, post, captions); free pilot with 5 to 10 bands |
+| Team | One part-time founder plus an AI assistant |
+| Company, location, start date | *Not yet known* |
+| Contact | *Not yet known* |
 
-**Key facts:** *To fill. Each fact carries its own status tag.*
+**How sure are we:** *Decided* facts only; unknowns are shown.
 
-**How sure are we:** *To fill. One of the status tags in the [index](index.md#how-to-read-the-status-tags).*
+**Comes from:** [Product foundation](../inception/product-foundation.md), [MVP definition](../inception/mvp.md), [project instructions](../../CLAUDE.md)
 
-**Comes from:** *To fill with links to the inception source documents.*
-
-**Must have for:** Partner / press note
+**Must have for:** Partner / press note · **Nice to have for:** none
 
 **Gap record:** [Fact sheet](gaps.md#fact-sheet)
 
 ## Partnership angle
 
-*What goes here:* What a venue, platform or label would gain. Only Bandsintown is on the table so far.
+**In plain words:** One partner type has a basis today: **reach and listing platforms**, above all Bandsintown. Its "Boost" product gets a show seen but makes no creative. We make the creative. A band could arrive at Boost with a finished campaign. That is an idea, not a conversation: nobody has contacted anyone.
 
-**In plain words:** *To fill.*
+**Other possible partner types, with no evidence yet:** venues (bands arriving with material that looks right and is on time), ticketing platforms, labels, music schools and rehearsal spaces, scene collectives.
 
-**Key facts:** *To fill. Each fact carries its own status tag.*
+**How sure are we:** *Hypothesis.* No partner has been approached, and a partner's view is unknown.
 
-**How sure are we:** *To fill. One of the status tags in the [index](index.md#how-to-read-the-status-tags).*
+**Comes from:** [Competitive analysis](../research/R-005-competitive-analysis/report.md), [roadmap](../inception/roadmap.md)
 
-**Comes from:** *To fill with links to the inception source documents.*
-
-**Must have for:** no output (reference only) · **Nice to have for:** Partner / press note
+**Must have for:** none · **Nice to have for:** Partner / press note
 
 **Gap record:** [Partnership angle](gaps.md#partnership-angle)
 
 ## Press kit
 
-*What goes here:* Images, quotes and contact. Not needed now.
+**In plain words:** *Not yet known, and not needed now.* A press kit needs a final name, images, quotes and a contact, none of which exist. Revisit when there is a product and a first pilot story.
 
-**In plain words:** *To fill.*
+**How sure are we:** *Not yet known.*
 
-**Key facts:** *To fill. Each fact carries its own status tag.*
+**Comes from:** none.
 
-**How sure are we:** *To fill. One of the status tags in the [index](index.md#how-to-read-the-status-tags).*
-
-**Comes from:** *To fill with links to the inception source documents.*
-
-**Must have for:** no output (reference only)
+**Must have for:** none · **Nice to have for:** none
 
 **Gap record:** [Press kit](gaps.md#press-kit)

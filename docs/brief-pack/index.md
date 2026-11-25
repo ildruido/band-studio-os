@@ -19,8 +19,13 @@ Decision behind it: see the [decision log](../inception/decision-log.md). The in
 | [Team and founder](team-and-founder.md) | Who builds it and why. | Team, Founder story |
 | [Technical brief](technical-brief.md) | What an engineer or technical partner needs to know. | Architecture direction, Non-functional needs, Constraints, Integrations, Legal and safety, Open technical questions |
 | [Partners and press](partners-and-press.md) | Short descriptions for outsiders. Not a priority now. | Fact sheet, Partnership angle, Press kit |
+| [Glossary](glossary.md) | Plain-language meaning of the words used in the pack | all |
 | [Gap record](gaps.md) | Red, amber or green per component, what is missing and how it would be filled | all 33 |
 | [Source map](source-map.md) | Which inception document feeds which section | all 33 |
+
+## State of the pack
+
+First full version, 2026-11-25. All 33 components have a section. Ten are ready to use as written, fourteen need Ale's check or a missing piece, nine are mostly empty and say so. **Nothing is proven by real bands yet** (see the [gap record](gaps.md#overall-reading)). Suggested reading order for a newcomer: [Story](story.md), [Product and roadmap](product-and-roadmap.md), [Evidence and risks](evidence-and-risks.md), then the rest.
 
 ## Which output needs which file
 
