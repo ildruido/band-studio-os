@@ -1,0 +1,574 @@
+<title>Band Studio Prototype v2.2</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Courier+Prime:wght@400;700&display=swap">
+<style>
+/* Concept: the band's gig wall. App chrome is concrete, ink and gaffer tape; all colour comes from the band's own posters. One phone-width column, full screen on a phone. */
+:root{
+  --wall:#CDD0CE; --ink:#101114; --tape:#F4D31B; --muted:#5B5F66; --desk:#2A2C30;
+  --display:'Archivo','Arial Narrow',Arial,sans-serif; --mono:'Courier Prime','Courier New',monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{margin:0;background:var(--desk);color:var(--ink);font:16px/1.4 var(--display);display:flex;justify-content:center}
+#app{width:100%;max-width:430px;height:100%;max-height:900px;margin:auto;position:relative;overflow:hidden;background:var(--wall);
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .13 0'/></filter><rect width='200' height='200' filter='url(%23n)'/></svg>")}
+@media (min-width:500px){#app{border-radius:28px;box-shadow:0 20px 60px rgba(0,0,0,.5)}}
+.scr{position:absolute;inset:0;display:flex;flex-direction:column;animation:in .22s ease-out}
+@keyframes in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.scr.dark{background:var(--ink);color:#EDEDEA}
+.gut{padding-left:max(18px,env(safe-area-inset-left,0px));padding-right:max(18px,env(safe-area-inset-right,0px))}
+.bar{display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:13px;padding-top:14px;padding-bottom:4px;min-height:40px}
+.bar button{font:inherit;background:none;border:0;color:inherit;padding:8px 0;cursor:pointer}
+.body{flex:1;min-height:0;display:flex;flex-direction:column;gap:14px;padding-top:8px;padding-bottom:8px}
+.dock{padding-top:10px;padding-bottom:max(20px,env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:8px}
+.big{font-weight:900;font-stretch:125%;font-size:clamp(26px,8vw,34px);line-height:.98;letter-spacing:-.01em;margin:0;text-wrap:balance}
+.mono{font-family:var(--mono);font-size:13px;margin:0}
+.muted{color:var(--muted)}.dark .muted{color:#A6A8AD}
+.tape{display:inline-block;align-self:flex-start;background:var(--tape);color:var(--ink);font-family:var(--mono);font-weight:700;font-size:13px;padding:3px 10px;transform:rotate(-2deg);box-shadow:0 1px 0 rgba(0,0,0,.25)}
+.btn{display:flex;align-items:center;justify-content:center;min-height:54px;border-radius:999px;background:var(--ink);color:#fff;font:800 16px var(--display);font-stretch:112%;border:2px solid var(--ink);width:100%;cursor:pointer;text-decoration:none}
+.btn.tp{background:var(--tape);color:var(--ink);border-color:var(--tape)}
+.btn.gh{background:transparent;color:inherit;border-color:currentColor}
+.btn[disabled]{opacity:.35;cursor:not-allowed}
+.link{background:none;border:0;font:700 14px var(--display);text-decoration:underline;color:inherit;cursor:pointer;padding:8px;align-self:center}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{border:2px solid currentColor;border-radius:999px;padding:8px 14px;font:700 14px var(--display);background:transparent;color:inherit;cursor:pointer;min-height:40px}
+.chip[aria-pressed="true"]{background:var(--tape);color:var(--ink);border-color:var(--tape)}
+:focus-visible{outline:3px solid var(--tape);outline-offset:2px}
+.dark :focus-visible,.dark.scr :focus-visible{outline-color:#fff}
+/* posters */
+.pw{position:relative;max-width:100%}
+.pw.flyer{aspect-ratio:4/5}.pw.story{aspect-ratio:9/16}.pw.post{aspect-ratio:1/1}.pw.swatch{position:absolute;inset:0}
+.px{--bg:#151517;--fg:#ECE8DE;--hot:#E1362B;--r:2;--rot:0deg;position:absolute;inset:0;overflow:hidden;container-type:inline-size;background:var(--bg);color:var(--fg);isolation:isolate;display:flex;flex-direction:column;justify-content:space-between;padding:6cqw;font-family:var(--display)}
+.px.bright{--bg:#EEECE6;--fg:#131315}
+.px.blue{--hot:#2447E6}
+.px>*{position:relative;z-index:2}
+.px .pbg{position:absolute;inset:0;z-index:0}
+.px.v0 .pbg{background:radial-gradient(circle at 76% 30%,var(--hot) 0 36%,transparent 36.5%)}
+.px.v1 .pbg{background:linear-gradient(115deg,transparent 50%,var(--hot) 50% 76%,transparent 76%)}
+.px.v2 .pbg{background:linear-gradient(to top,var(--hot) 0 26%,transparent 26%)}
+.px::before{content:"";position:absolute;inset:0;z-index:1;background-image:radial-gradient(currentColor 1.2px,transparent 1.7px);background-size:2.2cqw 2.2cqw;opacity:calc(.07*var(--r));-webkit-mask-image:linear-gradient(200deg,transparent 25%,#000);mask-image:linear-gradient(200deg,transparent 25%,#000);pointer-events:none}
+.px::after{content:"";position:absolute;inset:0;z-index:3;mix-blend-mode:multiply;opacity:calc(.12*var(--r) + .02);pointer-events:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1.4 0'/></filter><rect width='160' height='160' filter='url(%23n)'/></svg>")}
+.px.dark::after{mix-blend-mode:screen}
+.pdate{font-weight:800;font-stretch:62%;font-size:25cqw;line-height:.8;letter-spacing:-.01em}
+.pname{font-weight:900;font-stretch:125%;font-size:12.5cqw;line-height:.88;text-transform:uppercase;margin:0;text-shadow:calc(.55cqw*var(--r)) calc(.55cqw*var(--r)) 0 var(--hot);transform:rotate(var(--rot));transform-origin:left bottom}
+.px.tall .pname{font-stretch:62%;font-size:23cqw;line-height:.82}
+.px.tall .pdate{font-size:30cqw}
+.px.tilt{--rot:-4deg}
+.ptag{font-family:var(--mono);font-size:3.6cqw;font-weight:700;margin:2.2cqw 0 0;max-width:80%}
+.psub{font-weight:800;font-stretch:80%;font-size:6cqw;margin:2cqw 0 0;text-transform:uppercase}
+.pfoot{font-family:var(--mono);font-weight:700;font-size:3.4cqw;border-top:.6cqw solid currentColor;padding-top:2cqw;display:flex;justify-content:space-between;gap:3cqw}
+.plabel{font-family:var(--mono);font-weight:700;font-size:4.4cqw;text-transform:none}
+.k-story .pdate{font-size:38cqw}.k-story .pname{font-size:15cqw}.k-story.tall .pname{font-size:27cqw}.k-story .ptag{font-size:4.2cqw}.k-story .pfoot{font-size:4cqw}.k-story .psub{font-size:9cqw}
+.k-post .pdate{font-size:20cqw}.k-post .pname{font-size:11cqw}.k-post.tall .pname{font-size:19cqw}.k-post.tall .pdate{font-size:24cqw}
+.k-swatch{align-items:flex-start;justify-content:center}.k-swatch .pname{font-size:15cqw}.k-swatch.tall .pname{font-size:26cqw}.k-swatch .pdate{font-size:12cqw;margin-bottom:2cqw}
+/* home */
+.homepost{transform:rotate(-2deg);margin:6px 10px 0;width:min(100%,300px);align-self:center}
+.shelf{display:flex;gap:10px}.shelf .pw{width:74px;flex:0 0 74px}
+.shelf .px .pdate,.shelf .px .ptag,.shelf .px .psub,.shelf .px .pfoot{display:none}.shelf .px{padding:6cqw}.shelf .px .pname{font-size:15cqw}
+/* identity */
+.pair{flex:1;min-height:0;display:flex;flex-direction:column;gap:12px}
+.opt{flex:1;min-height:90px;position:relative;border:3px solid transparent;border-radius:14px;padding:0;overflow:hidden;cursor:pointer;background:none;font:inherit;color:inherit;transition:transform .15s,border-color .15s}
+.opt .pw{border-radius:11px;overflow:hidden}
+.opt .tape{position:absolute;left:10px;bottom:10px;z-index:5}
+.opt.on{border-color:var(--tape);box-shadow:0 0 0 3px var(--ink);transform:scale(.98)}
+.ticks{display:flex;gap:5px}.ticks i{flex:1;height:5px;background:rgba(0,0,0,.2);border-radius:3px}.ticks i.on{background:var(--ink)}
+.never{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.nv{border:2px solid var(--ink);border-radius:12px;min-height:84px;padding:12px;font:800 17px var(--display);font-stretch:100%;text-align:left;background:rgba(255,255,255,.35);cursor:pointer;position:relative;color:var(--ink)}
+.nv[aria-pressed="true"]{background:var(--ink);color:#fff;text-decoration:line-through;text-decoration-color:var(--tape);text-decoration-thickness:3px}
+/* gig */
+.sentence{font-size:clamp(21px,6.3vw,27px);line-height:1.75;font-weight:700}
+.sentence input{font:inherit;font-weight:900;font-stretch:112%;border:0;border-bottom:3px solid var(--ink);background:transparent;color:inherit;padding:0 2px;border-radius:0;outline-offset:3px;min-width:3ch;max-width:100%}
+/* making */
+.making{align-items:center;justify-content:center;text-align:center;gap:22px}
+.press{width:62%;max-width:260px;animation:print 2.2s steps(14,end) forwards}
+@keyframes print{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0 0 0 0)}}
+/* pack */
+.deck{flex:1;min-height:0;display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;gap:0}
+.deck::-webkit-scrollbar{display:none}
+.slide{flex:0 0 100%;scroll-snap-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6px 26px;min-height:0;gap:10px}
+.slide:not(.cap){container-type:size}
+.slide .pw{box-shadow:0 8px 22px rgba(0,0,0,.5)}
+.slide:not(.cap) .pw.flyer,.rstage .pw.flyer{width:min(100cqw,80cqh)}
+.slide:not(.cap) .pw.story,.rstage .pw.story{width:min(100cqw,56.25cqh)}
+.slide:not(.cap) .pw.post,.rstage .pw.post{width:min(100cqw,100cqh)}
+.slide.cap{justify-content:flex-start;overflow-y:auto}
+.slide.cap .pw{height:auto;width:62%;flex:0 0 auto}
+.capbox{width:100%;background:#1D1E22;border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:6px}
+.capbox textarea{background:transparent;color:#EDEDEA;border:0;font:13px/1.45 var(--mono);width:100%;min-height:92px;resize:none;padding:0}
+.pager{display:flex;gap:6px;justify-content:center;padding:6px 0}
+.pager button{font:700 12px var(--mono);padding:5px 10px;border-radius:999px;border:0;background:transparent;color:#C9CACD;cursor:pointer}
+.pager button.on{background:var(--tape);color:var(--ink)}
+.sheet{background:#1D1E22;border-radius:22px 22px 0 0;padding:14px 18px max(20px,env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:12px}
+.modal{position:absolute;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:flex-end;z-index:20;animation:in .18s}
+.modal .sheet{width:100%;background:var(--wall);color:var(--ink)}
+.modal input{font:700 18px var(--display);padding:12px;border:2px solid var(--ink);background:#fff;border-radius:10px;width:100%}
+/* review */
+.rstage{container-type:size;flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:4px 14px;touch-action:pan-y}
+.rcard{display:flex;position:relative;cursor:grab;touch-action:pan-y;user-select:none;transition:transform .2s}
+.rcard.drag{transition:none;cursor:grabbing}
+.rcard .pw{box-shadow:0 10px 26px rgba(0,0,0,.6)}
+.stamp{position:absolute;top:14%;z-index:6;font:900 26px var(--display);font-stretch:112%;padding:2px 12px;border:4px solid;transform:rotate(-10deg);opacity:0;pointer-events:none}
+.stamp.y{left:6%;color:var(--tape)}.stamp.n{right:6%;color:#FF5A4D;transform:rotate(10deg)}
+/* status + ready */
+.list{display:flex;flex-direction:column;gap:10px}
+.item{display:flex;gap:12px;align-items:center;border-bottom:2px dashed rgba(0,0,0,.35);padding-bottom:10px}
+.item .pw{width:52px!important;min-width:52px;max-width:52px;flex:0 0 52px;overflow:hidden;align-self:center}.item .t{position:relative;z-index:1}.item .px .pdate,.item .px .ptag,.item .px .psub,.item .px .pfoot{display:none}.item .px{padding:6cqw}.item .px .pname{font-size:15cqw}
+.item .t{flex:1;min-width:0}.item .t b{display:block;font-weight:800}.item .t span{font:13px var(--mono);color:var(--muted)}
+.st{font:700 12px var(--mono);padding:3px 8px;background:var(--ink);color:#fff;white-space:nowrap}
+.st.ok{background:var(--tape);color:var(--ink)}.st.no{background:#B8261C}
+.proof{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.proof .pw{width:100%}.proof .px .pdate,.proof .px .ptag,.proof .px .psub,.proof .px .pfoot{display:none}.proof .px{padding:7cqw}.proof .px .pname{font-size:16cqw}
+.sched{border:2px dashed var(--ink);padding:10px 12px;font:13px var(--mono);display:grid;gap:5px}
+.sched div{display:flex;justify-content:space-between;gap:10px}
+.link-url{min-width:0;font:700 13px var(--mono);background:rgba(0,0,0,.08);padding:10px 12px;display:flex;justify-content:space-between;gap:8px;align-items:center;word-break:break-all}
+.toast{position:absolute;left:18px;right:18px;bottom:96px;background:var(--ink);color:#fff;padding:12px 14px;font:700 14px var(--display);z-index:30;border-left:6px solid var(--tape);animation:in .2s}
+/* later journeys: hazard tape marks every screen that is not in the first version */
+.hz{height:9px;flex:0 0 auto;background:repeating-linear-gradient(-45deg,var(--tape) 0 10px,var(--ink) 10px 20px)}
+.later{display:inline-block;font:700 12px var(--mono);background:var(--ink);color:var(--tape);padding:3px 8px;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap}
+.dark .later{background:var(--tape);color:var(--ink)}
+.pin{position:relative;display:block;border:0;background:none;padding:0;cursor:pointer;text-align:left;font:inherit;color:inherit;min-width:0}
+.pin .pw{box-shadow:0 5px 14px rgba(0,0,0,.35);width:100%}
+.pin .mono{display:block;margin-top:6px}
+.pin .cn{position:absolute;top:-6px;right:-4px;z-index:6;transform:rotate(4deg)}
+.wallgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px 14px;align-items:start}
+.wallgrid>.span{grid-column:1/-1}
+.wallgrid>.pin:nth-child(odd) .pw{transform:rotate(-1.5deg)}.wallgrid>.pin:nth-child(even) .pw{transform:rotate(1.2deg)}
+.tile{border:2px dashed var(--ink);background:transparent;aspect-ratio:4/5;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;font:800 17px var(--display);cursor:pointer;color:inherit;padding:10px;position:relative;width:100%}
+.tile .cn{position:absolute;top:-6px;right:-4px}
+.tonight{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--tape);color:var(--ink);padding:14px;font:800 18px var(--display);font-stretch:110%;border:0;width:100%;cursor:pointer;text-align:left;box-shadow:0 2px 0 rgba(0,0,0,.3);transform:rotate(-1deg)}
+.nav{display:flex;border-top:2px solid var(--ink);flex:0 0 auto;padding-bottom:env(safe-area-inset-bottom,0px)}
+.nav button{flex:1;min-height:56px;background:none;border:0;font:800 14px var(--display);color:inherit;cursor:pointer}
+.nav button.on{background:var(--ink);color:var(--tape)}
+.sheetcard{display:flex;gap:14px;align-items:center;text-align:left;border:2px solid var(--ink);background:rgba(255,255,255,.4);padding:10px;cursor:pointer;font:inherit;color:inherit;width:100%;position:relative}
+.sc-p{width:84px;flex:0 0 84px;display:block}.sc-p .px .pdate,.sc-p .px .ptag,.sc-p .px .psub,.sc-p .px .pfoot{display:none}.sc-p .px{padding:7cqw}.sc-p .px .pname{font-size:15cqw}
+.sc-t{display:flex;flex-direction:column;gap:4px;align-items:flex-start;min-width:0}.sc-t b{font:900 19px var(--display);font-stretch:112%}
+.stack{display:flex}.stack .pw{width:34%;flex:0 0 34%;margin-right:-12px;box-shadow:0 3px 8px rgba(0,0,0,.4)}.stack .px .pdate,.stack .px .ptag,.stack .px .psub,.stack .px .pfoot{display:none}.stack .px{padding:7cqw}.stack .px .pname{font-size:15cqw}
+/* countdown timeline: one line down the wall, one next step */
+.tl{position:relative;display:flex;flex-direction:column;gap:18px;padding-left:30px}
+.tl::before{content:"";position:absolute;left:6px;top:8px;bottom:8px;border-left:3px dashed var(--ink)}
+.dark .tl::before{border-color:#777}
+.stop{position:relative;display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+.stop::before{content:"";position:absolute;left:-30px;top:3px;width:15px;height:15px;border-radius:50%;background:var(--wall);border:3px solid var(--ink)}
+.stop.done::before,.stop.sent::before{background:var(--ink)}
+.stop.next::before{background:var(--tape);box-shadow:0 0 0 4px var(--ink)}
+.stop.todo{opacity:.55}
+.stop b{font:800 17px var(--display)}
+.stop .mini{width:44%}.stop .mini .pw.story{width:34%}
+.today{margin-left:-30px}
+.mrow{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;text-align:left;background:rgba(255,255,255,.35);border:2px solid var(--ink);padding:10px 12px;font:800 15px var(--display);color:inherit;cursor:pointer;min-height:52px}
+.mrow small{display:block;font:400 12px var(--mono);color:var(--muted)}
+.mtag{font:700 11px var(--mono);padding:2px 7px;background:var(--tape);color:var(--ink);white-space:nowrap;text-transform:uppercase}
+.mtag.l{background:var(--ink);color:var(--tape)}
+.card{border:2px solid var(--ink);background:rgba(255,255,255,.35);padding:12px;display:flex;flex-direction:column;gap:6px;text-align:left;font:inherit;color:inherit;cursor:pointer;min-height:96px;min-width:0}
+.card b{font:800 14px var(--mono)}.card span.v{font:900 20px var(--display);font-stretch:112%}
+.card .pw{width:44px}.card .px .pdate,.card .px .ptag,.card .px .psub,.card .px .pfoot{display:none}
+.pc{border:3px solid var(--ink);padding:14px;text-align:left;background:rgba(255,255,255,.35);color:inherit;font:inherit;cursor:pointer;display:flex;flex-direction:column;gap:4px}
+.pc[aria-pressed="true"]{background:var(--tape)}
+.pc b{font:900 22px var(--display);font-stretch:112%}
+.reel{position:relative;width:min(100cqw,56.25cqh);aspect-ratio:9/16}
+.reel .pw{position:absolute;inset:0;width:100%!important;opacity:0;animation:cyc 3.6s steps(1) infinite}
+.reel .pw:nth-child(2){animation-delay:1.2s}.reel .pw:nth-child(3){animation-delay:2.4s}
+@keyframes cyc{0%{opacity:1}33.3%{opacity:0}100%{opacity:0}}
+.dots{display:flex;gap:8px;justify-content:center;padding:6px 0}.dots i{width:9px;height:9px;border-radius:50%;background:#555}.dots i.on{background:var(--tape)}
+@media (prefers-reduced-motion:reduce){.reel .pw:first-child{opacity:1!important}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+/* v2.2 additions: facilitator strip, purpose headers, pitch, onboarding, Identity Studio, three-tab navigation */
+#stage{position:absolute;left:0;right:0;bottom:0;top:30px}#app.mn #stage{top:12px}
+.fac{position:absolute;top:0;left:0;right:0;height:30px;z-index:50;background:var(--ink);color:#EDEDEA;display:flex;justify-content:space-between;align-items:center;padding:0 max(14px,env(safe-area-inset-left,0px));font:700 12px var(--mono)}
+.fac button{font:inherit;background:none;border:0;color:var(--tape);cursor:pointer;height:30px;padding:0;display:flex;gap:8px;align-items:center}
+.ham{display:inline-block;width:14px;height:10px;border-top:2px solid var(--tape);border-bottom:2px solid var(--tape);position:relative}.ham::after{content:"";position:absolute;left:0;right:0;top:2px;border-top:2px solid var(--tape)}
+#app.mn .fac{height:12px;background:repeating-linear-gradient(-45deg,var(--tape) 0 8px,var(--ink) 8px 16px);padding:0}#app.mn .fac span,#app.mn .fac button b,#app.mn .ham{display:none}#app.mn .fac button{width:100%;height:12px}
+.bar{gap:8px}.bar .bm{flex:1;text-align:center;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.bar>button{white-space:nowrap}
+.eb{font:700 12px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:0}.dark .eb{color:#A6A8AD}
+.pur{margin:0;font-size:16px;line-height:1.35;max-width:36ch}
+.hd{display:flex;flex-direction:column;gap:6px}
+.hd .big{font-size:clamp(26px,8vw,32px)}
+::placeholder{color:rgba(16,17,20,.38);opacity:1}.dark ::placeholder{color:#7d7f85}
+.fld{display:flex;flex-direction:column;gap:6px}.fld label{font:700 13px var(--mono)}
+.fld input,.fld textarea,.own{font:700 18px var(--display);padding:12px;border:2px solid var(--ink);background:#fff;border-radius:10px;width:100%;color:var(--ink)}
+.fld textarea{min-height:80px;resize:none;font-weight:600}
+.sel{display:flex;flex-direction:column;gap:2px;text-align:left;min-height:62px;border:2px solid var(--ink);background:rgba(255,255,255,.4);border-radius:12px;padding:10px 14px;font:inherit;color:inherit;cursor:pointer;width:100%}
+.sel b{font:800 17px var(--display);font-stretch:108%}.sel small{font:13px var(--mono);color:var(--muted)}
+.sel[aria-pressed="true"]{background:var(--tape);border-color:var(--ink);box-shadow:0 0 0 2px var(--ink)}.sel[aria-pressed="true"] small{color:var(--ink)}
+.stack1{display:flex;flex-direction:column;gap:10px}
+/* pitch */
+.fan{display:flex;justify-content:center;align-items:center;padding:18px 8px 10px}
+.fan .pw{width:40%;flex:0 0 40%;box-shadow:0 8px 20px rgba(0,0,0,.45)}
+.fan .pw:nth-child(1){transform:rotate(-7deg) translateY(10px);margin-right:-7%}.fan .pw:nth-child(2){transform:translateY(-8px);z-index:2}.fan .pw:nth-child(3){transform:rotate(7deg) translateY(10px);margin-left:-7%}
+.how{display:flex;flex-direction:column;gap:16px}.how .h1{display:flex;gap:14px;align-items:flex-start}
+.num{font:900 46px var(--display);font-stretch:62%;line-height:.8;min-width:30px;color:var(--ink)}
+.h1 b{display:block;font:800 18px var(--display);font-stretch:108%}.h1 p{margin:2px 0 0;font-size:15px;line-height:1.35}
+.prom{border-top:3px solid var(--ink);padding-top:10px;display:flex;flex-direction:column;gap:2px}.prom b{font:900 19px var(--display);font-stretch:112%}.prom p{margin:0;font-size:15px}
+.sec{font:700 12px var(--mono);letter-spacing:.06em;text-transform:uppercase;margin:6px 0 0}
+/* identity hub */
+.idcard{display:flex;gap:14px;align-items:center;border:2px solid var(--ink);background:rgba(255,255,255,.4);padding:12px}
+.idcard .sw{width:88px;flex:0 0 88px;position:relative}.idcard .t{min-width:0;display:flex;flex-direction:column;gap:6px}.idcard .t p{margin:0;font-size:14px;line-height:1.35}
+.meter{display:flex;gap:4px}.meter i{flex:1;height:6px;background:rgba(0,0,0,.2);border-radius:3px}.meter i.on{background:var(--ink)}
+.chap{display:flex;gap:12px;align-items:center;width:100%;text-align:left;background:rgba(255,255,255,.35);border:2px solid var(--ink);padding:10px 12px;font:inherit;color:inherit;cursor:pointer;min-height:62px}
+.chap .n{font:900 26px var(--display);font-stretch:62%;min-width:20px}.chap .c{flex:1;min-width:0}.chap b{display:block;font:800 16px var(--display)}.chap small{display:block;font:12px var(--mono);color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chap.next{background:var(--tape);box-shadow:0 2px 0 rgba(0,0,0,.3)}.chap.next small{color:var(--ink)}
+.tl2{font:700 11px var(--mono);padding:2px 7px;background:var(--ink);color:#fff;text-transform:uppercase;white-space:nowrap}.tl2.d{background:transparent;color:var(--ink);border:2px solid var(--ink)}
+.sum{border-left:5px solid var(--tape);background:var(--ink);color:#EDEDEA;padding:12px 14px;font-size:15px;line-height:1.4}
+.pairq .opt{min-height:120px}
+/* session menu */
+.menu{position:absolute;inset:0;z-index:60;background:var(--ink);color:#EDEDEA;display:flex;flex-direction:column;animation:in .18s}
+.menu .mh{display:flex;justify-content:space-between;align-items:center;padding:14px 18px 6px}.menu .mb{flex:1;overflow-y:auto;padding:0 18px 28px;display:flex;flex-direction:column;gap:8px}
+.menu .mh b{font:900 20px var(--display);font-stretch:112%}.menu .mh button{font:700 14px var(--mono);background:var(--tape);color:var(--ink);border:0;padding:8px 14px;cursor:pointer}
+.mg{font:700 12px var(--mono);color:var(--tape);margin:14px 0 0;text-transform:uppercase;letter-spacing:.06em}
+.mi{background:#1D1E22;border:0;border-left:5px solid var(--tape);color:inherit;text-align:left;padding:10px 12px;font:inherit;cursor:pointer;display:flex;justify-content:space-between;gap:10px;align-items:center;min-height:52px;width:100%}
+.mi.l{border-left-color:#777}.mi b{display:block;font:800 15px var(--display)}.mi small{display:block;font:12px var(--mono);color:#A6A8AD;margin-top:2px}
+.mi .later{flex:0 0 auto}.mnote{font:12px/1.4 var(--mono);color:#A6A8AD;margin:0}
+.chs{display:flex;gap:6px;flex-wrap:wrap}.chs button{font:700 12px var(--mono);border:1px solid #777;background:transparent;color:#EDEDEA;padding:6px 10px;cursor:pointer;border-radius:999px}
+/* thumbnails: fixed boxes so a name can never run under a poster */
+.item .tb{flex:0 0 52px;width:52px;height:65px;position:relative;overflow:hidden;contain:paint;isolation:isolate}
+.item .tb .pw{position:absolute;inset:0;width:100%!important;max-width:none;min-width:0;height:100%;aspect-ratio:auto;flex:none}
+.item .px{padding:4px}.item .px .pname{font-size:9px;font-size:15cqw}
+.item .t{flex:1;min-width:0;overflow:hidden}.item .t b,.item .t span{overflow-wrap:anywhere}
+.item .st{flex:0 0 auto}
+.sc-p{flex:0 0 84px;width:84px}.sheetcard{min-width:0}.sc-t{min-width:0;flex:1}
+.nav button{min-width:0}
+@media (max-width:400px){.big{font-size:clamp(24px,7.4vw,32px)}.sel b{font-size:16px}.item{gap:10px}.st{font-size:11px;padding:3px 6px}}
+.sw .px .pdate,.sw .px .ptag,.sw .px .psub,.sw .px .pfoot{display:none}.sw .px{padding:7cqw}.sw .px .pname{font-size:15cqw}
+.tall1 .pname{font-size:12cqw}
+
+</style>
+
+<div id="app"><div class="fac" id="fac"></div><div id="stage"></div></div>
+
+<script>
+(function(){
+var app=document.getElementById('app');
+var MON={jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12,gen:1,mag:5,giu:6,lug:7,ago:8,set:9,ott:10,dic:12};
+var DEF={venue:'Sottoscala 13',date:'Sat 12 Dec',time:'21:30',support:'Lupi di Periferia'};
+function mkState(){return{
+  band:{name:'',city:'',me:'',mates:['',''],chan:{}},
+  idn:{genre:[],energy:null,sonic:[],infl:['','',''],scene:null,vibe:[],place:null,tone:null,never:{},neverOwn:'',story1:'',story2:''},
+  fin:{}, q:{c:'sound',i:0}, looked:{},
+  id:{mood:'dark',type:'wide',tex:'grain',hue:'red',lay:'stack'}, step:0, chosen:-1,
+  gig:{venue:'',city:'',date:'',time:'',support:'',price:'€8'},
+  tag:'', lang:'it', cur:0, ri:0,
+  assets:[{k:'flyer',n:'Flyer',v:0,r:2,st:'draft',why:''},{k:'story',n:'Story: the date',v:1,r:2,st:'draft',why:''},{k:'story',n:'Story: the line-up',v:2,r:2,st:'draft',why:''},{k:'post',n:'Feed post',v:0,r:2,st:'draft',why:''}],
+  cap:{it:null,en:null}, t:'w1', stop:null, stopFrom:'wall', ch:{ig:true,fb:false,bit:false}, pay:'gig', ac:0};}
+var S=mkState();
+var PAIRS=[
+ {k:'mood',q:'Which one is more you?',a:['dark','Dark and rough'],b:['bright','Bright and sharp']},
+ {k:'type',q:'Which voice?',a:['wide','Loud and wide'],b:['tall','Tall and tight']},
+ {k:'tex',q:'Which print?',a:['grain','Photocopied'],b:['flat','Clean print']},
+ {k:'hue',q:'Which colour?',a:['red','Ash red'],b:['blue','Electric blue']},
+ {k:'lay',q:'Which stance?',a:['stack','Straight'],b:['tilt','Crooked']}];
+var NEVER=['Corporate gradients','Stock photos','Neon glow','Emoji everywhere','Hashtag spam','Perfect symmetry','Motivational quotes','“Summer vibes”'];
+var VIBES=[['sweaty','sudata'],['nocturnal','notturna'],['angry','rabbiosa'],['tender','tenera'],['ironic','ironica'],['chaotic','caotica'],['danceable','ballabile'],['dark','buia'],['political','politica'],['tired','stanca'],['loud','rumorosa'],['romantic','romantica']];
+var GENRES=['Post-punk','Punk','Indie rock','Garage','Hardcore','Noise','Shoegaze','Alt-rock','Metal','Folk-punk','Psych','Electronic'];
+var TONES={dry:['Dry and deadpan','Short. Never explains the joke.'],warm:['Warm and cheeky','Like a friend handing you a flyer.'],angry:['Angry and direct','No filler. Say it and go.'],poetic:['Poetic and cryptic','A line that makes you wonder.']};
+var TAGS={dry:{it:['Dal vivo. Purtroppo per i vicini.','Si suona, poi si va a casa.'],en:['Live. Sorry, neighbours.','We play, then we go home.']},warm:{it:['Venite, c’è posto per tutti.','Una sera insieme, volume alto.'],en:['Come as you are. We saved you a spot.','One night together, volume up.']},angry:{it:['Alza il volume. Chiedi dopo.','Niente scuse, solo rumore.'],en:['Turn it up. Ask later.','No excuses, only noise.']},poetic:{it:['Rumore per chi è rimasto sveglio.','Di notte, tutto suona più vero.'],en:['Noise for those who stayed up.','At night everything sounds truer.']}};
+var CH=[
+ {k:'sound',t:'The sound',s:'Genre, energy, words for your sound',q:[
+  {t:'multi',f:'genre',max:2,q:'What do you play?',why:'Shapes the look, the hashtags and how we describe you. Pick up to two.',o:GENRES,own:'Something else'},
+  {t:'single',f:'energy',q:'How does a gig of yours feel?',why:'Sets how rough and loud your posters get.',o:[['Slow burn','Builds, hypnotic, room to breathe'],['Steady drive','Tight, fast, never lets go'],['Full chaos','Loud, sweaty, falling apart on purpose']]},
+  {t:'multi',f:'sonic',max:3,q:'Which words fit your sound?',why:'Used to describe you in captions and press notes. Pick up to three.',o:['Fuzzy','Jangly','Heavy','Melodic','Raw','Spacey','Fast','Bass-led','Fragile','Angular']}]},
+ {k:'infl',t:'Influences',s:'Who you sound like, where you play',q:[
+  {t:'text',q:'Who do people compare you to?',why:'We nod to the same world and never copy it. Leave blanks if you like.',fs:[{k:'infl',i:0,l:'One',ph:'e.g. Massimo Volume'},{k:'infl',i:1,l:'Two',ph:'e.g. Fugazi'},{k:'infl',i:2,l:'Three',ph:'e.g. Joy Division'}]},
+  {t:'single',f:'scene',q:'Where do you actually play?',why:'Tells us what a good poster looks like in your world.',o:[['Local DIY scene','Bars, basements, friends’ nights'],['Social centres and squats','Free entry, hat for the band'],['The club circuit','Booked venues, a door price'],['Festivals','Small stages, big crowds'],['Mostly online','Gigs are rare, the feed is the stage']]}]},
+ {k:'vibe',t:'Vibe',s:'The feel of a night with you',q:[
+  {t:'multi',f:'vibe',max:3,q:'Three words for a night with you',why:'They flow into captions and into how bold the posters get.',o:VIBES.map(function(v){return v[0]})},
+  {t:'single',f:'place',q:'If your band were a place…',why:'A picture in one line. It guides imagery and mood.',o:[['A rehearsal basement','Low ceiling, hot, loud'],['A car park at 3 a.m.','Empty, orange light'],['A seaside town in winter','Closed, grey, a bit sad'],['A packed squat','Everyone sweating together'],['A kitchen at 4 a.m.','Friends, smoke, one guitar']]}]},
+ {k:'tone',t:'Tone of voice',s:'How you talk to your fans',q:[
+  {t:'single',f:'tone',q:'How do you talk to your fans?',why:'Sets the tone of every caption and tagline we write.',o:Object.keys(TONES).map(function(k){return [k,TONES[k][0],TONES[k][1]]})},
+  {t:'tag',q:'Which line sounds like you?',why:'It goes on your posters. Change it any time.'}]},
+ {k:'look',t:'Look',s:'Five either-or picks',q:PAIRS.map(function(p,i){return {t:'pair',p:i,q:p.q,why:'Tap the one that is more you. It moves on by itself.'}})},
+ {k:'never',t:'Never',s:'What is never you',q:[
+  {t:'never',q:'What is never you?',why:'Everything we make avoids these. Add your own words.'}]},
+ {k:'story',t:'Lore',s:'The little stories behind the band',q:[
+  {t:'text',q:'Tell us two true things',why:'Little stories make posters and captions yours. Optional.',fs:[{k:'story1',l:'One thing people always say about the band',ph:'e.g. They never stop thanking the sound guy',area:1},{k:'story2',l:'Where you rehearse, and what it is like',ph:'e.g. A basement under a bar, always 30 degrees',area:1}]}]}];
+var path=[];
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function slug(s){return String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]/g,'')}
+function real(){return !!(S.band.name||'').trim()}
+function BN(){return (S.band.name||'').trim()||'Cenere Rossa'}
+function BNH(){var w=BN().split(/\s+/);if(w.length<2)return esc(w[0]);var best=1,bd=1e9;for(var i=1;i<w.length;i++){var a=w.slice(0,i).join(' ').length,b=w.slice(i).join(' ').length;if(Math.abs(a-b)<bd){bd=Math.abs(a-b);best=i}}return esc(w.slice(0,best).join(' '))+'<br>'+esc(w.slice(best).join(' '))}
+function CITY(){return (S.band.city||'').trim()||'Bologna'}
+function G(k){return k==='city'?((S.gig.city||'').trim()||CITY()):((S.gig[k]||'').trim()||DEF[k])}
+function ME(){return real()?((S.band.me||'').trim()||'You'):'Marta'}
+function MATE(){if(!real())return 'Marco';var m=S.band.mates.filter(function(x){return x.trim()})[0];return m?m.trim():'Your bandmate'}
+function lc(s){return s.charAt(0).toLowerCase()+s.slice(1)}
+function TAG(){if(S.tag)return S.tag;var t=S.idn.tone||'poetic';return TAGS[t][S.lang][0]}
+function dnum(){var d=G('date');var m=d.match(/(\d{1,2})\D*([A-Za-zì]{3})/);if(m&&MON[m[2].toLowerCase()])return m[1]+'.'+(MON[m[2].toLowerCase()]<10?'0':'')+MON[m[2].toLowerCase()];var n=d.match(/\d{1,2}/);return n?n[0]:'--'}
+function poster(kind,a,over,x){
+  x=x||{};
+  var id=Object.assign({},S.id,over||{});
+  var r=a?a.r:(id.tex==='flat'?0.4:2), v=a?a.v:0, g={venue:G('venue'),city:G('city'),date:G('date'),time:G('time'),support:G('support'),price:S.gig.price};
+  var cls='px k-'+kind+' v'+v+' '+(id.mood==='bright'?'bright':'dark')+' '+id.hue+' '+id.type+' '+id.lay;
+  var name=x.name||BNH(), D=x.d||dnum(), tag=x.tag!==undefined?x.tag:esc(TAG()), sub=x.sub!==undefined?x.sub:'+ '+esc(g.support), inner;
+  var f1=x.f1!==undefined?x.f1:esc(g.venue)+', '+esc(g.city), f2=x.f2!==undefined?x.f2:esc(g.time)+' · '+esc(g.price);
+  var s1=x.f1!==undefined?x.f1:esc(g.venue), s2=x.f2!==undefined?x.f2:esc(g.time);
+  var lab=x.lab||('Live · '+esc(g.date));
+  if(kind==='swatch'){inner='<div class="pdate">'+dnum()+'</div><div class="pname">'+name+'</div>'}
+  else if(kind==='flyer'){inner='<div class="pdate">'+D+'</div><div><div class="pname">'+name+'</div><div class="ptag">'+tag+'</div><div class="psub">'+sub+'</div></div><div class="pfoot"><span>'+f1+'</span><span>'+f2+'</span></div>'}
+  else if(kind==='story'&&v!==2){inner='<div class="plabel">'+lab+'</div><div><div class="pdate">'+D+'</div><div class="pname">'+name+'</div><div class="ptag">'+tag+'</div></div><div class="pfoot"><span>'+s1+'</span><span>'+s2+'</span></div>'}
+  else if(kind==='story'){inner='<div class="plabel">'+(x.lab||'On stage')+'</div><div><div class="pname">'+name+'</div><div class="psub">'+sub+'</div></div><div class="pfoot"><span>'+D+' · '+s1+'</span><span>'+(x.f2!==undefined?x.f2:esc(g.price))+'</span></div>'}
+  else {inner='<div class="pdate">'+D+'</div><div class="pname">'+name+'</div><div class="pfoot"><span>'+f1+'</span><span>'+s2+'</span></div>'}
+  return '<div class="pw '+kind+'"><div class="'+cls+'" style="--r:'+r+'"><div class="pbg"></div>'+inner+'</div></div>';
+}
+function vw(l){return S.idn.vibe.map(function(k){var m=VIBES.filter(function(x){return x[0]===k})[0];return m?m[l==='it'?1:0]:k})}
+function tags(){return [BN(),S.idn.genre[0]||'indie',CITY(),G('venue')].map(slug).filter(Boolean).map(function(h){return '#'+h}).join(' ')}
+function caption(l){
+  if(S.cap[l]!==null)return S.cap[l];var v=vw(l);
+  return l==='it'
+   ? BN()+' dal vivo, '+G('date')+' al '+G('venue')+' ('+G('city')+'), con '+G('support')+'. Porte alle '+G('time')+', ingresso '+S.gig.price+'. '+(v.length?'Aspettatevi una serata '+v.join(', ')+'. ':'')+TAG()+'\n'+tags()
+   : BN()+' live, '+G('date')+' at '+G('venue')+' ('+G('city')+'), with '+G('support')+'. Doors '+G('time')+', entry '+S.gig.price+'. '+(v.length?'Expect a '+v.join(', ')+' night. ':'')+TAG()+'\n'+tags();
+}
+function toast(t){var e=document.createElement('div');e.className='toast';e.textContent=t;app.appendChild(e);setTimeout(function(){e.remove()},2600)}
+/* shared building blocks: every screen gets Back + Home, an eyebrow, a title and one line of purpose */
+function top(o){o=o||{};return '<div class="bar gut">'+(o.back===false?'<span></span>':'<button data-act="back">Back</button>')+'<span class="bm">'+(o.mid||'')+'</span>'+(o.home===false?'<span></span>':'<button data-act="home">Home</button>')+'</div>'}
+function hd(eb,t,p){return '<div class="hd"><p class="eb">'+eb+'</p><h2 class="big">'+t+'</h2>'+(p?'<p class="pur">'+p+'</p>':'')+'</div>'}
+var HDR=hd;
+function ticks(n,i){var o='';for(var t=0;t<n;t++)o+='<i class="'+(t<i?'on':'')+'"></i>';return '<div class="ticks">'+o+'</div>'}
+function nav(a){function b(k,to,l){return '<button data-act="tab" data-to="'+to+'"'+(a===k?' class="on" aria-current="page"':'')+'>'+l+'</button>'}return '<div class="nav">'+b('home','home','Wall')+b('make','newsheet','Make')+b('us','studio','Us')+'</div>'}
+function chOf(k){return CH.filter(function(c){return c.k===k})[0]}
+function chSum(k){var d=S.idn,x=[];
+  if(k==='sound'){if(d.genre.length)x.push(d.genre.join(' + '));if(d.energy)x.push(lc(d.energy));if(d.sonic.length)x.push(d.sonic.join(', ').toLowerCase())}
+  else if(k==='infl'){var f=d.infl.filter(function(s){return s.trim()});if(f.length)x.push(f.join(', '));if(d.scene)x.push(d.scene)}
+  else if(k==='vibe'){if(d.vibe.length)x.push(d.vibe.join(', '));if(d.place)x.push(lc(d.place))}
+  else if(k==='tone'){if(d.tone)x.push(TONES[d.tone][0]);if(S.tag)x.push('“'+S.tag+'”')}
+  else if(k==='look'){if(Object.keys(S.looked).length){x.push(S.id.mood==='dark'?'Dark':'Bright');x.push(S.id.type==='wide'?'wide':'tall');x.push(S.id.tex==='grain'?'photocopied':'clean');x.push(S.id.hue==='red'?'ash red':'electric blue')}}
+  else if(k==='never'){var n=Object.keys(d.never).filter(function(z){return d.never[z]});if(d.neverOwn.trim())n.push(d.neverOwn.trim());if(n.length)x.push(n.join(', '))}
+  else if(k==='story'){if(d.story1.trim())x.push(d.story1.trim())}
+  return x.join(' · ')}
+function nDone(){return CH.filter(function(c){return S.fin[c.k]}).length}
+function idSummary(){var d=S.idn,s='';
+  if(!nDone()&&!d.genre.length)return 'Answer a few chapters and this card describes your band in your own words.';
+  s=BN()+' is a '+(d.genre.length?d.genre.join(' / ').toLowerCase()+' band':'band')+(real()?' from '+CITY():'')+(d.energy?', '+lc(d.energy)+' live':'')+'.';
+  var f=d.infl.filter(function(z){return z.trim()});if(f.length)s+=' People compare you to '+f.join(', ')+'.';
+  if(d.vibe.length)s+=' A night with you feels '+d.vibe.join(', ')+(d.place?', like '+lc(d.place):'')+'.';
+  if(d.tone)s+=' You talk to fans in '+(/^[aeiou]/i.test(TONES[d.tone][0])?'an ':'a ')+lc(TONES[d.tone][0])+' voice.';
+  var n=Object.keys(d.never).filter(function(z){return d.never[z]});if(n.length)s+=' You would never do: '+n.join(', ').toLowerCase()+'.';
+  return s}
+/* screens */
+var R={};
+R.pitch=function(){
+  var f=poster('flyer',{r:2,v:0},{mood:'dark',hue:'red'},{name:'Cenere<br>Rossa',d:'12.12',tag:'Rumore per chi è rimasto sveglio.',sub:'+ Lupi di Periferia',f1:'Sottoscala 13, Bologna',f2:'21:30 · €8'})
+   +poster('flyer',{r:2,v:1},{mood:'bright',hue:'blue',type:'tall'},{name:'Motel<br>Sirena',d:'19.12',tag:'Surf triste per Natale.',sub:'+ Dj Zanzara',f1:'Covo, Bologna',f2:'22:00 · €5'})
+   +poster('flyer',{r:2,v:2},{mood:'dark',hue:'blue',lay:'tilt'},{name:'Gatto<br>Nero',d:'09.01',tag:'Ultimo giro.',sub:'+ Tre Piani',f1:'Spazio 211, Torino',f2:'21:00 · €8'});
+  return '<div class="scr gut"><div class="bar"><span>Band Studio OS</span><span class="later">Prototype</span></div><div class="body" style="overflow-y:auto;gap:18px;padding-bottom:16px"><span class="tape">For bands that do everything themselves</span><h1 class="big" style="font-size:clamp(34px,11vw,46px)">Your gig, on every wall.</h1><p class="pur" style="font-size:17px">Band Studio OS turns one sentence about your gig into posters, stories and captions that look and sound like your band. Your bandmates approve. You post.</p><div class="fan" aria-hidden="true">'+f+'</div>'
+  +'<p class="sec">How it works</p><div class="how"><div class="h1"><span class="num">1</span><div><b>Tell us who you are</b><p>A few minutes of real questions: your sound, your heroes, your vibe, what you would never do.</p></div></div><div class="h1"><span class="num">2</span><div><b>Say what is coming up</b><p>One sentence: where, when, who with.</p></div></div><div class="h1"><span class="num">3</span><div><b>Your band says yes</b><p>Posters, stories and a caption in your style. Bandmates swipe yes or nope from a link. No accounts.</p></div></div></div>'
+  +'<p class="sec">Why it is different</p><div class="prom"><b>Sounds like you</b><p>Built from your answers, not from a template. Nothing glossy, nothing generic.</p></div><div class="prom"><b>Nothing goes out without a yes</b><p>Every poster waits for your band. You post it yourself.</p></div><div class="prom"><b>Free while we learn</b><p>The first bands use it free and tell us what is wrong with it.</p></div><div class="prom"><b>And later</b><p>New singles, tours, thank-yous and short video, all in one look. <span class="later">Later</span></p></div></div><div class="dock"><button class="btn tp" data-act="go" data-to="onb1">Set up my band</button><button class="link" data-act="skipsetup">Skip setup: see a band that is already set up</button></div></div>'};
+R.onb1=function(){return '<div class="scr gut">'+top({mid:'Your band · 1 of 3'})+'<div class="body" style="overflow-y:auto;gap:18px">'+ticks(3,1)+hd('Set up your band','Who are you?','The basics, so every poster carries your name. About a minute.')+'<div class="fld"><label for="b-name">Band name</label><input id="b-name" data-b="name" value="'+esc(S.band.name)+'" placeholder="Cenere Rossa" autocomplete="off"></div><div class="fld"><label for="b-city">Home city</label><input id="b-city" data-b="city" value="'+esc(S.band.city)+'" placeholder="Bologna" autocomplete="off"></div><button class="link" data-act="sample" style="align-self:flex-start;padding-left:0;font-weight:400">No band to hand? Use the sample band, Cenere Rossa.</button></div><div class="dock"><button class="btn tp" id="nx" data-act="go" data-to="onb2"'+(real()?'':' disabled')+'>Next</button></div></div>'};
+R.onb2=function(){var m=S.band.mates;return '<div class="scr gut">'+top({mid:'Your band · 2 of 3'})+'<div class="body" style="overflow-y:auto;gap:18px">'+ticks(3,2)+hd('Set up your band','Who is in the band?','Your bandmates approve every poster from a link. They only need a name here, no account.')+'<div class="fld"><label for="b-me">You (the one who handles the promotion)</label><input id="b-me" data-b="me" value="'+esc(S.band.me)+'" placeholder="Marta" autocomplete="off"></div><div class="fld"><label for="b-m0">A bandmate</label><input id="b-m0" data-b="m0" value="'+esc(m[0])+'" placeholder="Marco" autocomplete="off"></div><div class="fld"><label for="b-m1">Another bandmate (optional)</label><input id="b-m1" data-b="m1" value="'+esc(m[1])+'" placeholder="Giulia" autocomplete="off"></div></div><div class="dock"><button class="btn tp" id="nx" data-act="go" data-to="onb3"'+((S.band.me||'').trim()?'':' disabled')+'>Next</button></div></div>'};
+R.onb3=function(){var C=['Instagram','Facebook','TikTok','Bandcamp','Spotify','YouTube','Flyers in the street','Group chats'];return '<div class="scr gut">'+top({mid:'Your band · 3 of 3'})+'<div class="body" style="overflow-y:auto;gap:16px">'+ticks(3,3)+hd('Set up your band','Where do you promote today?','So posters and captions fit where your fans are. Nothing is linked or posted.')+'<div class="chips">'+C.map(function(c){return '<button class="chip" data-act="chan" data-v="'+c+'" aria-pressed="'+(!!S.band.chan[c])+'">'+c+'</button>'}).join('')+'</div><p class="mono" style="margin:6px 0 0">Language of your captions</p><div class="chips"><button class="chip" data-act="lang0" data-v="it" aria-pressed="'+(S.lang==='it')+'">Italiano</button><button class="chip" data-act="lang0" data-v="en" aria-pressed="'+(S.lang==='en')+'">English</button></div></div><div class="dock"><button class="btn tp" data-act="go" data-to="onbdone">Finish setup</button></div></div>'};
+R.onbdone=function(){return '<div class="scr gut">'+top({mid:'Setup done',home:false})+'<div class="body" style="overflow-y:auto;gap:16px"><div style="width:52%;align-self:center;transform:rotate(-3deg);margin-top:6px">'+poster('flyer',{r:2,v:0})+'</div>'+hd('Setup done','You are in, '+esc(BN())+'.','That is how your name looks on a poster. It is still generic: the Identity Studio makes it yours. Seven short chapters, about five minutes. Skip any, come back any time.')+'</div><div class="dock"><button class="btn tp" data-act="chap" data-k="sound">Start the Identity Studio</button><button class="link" data-act="home">Later: take me to my wall</button></div></div>'};
+R.home=function(){var A=S.assets,all=A.every(function(x){return x.st==='ok'}),any=A.some(function(x){return x.st!=='draft'}),cta=all?['ready','See the finished pack']:any?['sent','See where your pack is']:['gig','Make the poster pack'];
+  var past=['clean','','rough'].map(function(x,i){return poster('swatch',null,{mood:i===1?'dark':'bright',hue:i===2?'blue':'red'},{name:i===1?'Lupi':'Past'}).replace('swatch','flyer')}).join('');
+  return '<div class="scr gut"><div class="bar"><span>'+esc(BN())+'</span><span>12 days to go</span></div><div class="body" style="overflow-y:auto;gap:14px">'+hd('Your wall','Next up: '+esc(G('date')),'Everything you promote is pinned here. Start with the next gig.')+'<button class="pin" data-act="go" data-to="'+cta[0]+'" style="width:min(62%,250px);align-self:center;transform:rotate(-2deg)" aria-label="Open the next gig">'+poster('flyer',S.assets[0])+'</button><button class="chap" data-act="tab" data-to="studio"><span class="n">'+nDone()+'/7</span><span class="c"><b>Your identity</b><small>'+(nDone()<7?'Answer more chapters for sharper posters':'All chapters done')+'</small></span><span class="tl2 d">'+(nDone()<7?'Continue':'Open')+'</span></button><p class="mono" style="margin:4px 0 0">Past gigs</p><div class="shelf">'+past+'</div><button class="link" data-act="go" data-to="wall" data-t="w1" style="align-self:flex-start;padding-left:0">Later: watch the wall grow</button></div><div class="dock" style="padding-top:6px;padding-bottom:8px"><button class="btn tp" data-act="go" data-to="'+cta[0]+'">'+cta[1]+'</button></div>'+nav('home')+'</div>'};
+R.studio=function(){var n=nDone(),nx=null;CH.forEach(function(c){if(!nx&&!S.fin[c.k])nx=c.k});
+  var rows=CH.map(function(c,i){var sm=chSum(c.k),d=!!S.fin[c.k];return '<button class="chap'+(c.k===nx?' next':'')+'" data-act="chap" data-k="'+c.k+'"><span class="n">'+(i+1)+'</span><span class="c"><b>'+c.t+'</b><small>'+esc(sm||c.s)+'</small></span><span class="tl2'+(d?'':' d')+'">'+(d?'Done':c.k===nx?'Next':'Start')+'</span></button>'}).join('');
+  function r(to,t,s,tag){return '<button class="mrow" data-act="go" data-to="'+to+'"><span>'+t+'<small>'+s+'</small></span><span class="mtag l">'+tag+'</span></button>'}
+  return '<div class="scr gut"><div class="bar"><span>'+esc(BN())+'</span><span>Us</span></div><div class="body" style="overflow-y:auto;gap:14px">'+hd('Identity Studio','Who you are.','Everything we make is built from your answers. Do the chapters in any order and change them any time.')+'<div class="idcard"><span class="sw">'+poster('flyer',{r:2,v:0})+'</span><span class="t"><b style="font:800 15px var(--display)">'+n+' of 7 chapters</b><span class="meter">'+CH.map(function(c){return '<i class="'+(S.fin[c.k]?'on':'')+'"></i>'}).join('')+'</span><p>'+esc(idSummary())+'</p></span></div><div class="stack1">'+rows+'</div><p class="sec">Also in Us</p>'+r('archive','Past posters','Every poster you have pinned','Later')+r('channels','Post it for me','Link accounts so approved packs post themselves','Later')+r('pay','Keep your wall','What a gig or a month costs','Later')+'<button class="mrow" data-act="helpers"><span>Helpers<small>Let a manager or friend drive</small></span><span class="mtag l">Later</span></button></div>'+nav('us')+'</div>'};
+R.ask=function(){var c=chOf(S.q.c),n=c.q.length,i=Math.min(S.q.i,n-1),q=c.q[i],d=S.idn,h='',last=i===n-1,btn='';
+  var ctl='<div class="body" style="overflow-y:auto;gap:16px">'+ticks(n,i+1)+hd('Identity Studio · '+c.t,esc(q.q),q.why);
+  if(q.t==='multi'){h='<div class="chips">'+q.o.map(function(o){return '<button class="chip" data-act="tog" data-f="'+q.f+'" data-max="'+q.max+'" data-v="'+esc(o)+'" aria-pressed="'+(d[q.f].indexOf(o)>-1)+'">'+o+'</button>'}).join('')+'</div>'+(q.own?'<input class="own" id="own" aria-label="'+q.own+'" placeholder="'+q.own+'" autocomplete="off">':'')+'<p class="mono muted" id="cnt" style="margin:0">'+d[q.f].length+' of '+q.max+' picked</p>';btn=1}
+  else if(q.t==='single'){h='<div class="stack1">'+q.o.map(function(o){var v=o[0],t=o.length===3?o[1]:o[0],s=o.length===3?o[2]:o[1];return '<button class="sel" data-act="one" data-f="'+q.f+'" data-v="'+esc(v)+'" aria-pressed="'+(d[q.f]===v)+'"><b>'+esc(t)+'</b><small>'+esc(s||'')+'</small></button>'}).join('')+'</div>'}
+  else if(q.t==='pair'){var p=PAIRS[q.p];function opt(o){var ov={};ov[p.k]=o[0];return '<button class="opt'+(S.id[p.k]===o[0]&&S.chosen===q.p?' on':'')+'" data-act="pk" data-p="'+q.p+'" data-k="'+p.k+'" data-v="'+o[0]+'" aria-label="'+o[1]+'">'+poster('swatch',null,ov)+'<span class="tape">'+o[1]+'</span></button>'}h='<div class="pair pairq" style="flex:1;min-height:260px">'+opt(p.a)+opt(p.b)+'</div>'}
+  else if(q.t==='text'){h=q.fs.map(function(f,j){var v=f.i!==undefined?d[f.k][f.i]:d[f.k];return '<div class="fld"><label for="t'+j+'">'+f.l+'</label>'+(f.area?'<textarea id="t'+j+'" data-tk="'+f.k+'" data-ti="'+(f.i===undefined?'':f.i)+'" placeholder="'+f.ph+'">'+esc(v)+'</textarea>':'<input id="t'+j+'" data-tk="'+f.k+'" data-ti="'+(f.i===undefined?'':f.i)+'" value="'+esc(v)+'" placeholder="'+f.ph+'" autocomplete="off">')+'</div>'}).join('');btn=1}
+  else if(q.t==='tag'){var L=TAGS[d.tone||'poetic'][S.lang];h='<div class="stack1">'+L.map(function(l){return '<button class="sel" data-act="tagpick" data-v="'+esc(l)+'" aria-pressed="'+(S.tag===l)+'"><b>“'+esc(l)+'”</b><small>'+(d.tone?TONES[d.tone][0]:'A starting line')+'</small></button>'}).join('')+'</div><div class="fld"><label for="tagown">Or write your own</label><input id="tagown" data-tk="tagown" placeholder="A line that sounds like you" value="'+(L.indexOf(S.tag)>-1?'':esc(S.tag))+'" autocomplete="off"></div>';btn=1}
+  else if(q.t==='never'){h='<div class="chips">'+NEVER.map(function(o){return '<button class="chip" data-act="nev" data-v="'+esc(o)+'" aria-pressed="'+(!!d.never[o])+'">'+o+'</button>'}).join('')+'</div><div class="fld"><label for="own">Words you would never use</label><input id="own" class="own" data-tk="neverOwn" placeholder="e.g. Unleash, Epic night" value="'+esc(d.neverOwn)+'" autocomplete="off"></div>';btn=1}
+  return '<div class="scr gut">'+top({mid:c.t+' · '+(i+1)+' of '+n})+ctl.replace('<div class="hd">','<div class="hd">')+h+'</div><div class="dock">'+(btn?'<button class="btn tp" data-act="qnext">'+(last?'Done':'Next')+'</button>':'')+'<button class="link" data-act="qskip">'+(last?'Skip and finish this chapter':'Skip this one')+'</button></div></div>'};
+R.gig=function(){function f(k,ph){return '<input id="f-'+k+'" data-f="'+k+'" value="'+esc(S.gig[k])+'" placeholder="'+esc(k==='city'?CITY():DEF[k])+'" aria-label="'+ph+'" autocomplete="off">'}
+  return '<div class="scr gut">'+top({mid:'Gig pack · 1 of 4'})+'<div class="body" style="overflow-y:auto;gap:16px">'+hd('Make a gig pack','Tell us about the gig','One sentence. We turn it into a flyer, two stories, a feed post and a caption.')+'<div class="sentence">'+esc(BN())+' play '+f('venue','Venue')+' in '+f('city','City')+' on '+f('date','Date')+', doors '+f('time','Doors')+', with '+f('support','Support act')+'.</div><div class="chips"><button class="chip" data-act="price" data-v="€8" aria-pressed="'+(S.gig.price==='€8')+'">Tickets €8</button><button class="chip" data-act="price" data-v="Free entry" aria-pressed="'+(S.gig.price==='Free entry')+'">Free entry</button><button class="chip" data-act="price" data-v="€10" aria-pressed="'+(S.gig.price==='€10')+'">€10 at the door</button></div></div><div class="dock"><button class="btn tp" data-act="make">Make my pack</button></div></div>'};
+R.making=function(){return '<div class="scr gut making"><div class="press">'+poster('flyer',S.assets[0])+'</div><p class="mono">Printing in your style…</p></div>'};
+R.pack=function(){var a=S.assets;
+  var slides=a.map(function(x,i){return i===3?'<div class="slide cap" data-i="3">'+poster('post',x)+'<div class="capbox"><div class="chips"><button class="chip" data-act="lang" data-v="it" aria-pressed="'+(S.lang==='it')+'">Italiano</button><button class="chip" data-act="lang" data-v="en" aria-pressed="'+(S.lang==='en')+'">English</button></div><textarea id="capta" aria-label="Caption">'+esc(caption(S.lang))+'</textarea></div></div>':'<div class="slide" data-i="'+i+'">'+poster(x.k,x)+'</div>'}).join('');
+  return '<div class="scr dark">'+top({mid:'<span id="pk-n">'+a[S.cur].n+'</span>'})+'<p class="eb gut" style="margin:0">Gig pack · 2 of 4 · swipe, tweak, then send</p><div class="pager" id="pager">'+a.map(function(x,i){return '<button data-act="goto" data-i="'+i+'" class="'+(i===S.cur?'on':'')+'">'+['Flyer','Story 1','Story 2','Post'][i]+'</button>'}).join('')+'</div><div class="deck" id="deck">'+slides+'</div><div class="sheet gut"><div class="chips"><button class="chip" data-act="look" data-v="rough">Rougher</button><button class="chip" data-act="look" data-v="clean">Cleaner</button><button class="chip" data-act="look" data-v="another">Another</button><button class="chip" data-act="words">Change words</button></div><button class="btn tp" data-act="send">Send to the band</button></div></div>'};
+R.sent=function(){var A=S.assets,done=A.every(function(x){return x.st==='ok'});
+  var items=A.map(function(x,i){var lab=x.st==='ok'?'<span class="st ok">Approved</span>':x.st==='no'?'<span class="st no">Nope</span>':'<span class="st">Waiting</span>';
+   var act=x.st==='no'?'<button class="chip" data-act="revise" data-i="'+i+'" style="margin-top:6px">Revise this</button>':'';
+   return '<div class="item"><div class="tb">'+poster(x.k,x)+'</div><div class="t"><b>'+x.n+'</b><span>'+(x.st==='no'?esc(MATE())+': “'+esc(x.why)+'”':x.st==='ok'?esc(MATE())+' said yes':esc(MATE())+' has not seen it')+'</span>'+act+'</div>'+lab+'</div>'}).join('');
+  return '<div class="scr gut">'+top({mid:'Gig pack · 3 of 4'})+'<div class="body" style="overflow-y:auto">'+hd('Band approval',done?'Everyone said yes.':'Waiting on the band.',done?'All four are approved. One step left.':'Send this link. Bandmates open it, swipe, done. No account needed.')+(done?'':'<div class="link-url"><span>bandstudio.os/r/'+slug(BN())+'-7k2</span><button class="chip" data-act="copy" style="min-height:34px;padding:4px 10px;flex:none;white-space:nowrap">Copy</button></div>')+'<div class="list">'+items+'</div></div><div class="dock">'+(done?'<button class="btn tp" data-act="go" data-to="ready">See the finished pack</button>':'<button class="btn tp" data-act="startreview">Try it as '+esc(MATE())+'</button><button class="link" data-act="approveall">Skip: approve everything</button>')+'</div></div>'};
+R.review=function(){var A=S.assets,i=S.ri;if(i>=A.length)return R.thanks();var a=A[i];
+  return '<div class="scr dark">'+top({mid:esc(MATE())+'’s phone',home:false})+'<p class="mono gut muted" style="margin:2px 0 6px">'+esc(BN())+' wants your OK ('+(i+1)+' of '+A.length+'). Swipe right for yes, left for nope.</p><div class="rstage"><div class="rcard" id="rcard"><div class="stamp y" id="sy">YES</div><div class="stamp n" id="sn">NOPE</div>'+poster(a.k,a)+'</div></div><div class="dock gut" style="flex-direction:row"><button class="btn gh" data-act="nope" style="flex:1">Nope</button><button class="btn tp" data-act="yes" style="flex:1.4">Yes, post it</button></div></div>'};
+R.thanks=function(){var A=S.assets,n=A.filter(function(x){return x.st==='no'}).length;return '<div class="scr dark gut"><div class="bar"><span>'+esc(BN())+'</span><span></span></div><div class="body" style="justify-content:center"><h2 class="big">Thanks'+(real()&&MATE()==='Your bandmate'?'':', '+esc(MATE()))+'.</h2><p style="font-size:17px;max-width:28ch;margin:0">You said yes to '+(A.length-n)+' and nope to '+n+'. '+esc(ME())+' gets it now.</p></div><div class="dock"><button class="btn tp" data-act="go" data-to="sent">Back to '+esc(ME())+'’s phone</button></div></div>'};
+R.ready=function(){var sched=[['Thu 3 Dec','Flyer'],['Sat 5 Dec','Story: the date'],['Wed 9 Dec','Story: line-up + post'],['Sat 12 Dec','Tonight: story']];
+  return '<div class="scr gut">'+top({mid:'Gig pack · 4 of 4'})+'<div class="body" style="overflow-y:auto">'+hd('Ready to post','Ready to post.','Four approved posters and a posting plan. You post them by hand on these dates.')+'<div class="proof">'+S.assets.map(function(x){return poster(x.k==='story'?'flyer':x.k,x)}).join('')+'</div><p class="mono" style="margin:4px 0 0">Posting plan</p><div class="sched">'+sched.map(function(s){return '<div><span>'+s[0]+'</span><span>'+s[1]+'</span></div>'}).join('')+'</div><p class="mono" style="margin:12px 0 0">What comes after this pack</p><div style="display:flex;flex-direction:column;gap:8px"><button class="mrow" data-act="go" data-to="channels"><span>Post it for me<small>Link accounts, posts go out on the plan</small></span><span class="mtag l">Later</span></button><button class="mrow" data-act="go" data-to="tonight"><span>Gig night<small>Doors story and setlist poster</small></span><span class="mtag l">Idea</span></button><button class="mrow" data-act="go" data-to="after"><span>After the gig<small>A thank-you made for you</small></span><span class="mtag l">Later</span></button><button class="mrow" data-act="go" data-to="pay"><span>Keep your wall<small>Pay after the posters</small></span><span class="mtag l">Later</span></button></div></div><div class="dock"><button class="btn" data-act="save">Save all to my phone</button><button class="link" data-act="home">Back to my wall</button></div></div>'};
+
+/* ---------- later journeys (not in the first version) ---------- */
+var A0={r:2,v:0};
+var TIMES=[['w1','Week 1'],['m1','Month 1'],['m6','Month 6'],['y1','Year 1']];
+function mk(t,w,n,k,x,st,extra){return Object.assign({t:t,w:w,n:n,k:k,x:x||{},st:st||'todo',r:2,v:0,tg:'Later'},extra||{})}
+var RELX={name:'Notte<br>Lunga',d:'19.06',tag:'Il nuovo singolo.',sub:'New single',f1:'Out 19 June',f2:'Everywhere',lab:'New single'};
+var TOURX={name:'Rumore<br>Tour',d:'01.10',tag:'Quattro città, quattro sere.',sub:'Torino · Milano · Bologna · Firenze',f1:'1 to 9 October',f2:'4 dates',lab:'On tour'};
+function X(b,o){return Object.assign({},b,o)}
+var REL=[
+ mk('Sat 22 May','4 weeks out','Cover and announcement','post',X(RELX,{lab:'Cover'}),'done'),
+ mk('Sat 5 Jun','2 weeks out','Teaser reel, 15 seconds','reel',X(RELX,{lab:'Teaser'})),
+ mk('Mon 14 Jun','5 days out','Press note for small blogs','text',null,'todo',{text:'Cenere Rossa, post-punk da Bologna, pubblica «Notte Lunga» il 19 giugno. Cinque minuti di rumore per chi è rimasto sveglio. Ascolto in anteprima su richiesta.'}),
+ mk('Sat 19 Jun','Release day','Out today','story',X(RELX,{lab:'Out today',sub:'Listen now'})),
+ mk('Wed 23 Jun','4 days after','Thank you for listening','post',X(RELX,{name:'Grazie<br>a tutti',tag:'',sub:'',f1:'Notte Lunga is out',f2:'Listen now'}))];
+var TOUR=[
+ mk('Mon 6 Sep','4 weeks out','Announce the tour: one look, four dates','flyer',TOURX),
+ mk('Mon 20 Sep','2 weeks out','Ticket nudge for each city','story',X(TOURX,{lab:'Tickets',name:'Rumore<br>Tour',sub:'Tickets are live'})),
+ mk('Mon 27 Sep','Week of','One story per city','story',X(TOURX,{d:'01.10',name:'Torino',lab:'This week',f1:'Bunker 9',f2:'21:30'})),
+ mk('Fri 1 Oct','Opening night','Tonight: Torino','story',X(TOURX,{d:'01.10',name:'Stasera<br>Torino',lab:'Tonight',f1:'Bunker 9',f2:'21:30'})),
+ mk('Mon 11 Oct','After the tour','Thank you, four cities','post',X(TOURX,{name:'Grazie<br>x4',tag:'',sub:'',f1:'Torino · Milano · Bologna · Firenze',f2:'See you soon'}))];
+var NIGHT=[
+ mk('21:00','Doors','Doors story','story',{d:'12.12',name:'Cenere<br>Rossa',lab:'Tonight',tag:'Porte aperte.',f1:'Sottoscala 13',f2:'Doors 21:30'},'todo',{tg:'Idea'}),
+ mk('Before the set','Merch table','Setlist poster','flyer',{d:'12.12',name:'Set<br>list',tag:'Fuoco lento · Cinghia · Nebbia a Marzo · Sveglio',sub:'+ Lupi di Periferia',f1:'Scan for our links',f2:'Tonight'},'todo',{tg:'Idea'})];
+var STOPS={rel:REL,tour:TOUR,night:NIGHT};
+function hz(){return '<div class="hz"></div>'}
+function lt(t){return '<span class="later">'+(t||'Later')+'</span>'}
+function curStop(){return S.stop?STOPS[S.stop.w][S.stop.i]:null}
+function goBack(def){var p=path.pop()||def||'wall';go(p,false)}
+function nextIdx(st){for(var i=0;i<st.length;i++)if(st[i].st==='todo')return i;return -1}
+function resetStops(){[REL,TOUR,NIGHT].forEach(function(l){l.forEach(function(s){s.st=(s===REL[0])?'done':'todo';s.r=2;s.v=0})})}
+function stopHtml(w,s,i,nx){
+  var cls='stop '+(s.st==='done'?'done':s.st==='sent'?'sent':i===nx?'next':'todo');
+  var h='<span class="mono muted">'+s.t+' · '+s.w+'</span><b>'+s.n+'</b>',data=' data-act="openstop" data-s="'+w+'" data-i="'+i+'"';
+  if(s.st==='done')h+='<span class="st ok">Approved</span>';
+  else if(s.st==='sent')h+='<span class="st">Waiting on the band</span>';
+  else if(i===nx){
+    h+=(s.k==='text'?'<div class="capbox" style="background:rgba(0,0,0,.08);color:var(--ink)"><span class="mono">'+esc(s.text.slice(0,70))+'…</span></div>':'<div class="mini">'+poster(s.k==='reel'?'story':s.k,s,null,s.x)+'</div>')+'<button class="btn tp" style="width:auto;padding:0 26px;min-height:46px"'+data+'>'+(s.k==='reel'?'Watch the reel':s.k==='text'?'Read the note':'Make it')+'</button>';
+  }
+  return '<div class="'+cls+'">'+h+'</div>'}
+function timeline(w,today){var st=STOPS[w],nx=nextIdx(st),out='';
+  st.forEach(function(s,i){if(i===nx&&today)out+='<div class="today"><span class="tape">Today · '+today+'</span></div>';out+=stopHtml(w,s,i,nx)});
+  return '<div class="tl">'+out+'</div>'}
+function sheetScr(w){var rel=w==='rel',st=STOPS[w],done=st.filter(function(s){return s.st!=='todo'}).length,x=rel?RELX:TOURX;
+  return '<div class="scr">'+hz()+'<div class="bar gut"><button data-act="back">Back</button>'+lt()+'<button data-act=\"home\">Home</button></div><div class="body gut" style="overflow-y:auto;gap:18px"><div style="display:flex;gap:14px;align-items:flex-end"><div style="width:40%;flex:0 0 40%;transform:rotate(-2deg)">'+poster('flyer',A0,null,x)+'</div><div style="display:flex;flex-direction:column;gap:6px"><h2 class="big" style="font-size:26px">'+(rel?'Notte Lunga':'Rumore Tour')+'</h2><p class="mono">'+(rel?'New single · out Sat 19 Jun':'4 dates · 1 to 9 Oct')+'</p><p class="mono muted">'+done+' of '+st.length+' done · one look, one approval link</p></div></div>'+timeline(w,'Mon 31 May')+'</div></div>'}
+R.release=function(){return sheetScr('rel')};
+R.tour=function(){return sheetScr('tour')};
+R.stop=function(){var s=curStop()||TOUR[0];if(!curStop())S.stop={w:'tour',i:0};var sent=s.st!=='todo';
+  var bar='<div class="bar gut"><button data-act="back">Back</button>'+lt(s.tg)+'<button data-act=\"home\">Home</button></div>',dock='<div class="sheet gut">'+(s.k==='text'?'':'<div class="chips"><button class="chip" data-act="slook" data-v="rough">Rougher</button><button class="chip" data-act="slook" data-v="clean">Cleaner</button><button class="chip" data-act="slook" data-v="another">Another</button></div>')+'<button class="btn tp" data-act="sendstop"'+(sent?' disabled':'')+'>'+(sent?'Waiting on the band':'Send to the band')+'</button></div>';
+  if(s.k==='text')return '<div class="scr dark">'+hz()+bar+'<div class="body gut"><h2 class="big" style="font-size:24px">'+s.n+'</h2><div class="capbox"><textarea id="ptext" aria-label="Press note" style="min-height:150px">'+esc(s.text)+'</textarea></div><p class="mono muted">Written from your words and your Never list. Edit it freely.</p></div>'+dock+'</div>';
+  return '<div class="scr dark">'+hz()+bar+'<p class="mono gut muted" style="margin:2px 0 6px">'+esc(s.n)+'</p><div class="rstage">'+poster(s.k,s,null,s.x)+'</div>'+dock+'</div>'};
+R.reel=function(){var s=REL[1],sent=s.st!=='todo';
+  return '<div class="scr dark">'+hz()+'<div class="bar gut"><button data-act="back">Back</button>'+lt()+'<button data-act=\"home\">Home</button></div><p class="mono gut muted" style="margin:2px 0 6px">15 seconds · your demo track · posters cut on the beat</p><div class="rstage"><div class="reel">'+poster('story',{r:2,v:0},null,s.x)+poster('story',{r:2,v:1},null,s.x)+poster('story',{r:2,v:2},null,s.x)+'</div></div><div class="sheet gut"><p class="mono muted" style="margin:0">Prototype only: no video is made here. This only shows the idea.</p><button class="btn tp" data-act="sendreel"'+(sent?' disabled':'')+'>'+(sent?'Waiting on the band':'Use this reel')+'</button></div></div>'};
+R.tonight=function(){return '<div class="scr gut">'+hz()+'<div class="bar"><button data-act="back">Back</button>'+lt('Idea')+'<button data-act=\"home\">Home</button></div><div class="body" style="overflow-y:auto;gap:18px"><span class="tape">Sat 12 Dec · Sottoscala 13</span><h2 class="big">Tonight.</h2><p class="pur">Small posts to make on the night itself, in your look.</p><div class="tl"><div class="stop done"><span class="mono muted">19:30</span><b>Soundcheck</b></div><div class="stop next"><span class="mono muted">21:00 · Doors</span><b>Tell people the doors are open</b><button class="btn tp" style="width:auto;padding:0 26px;min-height:46px" data-act="openstop" data-s="night" data-i="0">Post the doors story</button></div><div class="stop"><span class="mono muted">22:15 · You are on</span><b>Setlist poster for the merch table</b><button class="chip" data-act="openstop" data-s="night" data-i="1">Make it</button></div><div class="stop todo"><span class="mono muted">Tomorrow</span><b>The thank-you is ready</b><button class="chip" data-act="go" data-to="after">Look</button></div></div></div></div>'};
+R.after=function(){var xs=[['flyer',{name:'Grazie<br>Bologna',d:'12.12',tag:'Last night was loud.',sub:'+ Lupi di Periferia',f1:'Sottoscala 13',f2:'See you 17 Jan'},0],['story',{name:'Grazie<br>Lupi',d:'12.12',lab:'Thank you',tag:'@lupidiperiferia · @sottoscala13',f1:'Sottoscala 13',f2:'Next: 17 Jan'},1],['post',{name:'Next:<br>17 Jan',d:'17.01',tag:'',f1:'Cantina Blu, Firenze',f2:'Tickets soon'},0]];
+  return '<div class="scr dark">'+hz()+'<div class="bar gut"><button data-act="back">Back</button>'+lt()+'<button data-act=\"home\">Home</button></div><p class="mono gut muted" style="margin:2px 0 0">Thank-you for last night. No photos needed.</p><div class="deck" id="deck">'+xs.map(function(p){return '<div class="slide">'+poster(p[0],{r:2,v:p[2]},null,p[1])+'</div>'}).join('')+'</div><div class="dots" id="dots"><i class="on"></i><i></i><i></i></div><div class="sheet gut"><p class="mono muted" style="margin:0">Tags Lupi di Periferia and the venue. Your own photos come later still.</p><button class="btn tp" data-act="sendafter">Send to the band</button><button class="link" style="color:#fff" data-act="go" data-to="gig">Set up the 17 Jan gig</button></div></div>'};
+function pinGig(x,label,to,cn){return '<button class="pin" data-act="go" data-to="'+to+'">'+poster('flyer',A0,{hue:x.hue||'red'},x)+(cn?'<span class="later cn">'+cn+'</span>':'')+'<span class="mono">'+label+'</span></button>'}
+function sheetCard(w){var rel=w==='rel',st=STOPS[w],done=st.filter(function(s){return s.st!=='todo'}).length,n=nextIdx(st);
+  return '<button class="sheetcard span" data-act="go" data-to="'+(rel?'release':'tour')+'"><span class="sc-p">'+poster('flyer',A0,null,rel?RELX:TOURX)+'</span><span class="sc-t">'+lt()+'<b>'+(rel?'Notte Lunga':'Rumore Tour')+'</b><span class="mono">'+(rel?'New single · 19 Jun':'4 dates · 1 to 9 Oct')+'</span><span class="mono muted">'+done+' of '+st.length+' done'+(n>=0?' · Next: '+esc(st[n].n):'')+'</span></span></button>'}
+R.wall=function(){var t=S.t,hd={w1:'Week 1 · 12 days to the gig',m1:'Month 1 · gig night',m6:'Month 6 · release and tour',y1:'Year 1 · the archive'}[t],g2={d:'17.01',f1:'Cantina Blu, Firenze',f2:'21:00 · €8'},g3={d:'24.01',f1:'Sottoscala 13, Bologna',f2:'21:00 · €8',hue:'blue'},grid='';
+  if(t==='w1')grid=pinGig({},'Sat 12 Dec · pack in progress','pack')+'<button class="tile" data-act="go" data-to="newsheet"><span style="font-size:30px">+</span>Next gig?</button>';
+  else if(t==='m1')grid='<div class="span"><button class="tonight" data-act="go" data-to="tonight"><span>Tonight: Sottoscala 13</span><span class="later">Idea</span></button></div>'+pinGig({},'Sat 12 Dec · tonight','ready')+'<button class="tile" data-act="go" data-to="after"><span class="later cn">Later</span>After the gig<span class="mono" style="font-weight:400">Make the thank-you</span></button>'+pinGig(g2,'Sun 17 Jan · draft','pack')+pinGig(g3,'Sun 24 Jan · draft','pack');
+  else{grid='<button class="sheetcard span" data-act="go" data-to="archive"><span class="sc-p stack" style="width:110px;flex-basis:110px">'+poster('flyer',A0,null,{})+poster('flyer',{r:2,v:1},null,{d:'17.01'})+poster('flyer',{r:2,v:2},null,{d:'24.01',hue:'blue'})+'</span><span class="sc-t"><b>Gigs</b><span class="mono muted">'+(t==='y1'?'26 posters in the archive':'5 gigs on the wall')+'</span></span></button>'+sheetCard('rel')+sheetCard('tour');
+   if(t==='y1')grid+='<button class="tile span" style="aspect-ratio:auto;min-height:84px" data-act="collab"><span class="later">Far later</span>Collab with Lupi di Periferia</button>'}
+  return '<div class="scr gut">'+hz()+'<div class="bar"><button data-act="back">Back</button>'+lt()+(t==='y1'?'<button data-act="go" data-to="channels" style="font-weight:700">Posting: on</button>':'<button data-act="home">Home</button>')+'</div><div class="body" style="overflow-y:auto;gap:14px">'+HDR('Later · the wall over time','Your wall, growing.','Pretend time passes. Every gig, single and tour stays pinned in one look.')+'<div><p class="mono muted" style="margin:0 0 6px">Pretend it is…</p><div class="chips" style="gap:6px">'+TIMES.map(function(x){return '<button class="chip" style="min-height:34px;padding:4px 12px" data-act="time" data-v="'+x[0]+'" aria-pressed="'+(t===x[0])+'">'+x[1]+'</button>'}).join('')+'</div></div><p class="mono" style="margin:0">'+hd+'</p><div class="wallgrid">'+grid+'</div></div>'+nav('home')+'</div>'};
+R.archive=function(){var o='';for(var i=0;i<12;i++)o+=poster('flyer',{r:2,v:i%3},{mood:i%4===1?'bright':'dark',hue:i%3===1?'blue':'red'},{d:String(28-i*2).replace(/^(\d)$/,'0$1')+'.0'+(i<6?'1':'2')});
+  return '<div class="scr gut">'+hz()+'<div class="bar"><button data-act="back">Back</button>'+lt()+'<button data-act=\"home\">Home</button></div><div class="body" style="overflow-y:auto"><h2 class="big">Everything you pinned.</h2><p class="mono muted">Open any old poster to reuse its look in one tap.</p><div class="proof">'+o+'</div></div></div>'};
+R.newsheet=function(){function row(to,t,s,tag,cls){return '<button class="mrow" style="min-height:76px" data-act="go" data-to="'+to+'"><span>'+t+'<small>'+s+'</small></span><span class="mtag '+cls+'">'+tag+'</span></button>'}
+  return '<div class="scr gut"><div class="bar"><span>'+esc(BN())+'</span><span>Make</span></div><div class="body" style="overflow-y:auto;gap:12px">'+hd('Make','What are you promoting?','Pick a job. Each one starts from your identity, so it always looks like you.')+row('gig','A gig','One sentence, one poster pack','First version','')+row('after','Thank-you for last night','Carousel with the venue and support tagged','Later','l')+row('release','A new single','Cover, teaser, press note, release day','Later','l')+row('tour','A tour','One look, a poster per date, one approval','Later','l')+row('tonight','Gig night','Doors story and setlist poster','Idea','l')+'</div>'+nav('make')+'</div>'};
+/* session menu: the facilitator's way into every journey */
+var MENU=[
+ ['The story, start to finish',[['pitch','Home page','What a visitor sees first: the pitch',0],['onb1','Onboarding','Name, bandmates, channels: three quick steps',0],['studio','Identity Studio','Seven chapters of real questions',0,1]]],
+ ['The first version: a gig pack, step by step',[['home','Your wall','Home base once a band is set up',0],['newsheet','Make: what next?','Pick a gig, single, tour or thank-you',0],['gig','1 · Tell us about the gig','One sentence',0],['pack','2 · The pack','Swipe the posters, tweak the look',0],['sent','3 · Band approval','Link out, answers back',0],['review','3 · The bandmate’s phone','Swipe yes or nope',0],['ready','4 · Ready to post','Proof sheet and posting plan',0]]],
+ ['Later: draft journeys',[['wall','The wall grows','Week 1 to year 1',1],['tonight','Gig night','Doors story and setlist poster',1],['after','After the gig','A thank-you made for you',1],['release','A new single','Countdown timeline',1],['tour','A tour','Countdown timeline, one approval',1],['reel','Short video','15-second teaser reel',1],['channels','Post it for me','Link accounts',1],['pay','Keep your wall','Pay after the posters',1],['archive','Poster archive','Everything you pinned',1]]]];
+function openMenu(){closeMenu();var m=document.createElement('div');m.className='menu';m.id='menu';
+  var h='<div class="mh"><b>Session menu</b><button data-act="closemenu">Close</button></div><div class="mb"><p class="mnote">For the person running the session. Jump to any journey. Everything is sample data and nothing is real.</p>';
+  MENU.forEach(function(g){h+='<p class="mg">'+g[0]+'</p>';g[1].forEach(function(i){h+='<button class="mi'+(i[3]?' l':'')+'" data-act="jump" data-to="'+i[0]+'"><span><b>'+i[1]+'</b><small>'+i[2]+'</small></span>'+(i[3]?'<span class="later">Later</span>':'')+'</button>';
+    if(i[4])h+='<div class="chs">'+CH.map(function(c,j){return '<button data-act="chap" data-k="'+c.k+'" data-m="1">'+(j+1)+' '+c.t+'</button>'}).join('')+'</div>'})});
+  h+='<p class="mg">Tools</p><button class="mi" data-act="loadsample"><span><b>Load the sample band</b><small>Fills in Cenere Rossa and every identity answer</small></span></button><button class="mi" data-act="restart"><span><b>Start over</b><small>Clears everything and returns to the home page</small></span></button><button class="mi" data-act="hidebar"><span><b>'+(app.classList.contains('mn')?'Show this bar':'Hide this bar')+'</b><small>Leaves a thin yellow stripe at the top. Tap it to bring the menu back.</small></span></button></div>';
+  m.innerHTML=h;app.appendChild(m)}
+function closeMenu(){var m=document.getElementById('menu');if(m)m.remove()}
+function loadSample(){S.band={name:'Cenere Rossa',city:'Bologna',me:'Marta',mates:['Marco','Giulia'],chan:{Instagram:1,Facebook:1,'Group chats':1}};
+  S.idn={genre:['Post-punk','Garage'],energy:'Slow burn',sonic:['Raw','Angular'],infl:['Massimo Volume','Fugazi','Joy Division'],scene:'Local DIY scene',vibe:['nocturnal','ironic','loud'],place:'A rehearsal basement',tone:'poetic',never:{'Corporate gradients':1,'Stock photos':1,'Emoji everywhere':1},neverOwn:'Summer vibes',story1:'They never stop thanking the sound guy.',story2:'A basement under a bar, always 30 degrees.'};
+  S.fin={sound:1,infl:1,vibe:1,tone:1,look:1,never:1,story:1};S.tag='Rumore per chi è rimasto sveglio.';S.lang='it';S.looked={0:1,1:1,2:1,3:1,4:1};S.cap={it:null,en:null}}
+function prep(n){var A=S.assets;if((n==='sent'||n==='review')&&A.every(function(x){return x.st==='draft'}))A.forEach(function(x){x.st='wait'});if(n==='review')S.ri=0;if(n==='ready')A.forEach(function(x){x.st='ok'});if(n==='pack')S.cur=0;if(n==='wall')S.t='w1';if(n==='reel')S.stop={w:'rel',i:1}}
+/* nav */
+var cur='pitch',stage=document.getElementById('stage');
+function render(name){cur=name;app.querySelectorAll('.modal').forEach(function(m){m.remove()});stage.innerHTML=R[name]();stage.scrollTop=0;afterRender(name)}
+function go(name,push){if(!R[name])name='pitch';if(push!==false){path.push(cur)}
+  try{if(location.hash!=='#'+name)history.replaceState(null,'','#'+name)}catch(e){}
+  render(name)}
+function inW(i){var v=i.value||i.placeholder||'';i.style.width=Math.max(3,v.length*0.56+.4)+'em'}
+function fitInputs(){app.querySelectorAll('.sentence input').forEach(inW)}
+function afterRender(name){
+  if(name==='gig')fitInputs();
+  if(name==='making')setTimeout(function(){if(cur==='making')go('pack',false)},2400);
+  if(name==='pack'){var d=document.getElementById('deck');d.scrollLeft=d.clientWidth*S.cur;
+    d.addEventListener('scroll',function(){var i=Math.round(d.scrollLeft/d.clientWidth);if(i!==S.cur){S.cur=i;syncPager()}});
+    var ta=document.getElementById('capta');if(ta)ta.addEventListener('input',function(){S.cap[S.lang]=ta.value})}
+  if(name==='review')bindSwipe();
+  if(name==='after'){var dk=document.getElementById('deck'),ds=document.querySelectorAll('#dots i');dk.addEventListener('scroll',function(){var i=Math.round(dk.scrollLeft/dk.clientWidth);ds.forEach(function(e,j){e.classList.toggle('on',j===i)})})}
+  if(name==='stop'){var pt=document.getElementById('ptext');if(pt)pt.addEventListener('input',function(){curStop().text=pt.value})}
+}
+function syncPager(){document.querySelectorAll('#pager button').forEach(function(b,i){b.classList.toggle('on',i===S.cur)});var n=document.getElementById('pk-n');if(n)n.textContent=S.assets[S.cur].n}
+function bindSwipe(){var c=document.getElementById('rcard');if(!c)return;var x0=null,dx=0,sy=document.getElementById('sy'),sn=document.getElementById('sn');
+  c.addEventListener('pointerdown',function(e){x0=e.clientX;dx=0;c.classList.add('drag');try{c.setPointerCapture(e.pointerId)}catch(_){}});
+  c.addEventListener('pointermove',function(e){if(x0===null)return;dx=e.clientX-x0;c.style.transform='translateX('+dx+'px) rotate('+dx/18+'deg)';sy.style.opacity=Math.max(0,Math.min(1,dx/90));sn.style.opacity=Math.max(0,Math.min(1,-dx/90))});
+  function end(){if(x0===null)return;x0=null;c.classList.remove('drag');if(dx>90)act('yes');else if(dx<-90){c.style.transform='';sn.style.opacity=0;act('nope')}else{c.style.transform='';sy.style.opacity=0;sn.style.opacity=0}}
+  c.addEventListener('pointerup',end);c.addEventListener('pointercancel',end)}
+function modal(html){var m=document.createElement('div');m.className='modal';m.innerHTML='<div class="sheet gut">'+html+'</div>';m.addEventListener('click',function(e){var t=e.target;if(t===m||(t.dataset&&t.dataset.close))m.remove();else if(t.dataset&&t.dataset.go){m.remove();go(t.dataset.to)}});app.appendChild(m);return m}
+function curQ(){var c=chOf(S.q.c);return c.q[Math.min(S.q.i,c.q.length-1)]}
+function advance(){var c=chOf(S.q.c);if(S.q.i<c.q.length-1){S.q.i++;render('ask')}else{S.fin[c.k]=true;path=[];toast(c.t+' saved. It shapes your posters and words.');go('studio',false)}}
+function readOwn(){var q=curQ(),o=document.getElementById('own');if(q.t==='multi'&&q.own&&o&&o.value.trim()){var L=S.idn[q.f];if(L.length>=q.max)L.pop();L.push(o.value.trim())}}
+function act(a,el){
+  var d=el?el.dataset:{};
+  switch(a){
+   case 'go':if(d.t)S.t=d.t;go(d.to);break;
+   case 'home':path=[];closeMenu();go('home',false);break;
+   case 'back':if(cur==='ask'&&S.q.i>0){S.q.i--;render('ask')}else{var p=path.pop()||'home';go(p,false)}break;
+   case 'tab':path=[];go(d.to,false);break;
+   case 'menu':openMenu();break;
+   case 'closemenu':closeMenu();break;
+   case 'jump':closeMenu();path=[];prep(d.to);go(d.to,false);break;
+   case 'hidebar':app.classList.toggle('mn');closeMenu();break;
+   case 'loadsample':loadSample();closeMenu();path=[];toast('Sample band loaded: Cenere Rossa');go('home',false);break;
+   case 'skipsetup':loadSample();path=[];go('home',false);break;
+   case 'sample':S.band.name='Cenere Rossa';S.band.city='Bologna';S.band.me='Marta';S.band.mates=['Marco','Giulia'];render('onb1');break;
+   case 'chan':S.band.chan[d.v]=!S.band.chan[d.v];render('onb3');break;
+   case 'lang0':S.lang=d.v;S.cap={it:null,en:null};render('onb3');break;
+   case 'chap':closeMenu();S.q={c:d.k,i:0};if(d.m)path=[];go('ask',!d.m);break;
+   case 'helpers':modal('<h3 class="big" style="font-size:20px;margin:0">Helpers</h3><p style="margin:0">A manager or a friend can drive: they make and send packs. Bandmates still only approve, and the band sees who is driving.</p><button class="btn tp" data-close="1">Got it</button>');break;
+   case 'tog':var L=S.idn[d.f],ix=L.indexOf(d.v);if(ix>-1)L.splice(ix,1);else if(L.length<+d.max){L.push(d.v)}else{toast('Up to '+d.max+'. Tap one to swap it.');break}el.setAttribute('aria-pressed',ix===-1);var ct=document.getElementById('cnt');if(ct)ct.textContent=L.length+' of '+d.max+' picked';app.querySelectorAll('[data-act="tog"]').forEach(function(b){b.setAttribute('aria-pressed',L.indexOf(b.dataset.v)>-1)});break;
+   case 'one':S.idn[d.f]=d.v;if(d.f==='tone')S.tag='';render('ask');setTimeout(function(){if(cur==='ask')advance()},300);break;
+   case 'tagpick':S.tag=d.v;render('ask');setTimeout(function(){if(cur==='ask')advance()},300);break;
+   case 'nev':S.idn.never[d.v]=!S.idn.never[d.v];el.setAttribute('aria-pressed',!!S.idn.never[d.v]);break;
+   case 'pk':S.id[d.k]=d.v;S.looked[d.p]=1;S.chosen=+d.p;render('ask');setTimeout(function(){S.chosen=-1;if(cur==='ask')advance()},320);break;
+   case 'qnext':readOwn();advance();break;
+   case 'qskip':advance();break;
+   case 'price':S.gig.price=d.v;render('gig');break;
+   case 'make':go('making');break;
+   case 'goto':var dk=document.getElementById('deck');dk.scrollTo({left:dk.clientWidth*(+d.i),behavior:'smooth'});break;
+   case 'lang':S.lang=d.v;render('pack');break;
+   case 'look':var A=S.assets[S.cur];if(d.v==='rough')A.r=Math.min(4,A.r+1.5);else if(d.v==='clean')A.r=Math.max(0,A.r-1.5);else A.v=(A.v+1)%3;render('pack');break;
+   case 'words':var m=modal('<h3 class="big" style="font-size:20px;margin:0">Your tagline</h3><input id="tg" value="'+esc(TAG())+'" aria-label="Tagline"><button class="btn tp" id="tgs">Save words</button>');
+     m.querySelector('#tgs').onclick=function(){S.tag=m.querySelector('#tg').value||S.tag;S.cap.it=null;S.cap.en=null;render('pack')};break;
+   case 'send':S.assets.forEach(function(x){x.st='wait'});go('sent');break;
+   case 'copy':try{navigator.clipboard.writeText('bandstudio.os/r/'+slug(BN())+'-7k2').then(function(){toast('Link copied')},function(){toast('Select the link to copy it')})}catch(e){toast('Select the link to copy it')}break;
+   case 'startreview':S.ri=0;go('review');break;
+   case 'approveall':S.assets.forEach(function(x){x.st='ok'});render('sent');break;
+   case 'yes':S.assets[S.ri].st='ok';S.ri++;render('review');break;
+   case 'nope':var mm=modal('<h3 class="big" style="font-size:20px;margin:0">What is off?</h3><div class="chips">'+['Too clean','Wrong info','Not us'].map(function(w){return '<button class="chip" data-why="'+w+'">'+w+'</button>'}).join('')+'</div>');
+     mm.addEventListener('click',function(e){var w=e.target.dataset&&e.target.dataset.why;if(w){S.assets[S.ri].st='no';S.assets[S.ri].why=w;S.ri++;mm.remove();render('review')}else if(e.target===mm){mm.remove();render('review')}});break;
+   case 'revise':var x=S.assets[+d.i];if(x.why==='Too clean')x.r=Math.min(4,x.r+2);else x.v=(x.v+1)%3;x.st='ok';x.why='';toast('Revised. '+MATE()+' approved it.');render('sent');break;
+   case 'save':toast('Prototype only: nothing is downloaded.');break;
+   case 'time':S.t=d.v;render('wall');break;
+   case 'openstop':S.stop={w:d.s,i:+d.i};S.stopFrom=cur;go(STOPS[d.s][+d.i].k==='reel'?'reel':'stop');break;
+   case 'slook':var cs=curStop();if(d.v==='rough')cs.r=Math.min(4,cs.r+1.5);else if(d.v==='clean')cs.r=Math.max(0,cs.r-1.5);else cs.v=(cs.v+1)%3;render('stop');break;
+   case 'sendstop':curStop().st='sent';toast('Sent. The band approves it like a gig.');goBack();break;
+   case 'sendreel':REL[1].st='sent';toast('Sent. The band approves it like a gig.');goBack();break;
+   case 'sendafter':toast('Sent. The band approves it like a gig.');goBack();break;
+   case 'ch':S.ch[d.v]=!S.ch[d.v];render('channels');break;
+   case 'payp':S.pay=d.v;render('pay');break;
+   case 'payok':toast('Prototype only: nobody is charged. The price test sets the numbers.');break;
+   case 'collab':modal('<h3 class="big" style="font-size:20px;margin:0">Two bands, one night</h3><p style="margin:0">A shared poster for a bill you play together, approved by both bands. Far later: not planned yet.</p><button class="btn tp" data-close="1">Got it</button>');break;
+   case 'restart':resetStops();closeMenu();S=mkState();path=[];go('pitch',false);break;
+  }
+}
+app.addEventListener('click',function(e){var el=e.target.closest('[data-act]');if(el&&app.contains(el))act(el.dataset.act,el)});
+app.addEventListener('input',function(e){var t=e.target,ds=t.dataset||{};
+  if(ds.f){S.gig[ds.f]=t.value;S.cap.it=null;S.cap.en=null;inW(t)}
+  else if(ds.b){var k=ds.b;if(k==='m0')S.band.mates[0]=t.value;else if(k==='m1')S.band.mates[1]=t.value;else S.band[k]=t.value;var nx=document.getElementById('nx');if(nx){var ok=(k==='name'||k==='me')?t.value.trim().length>0:nx.disabled===false;if(k==='name'||k==='me')nx.disabled=!ok}}
+  else if(ds.tk){var k2=ds.tk;if(k2==='tagown'){S.tag=t.value.trim();app.querySelectorAll('[data-act="tagpick"]').forEach(function(b){b.setAttribute('aria-pressed','false')})}else if(ds.ti!==undefined&&ds.ti!=='')S.idn[k2][+ds.ti]=t.value;else S.idn[k2]=t.value}});
+var ALIAS={welcome:'pitch',identity:'studio',us:'studio',map:'pitch',onb:'onb1'};
+function hp(x){var p=x.split('-');if(p[0]==='wall'&&/^(w1|m1|m6|y1)$/.test(p[1]||''))S.t=p[1];return ALIAS[p[0]]||p[0]}
+window.addEventListener('hashchange',function(){var n=hp(location.hash.slice(1));if(n&&R[n]&&(n!==cur||n==='wall')){prep(n);render(n)}});
+document.getElementById('fac').innerHTML='<button data-act="menu" aria-label="Open the session menu"><i class="ham"></i><b>Session menu</b></button><span>v2.2 · sample data</span>';
+var h=hp(location.hash.slice(1));
+if(location.hash.slice(1)==='map'){h='pitch'}
+if(h==='sent'||h==='ready'||h==='review'||h==='pack'){loadSample();prep(h)}
+if(h==='making')h='pack';
+render(R[h]&&h!=='menu'?h:'pitch');
+if(location.hash.slice(1)==='map')openMenu();
+})();
+</script>

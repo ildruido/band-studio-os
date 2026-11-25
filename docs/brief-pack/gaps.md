@@ -124,7 +124,7 @@ Every component has **two** ratings, because "we can write it" and "it is proven
 
 - **Section:** [Product and roadmap, Demo and visuals](product-and-roadmap.md#demo-and-visuals)
 - **Content:** 🟡 Amber. **Evidence:** 🟡 Amber.
-- **What is missing:** Real generated output; screenshots of real use; a demo recording; tests on real phones. The posters in the prototypes are drawn by code.
+- **What is missing:** Real generated output; screenshots of real use; a demo recording; tests on real phones. The posters in the prototypes are drawn by code. Prototype 2.2 can be recorded as a screen demo today (pitch, setup, Identity Studio, pack), but a recording shows canned content, not real output.
 - **How it would be filled:** A first real generation run (part of the blind test), then record a demo from real output.
 - **Needs Ale:** No
 
