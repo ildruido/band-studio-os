@@ -2,13 +2,13 @@
 
 Newest first. Each entry: id, date, decision, why, alternatives, who decided, status (`active`, `superseded by D-0NN`, `revisited`).
 
-### D-032 Adopt the "band's wall" design direction for prototype v2 (proposed)
+### D-032 Adopt the "band's wall" design direction for prototype v2
 - **Date:** 2026-11-25
 - **Decision:** Prototype v2 follows [ux-direction.md](ux-direction.md): one decision per screen (pick between two, fill a sentence, swipe a poster), a fixed backstage look (concrete grey, black ink, yellow tape, photocopy grain) and all colour coming from the band's own artwork. The Grit slider, the reference-image upload and the tabbed pack are replaced by either-or taps and a swipeable poster deck.
 - **Why:** Ale found v1 too functional-heavy for a phone and too much like a standard AI app (D-031).
 - **Alternatives:** A dark, glossy music-streaming look (closer to what people expect, but also generic); a look that adopts each band's own colours across the whole app (risk: weak, inconsistent app identity).
-- **Decided by:** Claude's proposal, awaiting Ale's review
-- **Status:** proposed
+- **Decided by:** Ale ("Ok for now", 2026-11-25), on Claude's proposal
+- **Status:** active
 
 ### D-031 Close prototype v1; refine the UX design before building v2
 - **Date:** 2026-11-25

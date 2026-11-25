@@ -1,6 +1,6 @@
 # UX design direction for prototype v2
 
-Status: **draft, awaiting Ale's review** (D-032, proposed). Visual board: [Artifact](https://claude.ai/artifact/TCjoXd1hdqoMApWqQZ58ws) (private to Ale until shared). Source: [ux-direction/board.html](ux-direction/board.html).
+Status: **approved by Ale for now, 2026-11-25** (D-032). Visual board: [Artifact](https://claude.ai/artifact/TCjoXd1hdqoMApWqQZ58ws) (private to Ale until shared). Source: [ux-direction/board.html](ux-direction/board.html).
 
 ## Why
 
@@ -34,4 +34,4 @@ Archivo (wide for names, narrow for dates) and Courier Prime for tour-diary deta
 
 ## Next
 
-If Ale approves, prototype v2 is built from this board (separate task).
+Prototype v2 is built from this board (separate PR).
