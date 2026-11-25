@@ -1,6 +1,6 @@
 # Design alternatives: three ways the whole product could look and feel
 
-Status: **proposal, awaiting Ale's choice** (D-033). Visual boards: [Artifact](https://claude.ai/artifact/C9tAo5nKKzSrUCK5dtxNEr) (private to Ale until shared). Source: [design-alternatives/board.html](design-alternatives/board.html).
+Status: **Ale chose Alternative A, the Gig Wall, as the base for prototype v2** (D-033, D-034). Ideas kept: from B, the chat mode and Instagram or Bandcamp link reading stay on the bench; from C, only the countdown timeline, which needs a heavy rethink because the desk is too function-heavy. Visual boards: [Artifact](https://claude.ai/artifact/C9tAo5nKKzSrUCK5dtxNEr) (private to Ale until shared). Source: [design-alternatives/board.html](design-alternatives/board.html).
 
 ## What this is
 
