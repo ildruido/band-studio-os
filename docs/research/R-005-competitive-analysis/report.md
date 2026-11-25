@@ -1,6 +1,6 @@
 # R-005 Competitive analysis: report
 
-Protocol: [protocol.md](protocol.md), pre-registered in commit c8b8266 on 2026-11-25. Tier: standard. Method: `docs/research/framework.md` and the `competitive-analysis` skill. Accessed 2026-11-25. Inputs: [R-004](../R-004-competitor-scan/report.md) and [R-007](../R-007-canva-gap-check/report.md) (evidence ids from them are written `R7-E-nn` and `R4-E-nn`; new ones are `E-nn`). Status: **desk route and skeptic review done; optional Gemini route pending** ([gemini-prompt.md](gemini-prompt.md)).
+Protocol: [protocol.md](protocol.md), pre-registered in commit c8b8266 on 2026-11-25. Tier: standard. Method: `docs/research/framework.md` and the `competitive-analysis` skill. Accessed 2026-11-25. Inputs: [R-004](../R-004-competitor-scan/report.md) and [R-007](../R-007-canva-gap-check/report.md) (evidence ids from them are written `R7-E-nn` and `R4-E-nn`; new ones are `E-nn`). Status: **desk route and skeptic review done; Gemini route read, see [addendum-1.md](addendum-1.md) (most of its sources are Reddit and could not be opened)** ([gemini-prompt.md](gemini-prompt.md)).
 
 ## Verdict
 
@@ -43,11 +43,11 @@ Fixed in the protocol before scoring (commit c8b8266): cost 20, time 20, identit
 | Low switching effort (10) | 3 (free, widely known; the "widely known" part rests on secondary guides, low weight) | 2 | 2 | 1 | 1 (7-day trial; sources disagree on a free plan: R7-E-17 says none, E-07 says one) | 1 (3-day trial, card needed) | 1 (new) |
 | Approval loop (5) | ? | ? | ? | ? | 2 (approval before publishing, for teams, E-07) | ? | 2 planned |
 | Print output (5) | 2 (PDF, no CMYK, R7-E-15) | ? | ? | ? | ? | ? | 1 planned |
-| Italian (5) | ? | ? | ? | ? | ? | ? | 3 planned |
-| **Weighted, unknown excluded** | **79.2** | **76.9** | 57.1 (35 of 100 weight known) | 59.0 | 61.9 | 56.4 | **76.7** |
-| **Weighted, unknown as 0** | 63.3 | 50.0 | 20.0 | 38.3 | 43.3 | 36.7 | n/a (all scored) |
+| Italian (5) | ? | ? | ? | 2 (Italian-language page, addendum G-04) | ? | ? | 3 planned |
+| **Weighted, unknown excluded** | **79.2** | **76.9** | 57.1 (35 of 100 weight known) | 59.5 | 61.9 | 56.4 | **76.7** |
+| **Weighted, unknown as 0** | 63.3 | 50.0 | 20.0 | 41.7 | 43.3 | 36.7 | n/a (all scored) |
 
-Bandsintown Boost is **not scored**: it sells audience reach for a flat fee (E-01), not creative, so it complements rather than replaces. On "gets the show seen" it would score 3. Not scored for lack of evidence: ChatGPT or Claude with prompts, friends and freelancers, VistaCreate (10 USD, R7-E-28; page blocked 403), Kittl (R7-E-28; pricing page opened, no price read, E-08), Orphiq (37 USD, R4-E-07; strategy and captions, E-06), Contentdrips and PostPlanify (R-004).
+Bandsintown Boost is **not scored**: it sells audience reach for a flat fee (E-01), not creative, so it complements rather than replaces. An independent reviewer calls it "a bad spend if you do not know your ticket margin" (addendum G-01). On "gets the show seen" it would score 3. Not scored for lack of evidence: ChatGPT or Claude with prompts, friends and freelancers, VistaCreate (10 USD, R7-E-28; page blocked 403), Kittl (R7-E-28; pricing page opened, no price read, E-08), Orphiq (37 USD, R4-E-07; strategy and captions, E-06), Contentdrips and PostPlanify (R-004).
 
 ## Sensitivity of the ranking
 
@@ -149,7 +149,7 @@ Search results arrive as summaries; every claim above rests on pages I opened th
 1. **A timed head-to-head trial** of Canva, Simplified (7-day trial, R7-E-06) and PosterMyWall on one real gig, scored on time and output. Ale declined the hands-on check (D-025). The nearest substitute is the **E2 blind output test**; include Simplified and Canva output with the band's brand kit loaded as the comparison, so C1 and C2 get a fair test.
 2. **Driver interviews (E1/R-003):** C3 and C4; whether free tools are good enough, whether the approval loop hurts, and what they would pay per gig.
 3. **Fake-door price test (E3):** test the 15 EUR per campaign line against the 49 to 50 USD per event anchors seen here.
-4. **Gemini route** (optional, pending): band voices and "launched or abandoned" music tools.
+4. **Gemini route:** returned and read ([addendum-1.md](addendum-1.md)); its band voices are Reddit threads I could not open, so the interviews still decide C3.
 
 ## Skeptic review
 
