@@ -1,22 +1,28 @@
 # R-005 Competitive analysis: report
 
-Protocol: [protocol.md](protocol.md), pre-registered in commit c8b8266 on 2026-11-25. Tier: standard. Method: `docs/research/framework.md` and the `competitive-analysis` skill. Accessed 2026-11-25. Inputs: [R-004](../R-004-competitor-scan/report.md) and [R-007](../R-007-canva-gap-check/report.md) (evidence ids from them are written `R7-E-nn` and `R4-E-nn`; new ones are `E-nn`). Status: **desk route done, skeptic review below, optional Gemini route pending** ([gemini-prompt.md](gemini-prompt.md)).
+Protocol: [protocol.md](protocol.md), pre-registered in commit c8b8266 on 2026-11-25. Tier: standard. Method: `docs/research/framework.md` and the `competitive-analysis` skill. Accessed 2026-11-25. Inputs: [R-004](../R-004-competitor-scan/report.md) and [R-007](../R-007-canva-gap-check/report.md) (evidence ids from them are written `R7-E-nn` and `R4-E-nn`; new ones are `E-nn`). Status: **desk route and skeptic review done; optional Gemini route pending** ([gemini-prompt.md](gemini-prompt.md)).
 
 ## Verdict
 
-**Needs primary research.** Desk research cannot settle the key hypothesis C1: no verified competitor is shown to reach our planned level on cost, time and identity fit together, but time can't be scored from any independent source and identity only from reviewers' side remarks. No kill criterion is triggered. The more useful finding is where we stand: **on the pre-registered criteria, our planned product (76.7 of 100) does not beat Canva (79.2) or PosterMyWall (76.9) today**, and it only gets ahead where it is still hoped, not built (guided campaign, time, Italian).
+**Reshape.** C2's kill criterion (ii) is triggered when applied as written: Bandsintown's Boost is a music-specific gig promotion flow announced on 2026-06-05 (R4-E-01, E-01), inside the 12-month window. The framework then forces Reshape, whatever my own reading. I think the criterion was worded too loosely (Boost sells audience reach, not creative), so Ale may override it; that override is a product decision and is asked in the thread. Separately, desk research cannot settle the other key hypothesis C1: no verified competitor is shown to reach our planned level on cost, time and identity fit together, but time can't be scored from any independent source and identity only from reviewers' side remarks. Apart from C2 (ii), no kill criterion is triggered. The more useful finding is where we stand: **on the pre-registered criteria, our planned product (76.7 of 100) does not beat Canva (79.2) or PosterMyWall (76.9) today**, and it only gets ahead where it is still hoped, not built (guided campaign, time, Italian).
 
 | Id | Verdict | Confidence | One line |
 | --- | --- | --- | --- |
 | C1 Meaningful gap (key) | Insufficient evidence | Low | No competitor reaches 3, 3, 2 on cost, time and identity with an independent source, but time is unmeasured everywhere and identity rests on vendor pages plus two reviewers' side remarks |
-| C2 Durable (key) | Mixed | Low | Generic brief-to-campaign with brand and approval has shipped (Simplified, shown by an independent review E-07); nobody has shipped the band-specific layer, but nothing shows it is hard to copy |
+| C2 Durable (key) | **Contradicted** (kill criterion (ii) triggered by Boost; Mixed if Ale overrides) | Low | Boost is a shipped, music-specific gig promotion flow (reach, no creative). Independent evidence shows Simplified applies a brand kit and asks approval (E-07), but not a brief-to-multi-format flow, so (i) is not triggered. Nobody has shipped the band-specific creative layer, but nothing shows it is hard to copy |
 | C3 Customers would switch | Insufficient evidence | Low | No readable band voices; Reddit and Facebook are closed to us |
-| C4 Position claimable | Insufficient evidence | Low | Nobody states "your gig campaign in your band's voice"; Krumzi (DJs) and Orphiq are near, with no independent proof either way |
+| C4 Position claimable | Insufficient evidence | Low | Not shown to be taken: no page I opened states "your gig campaign in your band's voice", but Krumzi (DJs), CapCut's band post page (E-09) and Orphiq are near, and Piktochart's concert poster page was blocked (403) |
+
+## What to reshape (proposal for Ale)
+
+1. **Position on the creative and identity layer, not on getting the show seen.** Audience reach is owned by Bandsintown Boost and paid social. Our edge, if any, is the guided gig campaign in the band's own identity. Treat Boost-style reach as a future connector or partner (D-009), not a rival to beat.
+2. **Do not claim the generic flow as ours.** Simplified and Canva AI 2.0 are close to it. The claim has to rest on the band-specific layer, which the blind output test (E2) must prove.
+3. **Re-read R-004's S4** with the same rule (the skeptic's ruling below): it reads Contradicted.
 
 ## Strongest evidence against our idea (read first)
 
 1. **Canva wins the pre-registered scoring.** Free to use, known by everyone, 13 to 18 USD for Pro, saved Brand Kit, print PDF (R7-E-03, R7-E-04, R7-E-15). Our product's planned edge (a guided campaign) is only "planned", and in the base case only what exists counts.
-2. **The generic flow has shipped.** An independent review says Simplified's agent "automatically applies your brand kit" and by default seeks approval before publishing (E-07). Canva AI 2.0 aims at the same flow, in preview (R7-E-01).
+2. **The generic flow is close.** An independent review says Simplified's agent "automatically applies your brand kit" and by default seeks approval before publishing (E-07); it does not show a brief-to-flyer-and-story flow. Canva AI 2.0 aims at the same flow, in preview (R7-E-01, **not re-verified by the skeptic**: the page came back truncated, a live re-check is owed).
 3. **A music-specific design tool already exists for DJs.** Krumzi sells "gig flyer, booking announcement" design with a Brand Kit, a 3-day trial and a 49 USD one-month pass (E-03, E-04). Vendor pages only, but it shows the "band-specific" layer can be built by a small vendor.
 4. **Music-specific reach is being sold by a platform that owns the audience.** Bandsintown's Boost costs from 50 USD per show and needs "no creative" (E-01). It does not replace a flyer, but it competes for the same promotion budget of a band.
 5. **Habit is free.** The cheapest competitor is a free Canva plan, a friend, or nothing. No source measures how much pain that leaves (C3 unproven).
@@ -76,7 +82,7 @@ Bandsintown Boost is **not scored**: it sells audience reach for a flat fee (E-0
 
 1. **"Your gig campaign, in your band's voice."** Guided brief to full set, identity memory, approval. *Evidence:* nobody claims it (C4), the generic flow exists (C2). *Risk:* Simplified or Canva add music templates in a release. *Wrong if:* a blind test (E2) shows bands cannot tell our output from Canva or Simplified output with the band's brand kit loaded.
 2. **"The band's approval loop."** Narrower: fewer evenings of group chats, with identity memory. *Evidence:* only a starting-idea assumption; Simplified has team approval (E-07). *Risk:* WhatsApp is good enough. *Wrong if:* interviews (E1) show approval is not a pain.
-3. **"A per-gig pass for the show."** Pay per campaign, anchored on what bands are offered per event: 49 USD one-month pass (Krumzi, E-04) and 50 USD a show (Boost, E-01). *Evidence:* vendor prices only, not demand. *Risk:* our 15 EUR per campaign line sits well below these anchors, so the plan might be underpriced or the market may not pay; our cost per campaign (images, captions) is still unknown. *Wrong if:* the fake-door test (E3) shows no willingness to pay per campaign.
+3. **"A per-gig pass for the show."** Pay per campaign, anchored on what bands are offered per event: 49 USD one-month pass (Krumzi, E-04) and 50 USD a show (Boost, announced 2026-06-05, E-01; Boost sells reach, not design, so it is a budget anchor only, not a price comparison). *Evidence:* vendor prices only, not demand. *Risk:* our 15 EUR per campaign line sits well below these anchors, so the plan might be underpriced or the market may not pay; our cost per campaign (images, captions) is still unknown. *Wrong if:* the fake-door test (E3) shows no willingness to pay per campaign.
 
 ## Pricing and positioning landscape
 
@@ -87,7 +93,7 @@ Bandsintown Boost is **not scored**: it sells audience reach for a flat fee (E-0
 | VistaCreate | 10 a month, annual | R7-E-28 (page blocked) |
 | Mew Design | 5.69 a month shown | R7-E-08 |
 | Simplified | 19 annual or 29 monthly, +19 scheduling add-on, 79 "Starter" campaign plan | R7-E-06, E-17, E-18 |
-| Krumzi | 19, 39, 89 a month; 49 one-month pass | E-04 |
+| Krumzi | 19, 39 (Pro), 89 (Studio) a month; 49 one-month pass | E-04 |
 | Bandsintown Boost | 50 per show for venues under 500 capacity | E-01 |
 | Orphiq | 37 a month | R4-E-07 |
 | Friend or freelancer, doing nothing | unknown, no source | none |
@@ -99,20 +105,23 @@ Empty positions: nobody sells "per gig, for the band's identity". It may be empt
 | Id | Hyp | Direction | Source | Date, publisher | Grade | Interest | Quote | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | E-01 | C1, C2 | against | [Bandsintown help: How to use Boost](https://help.artists.bandsintown.com/en/articles/13533897-how-to-use-boost) | Bandsintown, accessed 2026-11-25 | D (primary for its own feature and price) | yes | "no creative, no campaign setup, no targeting decisions required"; "Under 500 $50" (price by venue capacity) | Opened |
-| E-02 | C1 | neutral | [Hypebot: How to use Boost](https://www.hypebot.com/how-to-use-bandsintown-boost-to-market-live-shows/) | Hypebot, 2026-10-06 | D (repeats Bandsintown's own playbook) | yes | "the five boosted shows drove 237K views and 587 ticket clicks ... all for less than $300" | Opened. The numbers come from Bandsintown's case study on one artist (Jay Electronica): no weight, counted once with E-01 |
+| E-02 | C1 | neutral | [Hypebot: How to use Boost](https://www.hypebot.com/how-to-use-bandsintown-boost-to-market-live-shows/) | Hypebot, 2026-10-21 (corrected by the skeptic; published by Bandsintown) | D (repeats Bandsintown's own playbook) | yes | "the five boosted shows drove 237K views and 587 ticket clicks ... all for less than $300" | Opened. The numbers come from Bandsintown's case study on one artist (Jay Electronica): no weight, counted once with E-01 |
 | E-03 | C2, C4 | against | [Krumzi: AI design tool for DJs](https://www.krumzi.com/for/djs) | Krumzi, accessed 2026-11-25 | D | yes | "Describe the gig flyer, booking announcement, or set graphic you need"; "Set your Brand Kit with your DJ name, colors, and logo" | Opened. Vendor only |
-| E-04 | C1 | neutral | [Krumzi pricing](https://www.krumzi.com/pricing) | Krumzi, accessed 2026-11-25 | D | yes | "Starter $19 /mo billed monthly"; "Pro ... $39 /mo"; "A month pass ... $49 once" | Opened. Brand Kit listed under Pro |
-| E-05 | C1, C2 | against | [PosterMyWall AI launch](https://www.postermywall.com/blog/2026/02/04/introducing-postermywall-ai-a-prompt-based-creative-ai-tool/) | PosterMyWall, 2026-02-04 | D | yes | "Promote parties, live music, and themed events." and "five catchy Instagram captions" as an example prompt | Opened |
+| E-04 | C1 | neutral | [Krumzi pricing](https://www.krumzi.com/pricing) | Krumzi, accessed 2026-11-25 | D | yes | "Starter $19 /mo billed monthly"; "Pro ... $39 /mo"; "A month pass ... $49 once" | Opened. Brand Kit listed under Pro and the higher plans (Studio 89 a month, skeptic check) |
+| E-05 | C1, C2 | against | [PosterMyWall AI launch](https://www.postermywall.com/blog/2026/02/04/introducing-postermywall-ai-a-prompt-based-creative-ai-tool/) | PosterMyWall, 2026-02-04 | D | yes | "Promote parties, live music, and themed events." ; the caption example prompt is for a bakery, not music | Opened |
 | E-06 | C2, C4 | neutral | [Hypebot: How to use AI to book and market live shows](https://www.hypebot.com/how-to-use-ai-to-book-and-market-live-shows-a-musicians-guide/) | Hypebot, Bruce Houghton, 2026-04-14 | C | no | "Orphiq ... generates promo ideas, caption hooks, and script ideas ... based on your unique artist brand and tour schedule." | Opened. Trade press listing tools; no testing |
-| E-07 | C1, C2 | against | [GPTZero review of Simplified](https://gptzero.me/news/simplified-ai-review/) | GPTZero, 2026-08-10 | C | unknown (no affiliate wording found on the page) | "By default, Riley is set to seek approval from you before publishing anything."; "Riley automatically applies your brand kit"; "paid plans ... roughly $29 to $199 per month" | Opened. Review reads the product; no band test. Says a free plan exists, conflicting with R7-E-17 |
+| E-07 | C1, C2 | against | [GPTZero review of Simplified](https://gptzero.me/news/simplified-ai-review/) | GPTZero, 2026-08-10 | C (generous: content marketing from an AI-products vendor) | yes | "By default, Riley is set to seek approval from you before publishing anything."; "Riley automatically applies your brand kit"; "paid plans ... roughly $29 to $199 per month" | Opened. Review reads the product; no band test. Says a free plan exists; Simplified's live pricing page shows a 7-day trial and no free plan (skeptic), so the free-plan claim is not used |
 | E-08 | C1, C4 | neutral | [Kittl pricing](https://www.kittl.com/pricing) | Kittl, accessed 2026-11-25 | D | yes | "Kittl Brand Studio Build your brand once. Generate ads, posts, campaigns, all on-brand." | Opened. Price table not readable in the text; generic design, not music |
+| E-09 | C4 | against | [CapCut AI music artist and band post generator](https://www.capcut.com/ideas/ai-poster-generator/ai-music-artist-band-post-generator) | CapCut, accessed 2026-11-25 | D | yes | "During an album rollout you'll crank out posters, story crops, square teasers, and ad variants. CapCut keeps fonts, spacing, and imagery on-brand" | Opened after the skeptic's lead. Band-specific message, vendor claim only; not scored in the matrix |
 
-Imported without change (opened in R-007 on 2026-11-25, inside the 90-day rule): R7-E-01, 03, 04, 06 to 12, 15 to 17, 19 to 21, 23, 24, 26, 28. Imported from R-004 (2026-11-04, older than the fast-moving window): R4-E-01 (Boost, re-opened as E-01), R4-E-07 (Orphiq price, not re-opened, no weight in scores).
+Corrections from the skeptic: R7-E-23's interest flag is **yes** (the page says "We earn affiliate commissions on some links"); R7-E-01 is not re-verified (see above). Imported without change otherwise (opened in R-007 on 2026-11-25, inside the 90-day rule): R7-E-01, 03, 04, 06 to 12, 15 to 17, 19 to 21, 23, 24, 26, 28. Imported from R-004 (2026-11-04, older than the fast-moving window): R4-E-01 (Boost, re-opened as E-01), R4-E-07 (Orphiq price, not re-opened, no weight in scores).
 
 ### Excluded or not opened
 
 | Source | Reason |
 | --- | --- |
+| Piktochart AI concert poster generator | HTTP 403; lead only (blocks C4's "nobody claims it") |
+| Venngage concert poster generator | Opened; no brand or campaign claim for bands found |
 | canva.com pages including Italian band flyer templates | HTTP 403 earlier today; the search summaries are leads only, not used for the Italian-language score |
 | VistaCreate pricing | HTTP 403 |
 | makingascene.org AI marketing plan | Opened; a generic ChatGPT planning walkthrough, no competitor comparison; no weight |
@@ -144,8 +153,20 @@ Search results arrive as summaries; every claim above rests on pages I opened th
 
 ## Skeptic review
 
-Pending (see below once run).
+One run of the `research-skeptic` agent on 2026-11-25, standard tier. **Sources:** it re-fetched E-01 to E-08 and R7-E-06, 15, 17, 23 live (no saved copies needed); the quotes matched. It could not open Canva (403), and Creative Bloq (R7-E-01) came back truncated, so that entry's live re-check is still owed. It had no git access, so it could not check the commit time of the protocol. It also read the report's verdict lines before forming its own, so its "blind" verdicts are a weaker check. Recomputed totals all match.
+
+| Skeptic finding | Resolution |
+| --- | --- |
+| C2 kill criterion (ii) never evaluated; Boost triggers it as written | Accepted. C2 is now Contradicted and the study Reshape; Ale may override (asked in the thread) |
+| Too few disconfirming queries; the skeptic found CapCut, Piktochart and Venngage band pages | CapCut opened and logged (E-09); Piktochart 403; Venngage no claim. C4 wording softened to "not shown to be taken" |
+| E-02 date wrong; R7-E-23 interest flag wrong; E-07 free plan and flag; R7-E-01 not re-verified | Fixed above |
+| "Simplified has shipped the generic flow" overstated | Reworded: brand kit and approval shown, brief-to-flyer-and-story not shown |
+| Simplified cost 2 is generous (monthly 48 USD would score 1); Krumzi added after data without a deviation | Kept 2 as a deliberate benefit to competitors, annual billing; Krumzi addition logged as a deviation below |
+| Canva time and PosterMyWall identity rest on one affiliate reviewer or vendor claim | No top-three score is independent; all are labelled "claimed" |
+
+**Skeptic's blind verdicts:** C1 Insufficient (agree), C2 Contradicted with Mixed as fallback (now adopted), C3 Insufficient (agree), C4 Insufficient (agree). **Ruling on the carry-over question (R-004 S4):** reject my earlier reading. A criterion naming Canva, Bandsintown and Linktree as actors cannot be read so that general incumbents never trigger it. The test is whether the shipped thing targets musicians or gigs, not whether the company is music-only. On that test Boost counts (S4 would read Contradicted), Canva AI 2.0 in preview and Simplified do not. The skeptic says only Ale can make the ruling, because it was made after seeing the data; it goes to Ale as a decision.
 
 ## Deviations
 
+- 2026-11-25: Krumzi and CapCut's band page were added to the list after seeing data (Krumzi from my search; CapCut from the skeptic's lead). Effect: Krumzi is scored, CapCut is logged but not scored.
 - 2026-11-25: fewer disconfirming queries than the protocol's minimum for C2, C3 and C4 (one session of desk research; Reddit and Facebook closed). Effect: C2 stays Mixed and C3 and C4 stay Insufficient evidence; no verdict leans on the missing queries.
