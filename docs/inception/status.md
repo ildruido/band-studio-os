@@ -11,7 +11,7 @@ Status values: `not started`, `in progress`, `done`, `ongoing`.
 | 3 | MVP definition and roadmap | done | [mvp.md](mvp.md) and [roadmap.md](roadmap.md), approved by Ale 2026-11-25 (D-028, D-029). Assumptions to confirm: E2 before build, pilot of 5 to 10 bands |
 | 4 | Prototypes (interactive mock-ups) | in progress | [Prototype v1](prototypes.md) built and closed (full MVP flow works; design rejected as too functional and generic, D-031). Look adopted ([ux-direction.md](ux-direction.md), D-032). Whole-journey [design alternatives](design-alternatives.md) compared; Ale chose the Gig Wall as the base (D-034). [Prototype v2](prototypes.md) built and confirmed by Ale as is. [Prototype v2.1](prototypes.md) adds draft later journeys, marked Later (D-035); awaiting Ale's review |
 | 5 | Project and repo set up; workflow from `app-studio`; next-steps recommendation | in progress | Project, repo, harness core and CI done; next-steps recommendation pending |
-| 6 | Architecture-phase handoff | not started | |
+| 6 | Architecture-phase handoff | not started | Preceded by the Product Brief Pack step (D-036, not an exit criterion): [step 1 inventories](product-brief-pack.md) written and merged; building the pack is next |
 | 7 | Target users and personas | in progress | Provisional (speculative) personas written: [personas.md](personas.md). They need interviews to firm up (see the [research plan](../research/research-plan.md)) |
 | 8 | Success metrics | done (provisional) | [success-metrics.md](success-metrics.md): North Star decided (D-021); supporting metrics, guardrails and targets are assumptions awaiting Ale's review and E3 |
 | 9 | Constraints and non-goals | done | [constraints.md](constraints.md), agreed by Ale (D-016 to D-020) |
