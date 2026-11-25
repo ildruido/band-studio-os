@@ -15,7 +15,7 @@ Every component has **two** ratings, because "we can write it" and "it is proven
 
 ## Overall reading
 
-- **Content:** 10 green, 14 amber, 9 red (of 33). Green means the text can be used as is; amber needs Ale's check or a missing piece; red means little or nothing exists yet.
+- **Content:** 10 green, 15 amber, 8 red (of 33). Green means the text can be used as is; amber needs Ale's check or a missing piece; red means little or nothing exists yet.
 - **Evidence:** 0 green, 6 amber, 15 red, 12 not applicable (decisions). **No component is green on evidence.** Nothing has been tested with real bands.
 - **So this is a concept-and-plan pack, not a proof pack.** Any deck or video built from it must say "not yet tested" wherever the evidence rating is red or amber.
 - **What moves the most ratings:** the driver interviews, the blind output test and the price test (all postponed), then a pilot. After that, a few decisions from Ale (name, investor ask, founder story).
@@ -48,7 +48,7 @@ Every component has **two** ratings, because "we can write it" and "it is proven
 | [Proof points](#proof-points) | [Evidence and risks](evidence-and-risks.md#proof-points) | 🔴 Red | 🔴 Red | No |
 | [Team](#team) | [Team and founder](team-and-founder.md#team) | 🟡 Amber | ⚪ n/a (a decision) | Yes: the bio |
 | [Founder story](#founder-story) | [Team and founder](team-and-founder.md#founder-story) | 🔴 Red | ⚪ n/a (a decision) | Yes: the story |
-| [Architecture direction](#architecture-direction) | [Technical brief](technical-brief.md#architecture-direction) | 🔴 Red | ⚪ n/a (a decision) | Go on the handoff |
+| [Architecture direction](#architecture-direction) | [Technical brief](technical-brief.md#architecture-direction) | 🟡 Amber | ⚪ n/a (a decision) | No |
 | [Non-functional needs](#non-functional-needs) | [Technical brief](technical-brief.md#non-functional-needs) | 🟡 Amber | ⚪ n/a (a decision) | No |
 | [Constraints](#constraints) | [Technical brief](technical-brief.md#constraints) | 🟢 Green | ⚪ n/a (a decision) | No |
 | [Integrations](#integrations) | [Technical brief](technical-brief.md#integrations) | 🟡 Amber | ⚪ n/a (a decision) | No |
@@ -67,7 +67,7 @@ Every component has **two** ratings, because "we can write it" and "it is proven
 | **Fake-door price test** | Business model, pricing, offer, financials |
 | **A pilot** | Proof points, customer story, testimonials, repeat use |
 | **Decisions from Ale** | Name and tagline, whether there is an investor ask, founder story, team bio, fact sheet details |
-| **Architecture handoff** | Architecture, non-functional targets, integrations priority |
+| **Spikes from the architecture handoff** | Image provider and its cost, print quality, storage on phones, then the final architecture and non-functional targets |
 | **Rights desk study** | Legal and safety, reference-image rule, parts of the FAQ |
 
 ## Component detail
@@ -141,7 +141,7 @@ Every component has **two** ratings, because "we can write it" and "it is proven
 - **Section:** [Product and roadmap, Technical scope](product-and-roadmap.md#technical-scope)
 - **Content:** 🟢 Green. **Evidence:** ⚪ n/a (a decision).
 - **What is missing:** Acceptance detail per capability.
-- **How it would be filled:** Written by the build-phase process (one backlog item per capability) after the architecture handoff.
+- **How it would be filled:** Written by the build-phase process (one backlog item per capability) after the architecture handoff (now written).
 - **Needs Ale:** No
 
 ### Market
@@ -268,16 +268,16 @@ Every component has **two** ratings, because "we can write it" and "it is proven
 
 - **Section:** [Technical brief, Architecture direction](technical-brief.md#architecture-direction)
 - **Content:** 🔴 Red. **Evidence:** ⚪ n/a (a decision).
-- **What is missing:** The architecture handoff (stack, hosting, data, access model).
-- **How it would be filled:** The architecture handoff, the step after the pack. Not started.
-- **Needs Ale:** Go on the handoff
+- **What is missing:** Proof by small tests: the image provider and its price, print quality at A3, file storage on real phones. The direction is written and independently reviewed, not tested.
+- **How it would be filled:** The seven spikes in the [architecture handoff](../inception/architecture-handoff.md#8-risks-and-spikes), then the first build slice.
+- **Needs Ale:** No
 
 ### Non-functional needs
 
 - **Section:** [Technical brief, Non-functional needs](technical-brief.md#non-functional-needs)
 - **Content:** 🟡 Amber. **Evidence:** ⚪ n/a (a decision).
-- **What is missing:** Concrete numbers (speed, availability, accessibility, privacy).
-- **How it would be filled:** Set at the architecture handoff, using the pilot's needs.
+- **What is missing:** Checking the proposed targets against real phones, real generation times and the pilot's needs.
+- **How it would be filled:** The first build slice and the pilot measure them; the targets are then confirmed or changed.
 - **Needs Ale:** No
 
 ### Constraints
@@ -292,7 +292,7 @@ Every component has **two** ratings, because "we can write it" and "it is proven
 
 - **Section:** [Technical brief, Integrations](technical-brief.md#integrations)
 - **Content:** 🟡 Amber. **Evidence:** ⚪ n/a (a decision).
-- **What is missing:** A prioritised list backed by demand.
+- **What is missing:** A prioritised list of channels backed by demand. The export-first design is written ([handoff](../inception/architecture-handoff.md#7-integrations)).
 - **How it would be filled:** Interviews show which channel bands post to; pilot shows what they ask for.
 - **Needs Ale:** No
 
