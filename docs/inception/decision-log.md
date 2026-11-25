@@ -2,6 +2,14 @@
 
 Newest first. Each entry: id, date, decision, why, alternatives, who decided, status (`active`, `superseded by D-0NN`, `revisited`).
 
+### D-025 Replace the hands-on Canva check with desk research plus Gemini Deep Research
+- **Date:** 2026-11-25
+- **Decision:** Ale declined the one-hour hands-on check of Canva and PosterMyWall ([hands-on-check.md](../research/R-004-competitor-scan/hands-on-check.md)). Instead the gap against Canva and similar tools (PosterMyWall, Adobe Express, Mew Design, Simplified) is checked by two independent routes under study [R-007](../research/R-007-canva-gap-check/report.md): desk research by Claude, and a Gemini Deep Research report that Ale runs from a neutral prompt. The result feeds the inputs of R-005 (competitive analysis), which is not started.
+- **Why:** Ale's time is scarce (D-016). Two routes with different sources keep the check independent of our own hypothesis.
+- **Alternatives:** Ale's hands-on trial (declined); one route only (rejected: a single route is easier to bias).
+- **Decided by:** Ale
+- **Status:** active
+
 ### D-024 App profile Phase is discovery; undecided values say TBD
 - **Date:** 2026-11-17
 - **Decision:** The App profile's Phase is `discovery` (harness 0.22.x). Values not decided yet (stack, release target, capabilities, AI plan, access model, storage shape) say TBD instead of "none yet" or "not applicable yet". AI stays off and no modules are on. The `CLAUDE.md` rule about `app-studio` now allows `harness-idea` issues there; edits and PRs there stay off-limits.
