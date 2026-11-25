@@ -2,6 +2,14 @@
 
 Newest first. Each entry: id, date, decision, why, alternatives, who decided, status (`active`, `superseded by D-0NN`, `revisited`).
 
+### D-041 Write an inception recap and propose eight skill candidates; build none yet
+- **Date:** 2026-11-25
+- **Decision:** After the architecture handoff merged, write a recap of the inception process (for AI readers), a proposal of repeatable processes to distil into skills, and a one-page human version, all in [process-recap](process-recap/recap.md). The proposals are not built; any that belong in the harness go through `harness-idea` as issues only. An independent agent fact-checked the documents against the repo and its corrections were applied.
+- **Why:** Ale asked for it under the autonomy rule, so the process is reusable for the next product and Ale can follow what happened.
+- **Alternatives:** Build the skills now (rejected: most ran once or twice; refine after a second use).
+- **Decided by:** Ale (request), Claude (shape)
+- **Status:** active
+
 ### D-040 Bandmates review by private link; the server enforces the approval gate; the pilot is invite-only
 - **Date:** 2026-11-25
 - **Decision:** Bandmates open a private link (random, stored only as a hash, tied to one campaign, expiring, revocable) and give a first name once; no account. The server refuses to build an export that contains an asset that is not approved, so the gate does not depend on the screen. The free pilot uses the studio stack's invite-only sign-in with email and password; open sign-up comes after the pilot. Default rule for "approved": every invited bandmate approves and any veto blocks (assumption, settled by the pilot).

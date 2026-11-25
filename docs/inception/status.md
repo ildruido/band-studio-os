@@ -42,6 +42,7 @@ Kept so Ale can ask for a recap. Newest first. Only the architecture handoff thr
 
 | Date | Sub-milestone | Where | Notes |
 | --- | --- | --- | --- |
+| 2026-11-25 | Inception recap, skill proposals and one-page summary | [process-recap](process-recap/recap.md) | Independent fact-check applied; eight candidate processes, none built (D-041) |
 | 2026-11-25 | Architecture handoff written and independently reviewed | [architecture-handoff.md](architecture-handoff.md) | Recommends the studio web stack plus our own modules; seven spikes; App profile draft |
 | 2026-11-25 | Product Brief Pack enriched with the architecture result | [technical-brief.md](../brief-pack/technical-brief.md), [gaps.md](../brief-pack/gaps.md) | Architecture direction red to amber; non-functional targets proposed; integrations and legal updated |
 | 2026-11-25 | Decisions D-038 to D-040 logged | [decision-log.md](decision-log.md) | Direction, code-placed text with a swappable provider, review links and the server-side approval gate |
