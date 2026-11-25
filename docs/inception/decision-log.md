@@ -2,6 +2,14 @@
 
 Newest first. Each entry: id, date, decision, why, alternatives, who decided, status (`active`, `superseded by D-0NN`, `revisited`).
 
+### D-027 Bandsintown Boost is an indirect competitor; R-005 reads Needs primary research
+- **Date:** 2026-11-25
+- **Decision:** Ale overrode the pre-registered kill rule on R-005's C2 for Bandsintown Boost. Boost's purpose is advertising and audience reach; Band OS is a brand hub that produces several coherent creative artifacts from one identity. So Boost is an **indirect competitor** (a possible later reach connector), not a music-specific campaign-flow competitor, and it does not trigger C2 (ii). C2 reads Mixed (Low); the R-005 verdict is **Needs primary research**. The same reading applies to R-004's S4 (it stays Mixed). General incumbents (Canva, Simplified) still count only when they ship a music- or gig-specific feature.
+- **Why:** Ale's product definition: reach is not our job in V1 (export only, D-009); the creative and identity layer is. The skeptic had ruled the other way on the literal wording of the criterion (Boost is music-specific and recent); the override is Ale's, with this reason.
+- **Alternatives:** Accept the skeptic's literal ruling: C2 Contradicted, study Reshape (recommended by Claude and the skeptic; Ale chose differently).
+- **Decided by:** Ale
+- **Status:** active
+
 ### D-026 Count Gemini's unopened sources as confirmed, and re-evaluate R-007 and R-005
 - **Date:** 2026-11-25
 - **Decision:** Ale told us to treat the sources in Gemini's Deep Research reports that Claude could not open (mostly Reddit threads, which the cloud environment blocks) as confirmed, and to re-evaluate both studies. They are graded as Gemini states them (first-hand voices are grade B), labelled "sponsor-accepted, not opened" in the reports, and each re-evaluation shows what changes. Recorded as sponsor acceptance, not verification; a second skeptic pass found no verdict changes. See [R-007 addendum 1](../research/R-007-canva-gap-check/addendum-1.md) and [R-005 addendum 1](../research/R-005-competitive-analysis/addendum-1.md).
