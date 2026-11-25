@@ -1,6 +1,6 @@
 # Roadmap: Band Studio OS (working title)
 
-Status: **draft for Ale's review**, derived from the [MVP](mvp.md). If the MVP scope changes, this roadmap is reshaped to match. Ale may also change the roadmap alone. Decisions behind it: D-014, D-016 to D-020, D-028, D-029 in the [decision log](decision-log.md).
+Status: **approved by Ale, 2026-11-25**, derived from the [MVP](mvp.md). If the MVP scope changes, this roadmap is reshaped to match. Ale may also change the roadmap alone. Decisions behind it: D-014, D-016 to D-020, D-028, D-029 in the [decision log](decision-log.md).
 
 **There are no dates.** There is no deadline (D-020); pace is set by Ale's 5 to 10 hours a week and by the research gates. Order and gates matter, calendar weeks do not. Items marked **(Assumption)** are Claude's proposal.
 
