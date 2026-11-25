@@ -113,7 +113,7 @@ body{margin:0;background:var(--desk);color:var(--ink);font:16px/1.4 var(--displa
 /* status + ready */
 .list{display:flex;flex-direction:column;gap:10px}
 .item{display:flex;gap:12px;align-items:center;border-bottom:2px dashed rgba(0,0,0,.35);padding-bottom:10px}
-.item .pw{width:52px;flex:0 0 52px}.item .px .pdate,.item .px .ptag,.item .px .psub,.item .px .pfoot{display:none}.item .px{padding:6cqw}.item .px .pname{font-size:15cqw}
+.item .pw{width:52px!important;min-width:52px;max-width:52px;flex:0 0 52px;overflow:hidden;align-self:center}.item .t{position:relative;z-index:1}.item .px .pdate,.item .px .ptag,.item .px .psub,.item .px .pfoot{display:none}.item .px{padding:6cqw}.item .px .pname{font-size:15cqw}
 .item .t{flex:1;min-width:0}.item .t b{display:block;font-weight:800}.item .t span{font:13px var(--mono);color:var(--muted)}
 .st{font:700 12px var(--mono);padding:3px 8px;background:var(--ink);color:#fff;white-space:nowrap}
 .st.ok{background:var(--tape);color:var(--ink)}.st.no{background:#B8261C}
