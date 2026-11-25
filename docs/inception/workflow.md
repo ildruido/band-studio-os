@@ -48,6 +48,7 @@ All of them live in `docs/inception/`, except research studies, which live in `d
 | 6 | MVP definition and roadmap | `mvp.md` and `roadmap.md` (two PRs; roadmap derived from the MVP) | `inception-interview` + `product-management:write-spec` / `roadmap-update` | 3 |
 | 7 | Prototypes (interactive mock-ups) | `prototypes.md` (index of Artifact links) | `prototype` | 4 |
 | 8 | Decision log | `decision-log.md` | `decision-log` (ongoing) | 10 |
+| 8a | Product Brief Pack (source of truth for decks, one-pager and video pitch; D-036). Step 1: [inventories and gap table](product-brief-pack.md) | `product-brief-pack.md`, then `docs/brief-pack/` | `inception-interview` | supports 5 and 6; not an exit criterion |
 | 9 | Architecture handoff (product + meta-architecture) and next steps | `architecture-handoff.md` | `architecture-handoff` | 5, 6 |
 | 10 | Exit gate report | `exit-gate.md` | `exit-gate` | 11 (Ale's sign-off) |
 
@@ -57,7 +58,8 @@ All of them live in `docs/inception/`, except research studies, which live in `d
 2. **People and market**: a reality check of the target users in desk research (2a), then personas grounded in it (2), then the deeper market scan and riskiest hypotheses (3). A reality check verdict of Reshape or Stop goes to Ale before personas start.
 3. **Shape**: success metrics (4), constraints and non-goals (5), then the MVP and roadmap (6).
 4. **Show**: prototypes (7) for the riskiest MVP flows, used to test hypotheses.
-5. **Hand over**: architecture handoff (9), then the exit gate (10). Ale's sign-off closes inception.
+5. **Brief**: the Product Brief Pack (8a), a plain-language source of truth for presentation material (D-036).
+6. **Hand over**: architecture handoff (9), then the exit gate (10). Ale's sign-off closes inception.
 
 The decision log (8) is kept current at every step. Steps may loop: a prototype or research finding can send work back to an earlier artifact.
 

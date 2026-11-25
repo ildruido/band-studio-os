@@ -2,6 +2,14 @@
 
 Newest first. Each entry: id, date, decision, why, alternatives, who decided, status (`active`, `superseded by D-0NN`, `revisited`).
 
+### D-036 Add a "Product Brief Pack" step before the architecture handoff
+- **Date:** 2026-11-25
+- **Decision:** Add a Product Brief Pack step to inception, just before the architecture handoff. The pack is a set of structured, plain-language documents that holds everything a classic product brief holds, and becomes the single source of truth for generating slide decks, a one-pager, a short video pitch and other stakeholder material (investors, sales and marketing, engineers). Step 1 is two inventories: what inception already produced, and what a brief usually contains, with a gap table ([product-brief-pack.md](product-brief-pack.md)). The pack itself is not built yet and waits for Ale's review.
+- **Why:** The material is spread over many internal documents written for insiders. Presentation material needs one organised, honest source, with each claim marked by how mature it is.
+- **Alternatives:** Generate decks straight from the existing documents (rejected: gaps and insider wording would leak into the output).
+- **Decided by:** Ale
+- **Status:** active
+
 ### D-035 Prototype v2.1: draft later journeys on top of v2, in a separate artifact
 - **Date:** 2026-11-25
 - **Decision:** Prototype v2 stays as confirmed. Prototype v2.1 is a separate artifact that keeps the v2 MVP flow unchanged and adds draft journeys for future functionality in the Gig Wall design: the wall over time (week 1, month 1, month 6, year 1), a "what is next" picker, gig night, after the gig (thank-you carousel), a new-single sheet, a tour sheet, a short-video reel, linked channels ("post it for me"), the Us zine, and the pay moment. Every later screen carries a hazard-tape stripe and a black "Later" tag ("Idea" for gig night). The countdown timeline from the Control Desk is reworked to be light: one dashed line down the wall, a "today" marker, five stops at most, one highlighted next step, no faders or tracks. The thank-you carousel has no photos, following the roadmap's light first version (L1, D-028). Chat mode and Instagram or Bandcamp link reading stay out (D-034).
