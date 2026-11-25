@@ -1,0 +1,253 @@
+<title>Band Studio OS Prototype v2</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Courier+Prime:wght@400;700&display=swap">
+<style>
+/* Concept: the band's gig wall. App chrome is concrete, ink and gaffer tape; all colour comes from the band's own posters. One phone-width column, full screen on a phone. */
+:root{
+  --wall:#CDD0CE; --ink:#101114; --tape:#F4D31B; --muted:#5B5F66; --desk:#2A2C30;
+  --display:'Archivo','Arial Narrow',Arial,sans-serif; --mono:'Courier Prime','Courier New',monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{margin:0;background:var(--desk);color:var(--ink);font:16px/1.4 var(--display);display:flex;justify-content:center}
+#app{width:100%;max-width:430px;height:100%;max-height:900px;margin:auto;position:relative;overflow:hidden;background:var(--wall);
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .13 0'/></filter><rect width='200' height='200' filter='url(%23n)'/></svg>")}
+@media (min-width:500px){#app{border-radius:28px;box-shadow:0 20px 60px rgba(0,0,0,.5)}}
+.scr{position:absolute;inset:0;display:flex;flex-direction:column;animation:in .22s ease-out}
+@keyframes in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.scr.dark{background:var(--ink);color:#EDEDEA}
+.gut{padding-left:max(18px,env(safe-area-inset-left,0px));padding-right:max(18px,env(safe-area-inset-right,0px))}
+.bar{display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:13px;padding-top:14px;padding-bottom:4px;min-height:40px}
+.bar button{font:inherit;background:none;border:0;color:inherit;padding:8px 0;cursor:pointer}
+.body{flex:1;min-height:0;display:flex;flex-direction:column;gap:14px;padding-top:8px;padding-bottom:8px}
+.dock{padding-top:10px;padding-bottom:max(20px,env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:8px}
+.big{font-weight:900;font-stretch:125%;font-size:clamp(26px,8vw,34px);line-height:.98;letter-spacing:-.01em;margin:0;text-wrap:balance}
+.mono{font-family:var(--mono);font-size:13px;margin:0}
+.muted{color:var(--muted)}.dark .muted{color:#A6A8AD}
+.tape{display:inline-block;align-self:flex-start;background:var(--tape);color:var(--ink);font-family:var(--mono);font-weight:700;font-size:13px;padding:3px 10px;transform:rotate(-2deg);box-shadow:0 1px 0 rgba(0,0,0,.25)}
+.btn{display:flex;align-items:center;justify-content:center;min-height:54px;border-radius:999px;background:var(--ink);color:#fff;font:800 16px var(--display);font-stretch:112%;border:2px solid var(--ink);width:100%;cursor:pointer;text-decoration:none}
+.btn.tp{background:var(--tape);color:var(--ink);border-color:var(--tape)}
+.btn.gh{background:transparent;color:inherit;border-color:currentColor}
+.btn[disabled]{opacity:.35;cursor:not-allowed}
+.link{background:none;border:0;font:700 14px var(--display);text-decoration:underline;color:inherit;cursor:pointer;padding:8px;align-self:center}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{border:2px solid currentColor;border-radius:999px;padding:8px 14px;font:700 14px var(--display);background:transparent;color:inherit;cursor:pointer;min-height:40px}
+.chip[aria-pressed="true"]{background:var(--tape);color:var(--ink);border-color:var(--tape)}
+:focus-visible{outline:3px solid var(--tape);outline-offset:2px}
+.dark :focus-visible,.dark.scr :focus-visible{outline-color:#fff}
+/* posters */
+.pw{position:relative;max-width:100%}
+.pw.flyer{aspect-ratio:4/5}.pw.story{aspect-ratio:9/16}.pw.post{aspect-ratio:1/1}.pw.swatch{position:absolute;inset:0}
+.px{--bg:#151517;--fg:#ECE8DE;--hot:#E1362B;--r:2;--rot:0deg;position:absolute;inset:0;overflow:hidden;container-type:inline-size;background:var(--bg);color:var(--fg);isolation:isolate;display:flex;flex-direction:column;justify-content:space-between;padding:6cqw;font-family:var(--display)}
+.px.bright{--bg:#EEECE6;--fg:#131315}
+.px.blue{--hot:#2447E6}
+.px>*{position:relative;z-index:2}
+.px .pbg{position:absolute;inset:0;z-index:0}
+.px.v0 .pbg{background:radial-gradient(circle at 76% 30%,var(--hot) 0 36%,transparent 36.5%)}
+.px.v1 .pbg{background:linear-gradient(115deg,transparent 50%,var(--hot) 50% 76%,transparent 76%)}
+.px.v2 .pbg{background:linear-gradient(to top,var(--hot) 0 26%,transparent 26%)}
+.px::before{content:"";position:absolute;inset:0;z-index:1;background-image:radial-gradient(currentColor 1.2px,transparent 1.7px);background-size:2.2cqw 2.2cqw;opacity:calc(.07*var(--r));-webkit-mask-image:linear-gradient(200deg,transparent 25%,#000);mask-image:linear-gradient(200deg,transparent 25%,#000);pointer-events:none}
+.px::after{content:"";position:absolute;inset:0;z-index:3;mix-blend-mode:multiply;opacity:calc(.12*var(--r) + .02);pointer-events:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1.4 0'/></filter><rect width='160' height='160' filter='url(%23n)'/></svg>")}
+.px.dark::after{mix-blend-mode:screen}
+.pdate{font-weight:800;font-stretch:62%;font-size:25cqw;line-height:.8;letter-spacing:-.01em}
+.pname{font-weight:900;font-stretch:125%;font-size:12.5cqw;line-height:.88;text-transform:uppercase;margin:0;text-shadow:calc(.55cqw*var(--r)) calc(.55cqw*var(--r)) 0 var(--hot);transform:rotate(var(--rot));transform-origin:left bottom}
+.px.tall .pname{font-stretch:62%;font-size:23cqw;line-height:.82}
+.px.tall .pdate{font-size:30cqw}
+.px.tilt{--rot:-4deg}
+.ptag{font-family:var(--mono);font-size:3.6cqw;font-weight:700;margin:2.2cqw 0 0;max-width:80%}
+.psub{font-weight:800;font-stretch:80%;font-size:6cqw;margin:2cqw 0 0;text-transform:uppercase}
+.pfoot{font-family:var(--mono);font-weight:700;font-size:3.4cqw;border-top:.6cqw solid currentColor;padding-top:2cqw;display:flex;justify-content:space-between;gap:3cqw}
+.plabel{font-family:var(--mono);font-weight:700;font-size:4.4cqw;text-transform:none}
+.k-story .pdate{font-size:38cqw}.k-story .pname{font-size:15cqw}.k-story.tall .pname{font-size:27cqw}.k-story .ptag{font-size:4.2cqw}.k-story .pfoot{font-size:4cqw}.k-story .psub{font-size:9cqw}
+.k-post .pdate{font-size:20cqw}.k-post .pname{font-size:11cqw}.k-post.tall .pname{font-size:19cqw}.k-post.tall .pdate{font-size:24cqw}
+.k-swatch{align-items:flex-start;justify-content:center}.k-swatch .pname{font-size:15cqw}.k-swatch.tall .pname{font-size:26cqw}.k-swatch .pdate{font-size:12cqw;margin-bottom:2cqw}
+/* home */
+.homepost{transform:rotate(-2deg);margin:6px 10px 0;width:min(100%,300px);align-self:center}
+.shelf{display:flex;gap:10px}.shelf .pw{width:74px;flex:0 0 74px}
+.shelf .px .pdate,.shelf .px .ptag,.shelf .px .psub,.shelf .px .pfoot{display:none}.shelf .px{padding:6cqw}.shelf .px .pname{font-size:15cqw}
+/* identity */
+.pair{flex:1;min-height:0;display:flex;flex-direction:column;gap:12px}
+.opt{flex:1;min-height:90px;position:relative;border:3px solid transparent;border-radius:14px;padding:0;overflow:hidden;cursor:pointer;background:none;font:inherit;color:inherit;transition:transform .15s,border-color .15s}
+.opt .pw{border-radius:11px;overflow:hidden}
+.opt .tape{position:absolute;left:10px;bottom:10px;z-index:5}
+.opt.on{border-color:var(--tape);box-shadow:0 0 0 3px var(--ink);transform:scale(.98)}
+.ticks{display:flex;gap:5px}.ticks i{flex:1;height:5px;background:rgba(0,0,0,.2);border-radius:3px}.ticks i.on{background:var(--ink)}
+.never{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.nv{border:2px solid var(--ink);border-radius:12px;min-height:84px;padding:12px;font:800 17px var(--display);font-stretch:100%;text-align:left;background:rgba(255,255,255,.35);cursor:pointer;position:relative;color:var(--ink)}
+.nv[aria-pressed="true"]{background:var(--ink);color:#fff;text-decoration:line-through;text-decoration-color:var(--tape);text-decoration-thickness:3px}
+/* gig */
+.sentence{font-size:clamp(21px,6.3vw,27px);line-height:1.75;font-weight:700}
+.sentence input{font:inherit;font-weight:900;font-stretch:112%;border:0;border-bottom:3px solid var(--ink);background:transparent;color:inherit;padding:0 2px;border-radius:0;outline-offset:3px;min-width:3ch;max-width:100%}
+/* making */
+.making{align-items:center;justify-content:center;text-align:center;gap:22px}
+.press{width:62%;max-width:260px;animation:print 2.2s steps(14,end) forwards}
+@keyframes print{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0 0 0 0)}}
+/* pack */
+.deck{flex:1;min-height:0;display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;gap:0}
+.deck::-webkit-scrollbar{display:none}
+.slide{flex:0 0 100%;scroll-snap-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6px 26px;min-height:0;gap:10px}
+.slide:not(.cap){container-type:size}
+.slide .pw{box-shadow:0 8px 22px rgba(0,0,0,.5)}
+.slide:not(.cap) .pw.flyer,.rstage .pw.flyer{width:min(100cqw,80cqh)}
+.slide:not(.cap) .pw.story,.rstage .pw.story{width:min(100cqw,56.25cqh)}
+.slide:not(.cap) .pw.post,.rstage .pw.post{width:min(100cqw,100cqh)}
+.slide.cap{justify-content:flex-start;overflow-y:auto}
+.slide.cap .pw{height:auto;width:62%;flex:0 0 auto}
+.capbox{width:100%;background:#1D1E22;border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:6px}
+.capbox textarea{background:transparent;color:#EDEDEA;border:0;font:13px/1.45 var(--mono);width:100%;min-height:92px;resize:none;padding:0}
+.pager{display:flex;gap:6px;justify-content:center;padding:6px 0}
+.pager button{font:700 12px var(--mono);padding:5px 10px;border-radius:999px;border:0;background:transparent;color:#C9CACD;cursor:pointer}
+.pager button.on{background:var(--tape);color:var(--ink)}
+.sheet{background:#1D1E22;border-radius:22px 22px 0 0;padding:14px 18px max(20px,env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:12px}
+.modal{position:absolute;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:flex-end;z-index:20;animation:in .18s}
+.modal .sheet{width:100%;background:var(--wall);color:var(--ink)}
+.modal input{font:700 18px var(--display);padding:12px;border:2px solid var(--ink);background:#fff;border-radius:10px;width:100%}
+/* review */
+.rstage{container-type:size;flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:4px 14px;touch-action:pan-y}
+.rcard{display:flex;position:relative;cursor:grab;touch-action:pan-y;user-select:none;transition:transform .2s}
+.rcard.drag{transition:none;cursor:grabbing}
+.rcard .pw{box-shadow:0 10px 26px rgba(0,0,0,.6)}
+.stamp{position:absolute;top:14%;z-index:6;font:900 26px var(--display);font-stretch:112%;padding:2px 12px;border:4px solid;transform:rotate(-10deg);opacity:0;pointer-events:none}
+.stamp.y{left:6%;color:var(--tape)}.stamp.n{right:6%;color:#FF5A4D;transform:rotate(10deg)}
+/* status + ready */
+.list{display:flex;flex-direction:column;gap:10px}
+.item{display:flex;gap:12px;align-items:center;border-bottom:2px dashed rgba(0,0,0,.35);padding-bottom:10px}
+.item .pw{width:52px;flex:0 0 52px}.item .px .pdate,.item .px .ptag,.item .px .psub,.item .px .pfoot{display:none}.item .px{padding:6cqw}.item .px .pname{font-size:15cqw}
+.item .t{flex:1;min-width:0}.item .t b{display:block;font-weight:800}.item .t span{font:13px var(--mono);color:var(--muted)}
+.st{font:700 12px var(--mono);padding:3px 8px;background:var(--ink);color:#fff;white-space:nowrap}
+.st.ok{background:var(--tape);color:var(--ink)}.st.no{background:#B8261C}
+.proof{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.proof .pw{width:100%}.proof .px .pdate,.proof .px .ptag,.proof .px .psub,.proof .px .pfoot{display:none}.proof .px{padding:7cqw}.proof .px .pname{font-size:16cqw}
+.sched{border:2px dashed var(--ink);padding:10px 12px;font:13px var(--mono);display:grid;gap:5px}
+.sched div{display:flex;justify-content:space-between;gap:10px}
+.link-url{font:700 13px var(--mono);background:rgba(0,0,0,.08);padding:10px 12px;display:flex;justify-content:space-between;gap:8px;align-items:center;word-break:break-all}
+.toast{position:absolute;left:18px;right:18px;bottom:96px;background:var(--ink);color:#fff;padding:12px 14px;font:700 14px var(--display);z-index:30;border-left:6px solid var(--tape);animation:in .2s}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div id="app"></div>
+
+<script>
+(function(){
+var app=document.getElementById('app');
+var MON={jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12,gen:1,mag:5,giu:6,lug:7,ago:8,set:9,ott:10,dic:12};
+var S={
+  id:{mood:'dark',type:'wide',tex:'grain',hue:'red',lay:'stack'}, step:0, never:{},
+  gig:{venue:'Sottoscala 13',city:'Bologna',date:'Sat 12 Dec',time:'21:30',support:'Lupi di Periferia',price:'€8'},
+  tag:'Rumore per chi è rimasto sveglio.', lang:'it', cur:0, ri:0,
+  assets:[{k:'flyer',n:'Flyer',v:0,r:2,st:'draft',why:''},{k:'story',n:'Story: the date',v:1,r:2,st:'draft',why:''},{k:'story',n:'Story: the line-up',v:2,r:2,st:'draft',why:''},{k:'post',n:'Feed post',v:0,r:2,st:'draft',why:''}],
+  cap:{it:null,en:null}
+};
+var PAIRS=[
+ {k:'mood',q:'Which one is more you?',a:['dark','Dark and rough'],b:['bright','Bright and sharp']},
+ {k:'type',q:'Which voice?',a:['wide','Loud and wide'],b:['tall','Tall and tight']},
+ {k:'tex',q:'Which print?',a:['grain','Photocopied'],b:['flat','Clean print']},
+ {k:'hue',q:'Which colour?',a:['red','Ash red'],b:['blue','Electric blue']},
+ {k:'lay',q:'Which stance?',a:['stack','Straight'],b:['tilt','Crooked']}];
+var NEVER=['Corporate gradients','Stock photos','Neon glow','Emoji everywhere'];
+var path=[];
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function dnum(){var m=S.gig.date.match(/(\d{1,2})\D*([A-Za-zì]{3})/);if(m&&MON[m[2].toLowerCase()])return m[1]+'.'+(MON[m[2].toLowerCase()]<10?'0':'')+MON[m[2].toLowerCase()];var n=S.gig.date.match(/\d{1,2}/);return n?n[0]:'--'}
+function poster(kind,a,over){
+  var id=Object.assign({},S.id,over||{});
+  var r=a?a.r:(id.tex==='flat'?0.4:2), v=a?a.v:0, g=S.gig;
+  var cls='px k-'+kind+' v'+v+' '+(id.mood==='bright'?'bright':'dark')+' '+id.hue+' '+id.type+' '+id.lay;
+  var name='Cenere<br>Rossa', inner;
+  if(kind==='swatch'){inner='<div class="pdate">'+dnum()+'</div><div class="pname">'+name+'</div>'}
+  else if(kind==='flyer'){inner='<div class="pdate">'+dnum()+'</div><div><div class="pname">'+name+'</div><div class="ptag">'+esc(S.tag)+'</div><div class="psub">+ '+esc(g.support)+'</div></div><div class="pfoot"><span>'+esc(g.venue)+', '+esc(g.city)+'</span><span>'+esc(g.time)+' · '+esc(g.price)+'</span></div>'}
+  else if(kind==='story'&&v!==2){inner='<div class="plabel">Live · '+esc(g.date)+'</div><div><div class="pdate">'+dnum()+'</div><div class="pname">'+name+'</div><div class="ptag">'+esc(S.tag)+'</div></div><div class="pfoot"><span>'+esc(g.venue)+'</span><span>'+esc(g.time)+'</span></div>'}
+  else if(kind==='story'){inner='<div class="plabel">On stage</div><div><div class="pname">'+name+'</div><div class="psub">+ '+esc(g.support)+'</div></div><div class="pfoot"><span>'+dnum()+' · '+esc(g.venue)+'</span><span>'+esc(g.price)+'</span></div>'}
+  else {inner='<div class="pdate">'+dnum()+'</div><div class="pname">'+name+'</div><div class="pfoot"><span>'+esc(g.venue)+', '+esc(g.city)+'</span><span>'+esc(g.time)+'</span></div>'}
+  return '<div class="pw '+kind+'"><div class="'+cls+'" style="--r:'+r+'"><div class="pbg"></div>'+inner+'</div></div>';
+}
+function caption(l){
+  if(S.cap[l]!==null)return S.cap[l];var g=S.gig;
+  return l==='it'
+   ? 'Cenere Rossa dal vivo, '+g.date+' al '+g.venue+' ('+g.city+'), con '+g.support+'. Porte alle '+g.time+', ingresso '+g.price+'. '+S.tag+'\n#cenererossa #postpunk #bologna #sottoscala13'
+   : 'Cenere Rossa live, '+g.date+' at '+g.venue+' ('+g.city+'), with '+g.support+'. Doors '+g.time+', entry '+g.price+'. Noise for those who stayed up.\n#cenererossa #postpunk #bologna #sottoscala13';
+}
+function toast(t){var e=document.createElement('div');e.className='toast';e.textContent=t;app.appendChild(e);setTimeout(function(){e.remove()},2600)}
+/* screens */
+var R={};
+R.welcome=function(){return '<div class="scr gut"><div class="bar"><span>Band Studio OS</span><span>Prototype v2</span></div><div class="body" style="justify-content:center;gap:20px"><span class="tape">Sample band: Cenere Rossa</span><h1 class="big" style="font-size:clamp(34px,11vw,48px)">Your gig, on every wall.</h1><p style="max-width:30ch;margin:0;font-size:17px">Posters, stories and captions that look and sound like your band. You approve every one.</p></div><div class="dock"><button class="btn tp" data-act="go" data-to="identity">Start with Cenere Rossa</button><button class="link" data-act="go" data-to="home">I already set up my band</button></div></div>'};
+R.home=function(){var past=['clean','','rough'].map(function(x,i){return poster('swatch',null,{mood:i===1?'dark':'bright',hue:i===2?'blue':'red'}).replace('swatch','flyer')}).join('');return '<div class="scr gut"><div class="bar"><span>Cenere Rossa</span><span>12 days to go</span></div><div class="body" style="gap:12px"><span class="tape">Next gig · '+esc(S.gig.date)+'</span><div class="homepost">'+poster('flyer',S.assets[0])+'</div><p class="mono" style="margin-top:8px">Past gigs</p><div class="shelf">'+past+'</div></div><div class="dock"><button class="btn tp" data-act="go" data-to="gig">Make the poster pack</button></div></div>'};
+R.identity=function(){
+  var i=S.step;
+  if(i>=PAIRS.length){return '<div class="scr gut"><div class="bar"><button data-act="back">Back</button><span>5 of 5</span></div><div class="body"><div class="ticks"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></div><h2 class="big" style="font-size:26px">What is never you?</h2><p class="mono muted">Tap to cross out. Optional.</p><div class="never">'+NEVER.map(function(n,j){return '<button class="nv" data-act="never" data-i="'+j+'" aria-pressed="'+(!!S.never[j])+'">'+n+'</button>'}).join('')+'</div></div><div class="dock"><button class="btn tp" data-act="go" data-to="gig">Looks like us</button></div></div>'}
+  var p=PAIRS[i],tk='';for(var t=0;t<5;t++)tk+='<i class="'+(t<=i?'on':'')+'"></i>';
+  function opt(o,idx){var ov={};ov[p.k]=o[0];return '<button class="opt'+(S.id[p.k]===o[0]&&S.chosen===i?' on':'')+'" data-act="pick" data-k="'+p.k+'" data-v="'+o[0]+'">'+poster('swatch',null,ov)+'<span class="tape">'+o[1]+'</span></button>'}
+  return '<div class="scr gut"><div class="bar"><button data-act="back">Back</button><span>'+(i+1)+' of 5</span></div><div class="body"><div class="ticks">'+tk+'</div><h2 class="big" style="font-size:26px">'+p.q+'</h2><div class="pair">'+opt(p.a)+opt(p.b)+'</div><p class="mono muted" style="margin:0">Tap one. It moves on by itself.</p></div><div style="height:max(16px,env(safe-area-inset-bottom,0px))"></div></div>'};
+R.gig=function(){var g=S.gig;function f(k,ph){return '<input id="f-'+k+'" data-f="'+k+'" value="'+esc(g[k])+'" aria-label="'+ph+'">'}
+  return '<div class="scr gut"><div class="bar"><button data-act="back">Back</button><span></span></div><div class="body" style="justify-content:center"><div class="sentence">Cenere Rossa play '+f('venue','Venue')+' in '+f('city','City')+' on '+f('date','Date')+', doors '+f('time','Doors')+', with '+f('support','Support act')+'.</div><div class="chips"><button class="chip" data-act="price" data-v="€8" aria-pressed="'+(g.price==='€8')+'">Tickets €8</button><button class="chip" data-act="price" data-v="Free entry" aria-pressed="'+(g.price==='Free entry')+'">Free entry</button><button class="chip" data-act="price" data-v="€10" aria-pressed="'+(g.price==='€10')+'">€10 at the door</button></div></div><div class="dock"><button class="btn tp" data-act="make">Make my pack</button></div></div>'};
+R.making=function(){return '<div class="scr gut making"><div class="press">'+poster('flyer',S.assets[0])+'</div><p class="mono">Printing in your style…</p></div>'};
+R.pack=function(){var a=S.assets;
+  var slides=a.map(function(x,i){return i===3?'<div class="slide cap" data-i="3">'+poster('post',x)+'<div class="capbox"><div class="chips"><button class="chip" data-act="lang" data-v="it" aria-pressed="'+(S.lang==='it')+'">Italiano</button><button class="chip" data-act="lang" data-v="en" aria-pressed="'+(S.lang==='en')+'">English</button></div><textarea id="capta" aria-label="Caption">'+esc(caption(S.lang))+'</textarea></div></div>':'<div class="slide" data-i="'+i+'">'+poster(x.k,x)+'</div>'}).join('');
+  return '<div class="scr dark"><div class="bar gut"><button data-act="go" data-to="home">Home</button><span id="pk-n">'+a[S.cur].n+'</span></div><div class="pager" id="pager">'+a.map(function(x,i){return '<button data-act="goto" data-i="'+i+'" class="'+(i===S.cur?'on':'')+'">'+['Flyer','Story 1','Story 2','Post'][i]+'</button>'}).join('')+'</div><div class="deck" id="deck">'+slides+'</div><div class="sheet gut"><div class="chips"><button class="chip" data-act="look" data-v="rough">Rougher</button><button class="chip" data-act="look" data-v="clean">Cleaner</button><button class="chip" data-act="look" data-v="another">Another</button><button class="chip" data-act="words">Change words</button></div><button class="btn tp" data-act="send">Send to the band</button></div></div>'};
+R.sent=function(){var A=S.assets,done=A.every(function(x){return x.st==='ok'}),sent=A.some(function(x){return x.st!=='draft'});
+  var items=A.map(function(x,i){var lab=x.st==='ok'?'<span class="st ok">Approved</span>':x.st==='no'?'<span class="st no">Nope</span>':'<span class="st">Waiting</span>';
+   var act=x.st==='no'?'<button class="chip" data-act="revise" data-i="'+i+'" style="margin-top:6px">Revise this</button>':'';
+   return '<div class="item">'+poster(x.k,x)+'<div class="t"><b>'+x.n+'</b><span>'+(x.st==='no'?'Marco: “'+esc(x.why)+'”':x.st==='ok'?'Marco said yes':'Marco has not seen it')+'</span>'+act+'</div>'+lab+'</div>'}).join('');
+  return '<div class="scr gut"><div class="bar"><button data-act="go" data-to="pack">Back to pack</button><span>Cenere Rossa</span></div><div class="body" style="overflow-y:auto"><h2 class="big" style="font-size:26px">'+(done?'Everyone said yes.':'Waiting on the band.')+'</h2>'+(done?'':'<div class="link-url"><span>bandstudio.os/r/cenere-rossa-7k2</span><button class="chip" data-act="copy" style="min-height:34px;padding:4px 10px">Copy</button></div><p class="mono muted" style="margin:0">Bandmates open the link. No account needed.</p>')+'<div class="list">'+items+'</div></div><div class="dock">'+(done?'<button class="btn tp" data-act="go" data-to="ready">See the finished pack</button>':'<button class="btn tp" data-act="startreview">Try it as Marco</button><button class="link" data-act="approveall">Skip: approve everything</button>')+'</div></div>'};
+R.review=function(){var A=S.assets,i=S.ri;if(i>=A.length)return R.thanks();var a=A[i];
+  return '<div class="scr dark"><div class="bar gut"><span>From Marta</span><span>'+(i+1)+' of '+A.length+'</span></div><p class="mono gut muted" style="margin:2px 0 6px">Cenere Rossa wants your OK. Swipe right for yes, left for nope.</p><div class="rstage"><div class="rcard" id="rcard"><div class="stamp y" id="sy">YES</div><div class="stamp n" id="sn">NOPE</div>'+poster(a.k,a)+'</div></div><div class="dock gut" style="flex-direction:row"><button class="btn gh" data-act="nope" style="flex:1">Nope</button><button class="btn tp" data-act="yes" style="flex:1.4">Yes, post it</button></div></div>'};
+R.thanks=function(){var A=S.assets,n=A.filter(function(x){return x.st==='no'}).length;return '<div class="scr dark gut"><div class="bar"><span>Cenere Rossa</span><span></span></div><div class="body" style="justify-content:center"><h2 class="big">Thanks, Marco.</h2><p style="font-size:17px;max-width:28ch;margin:0">You said yes to '+(A.length-n)+' and nope to '+n+'. Marta gets it now.</p></div><div class="dock"><button class="btn tp" data-act="go" data-to="sent">Back to Marta’s phone</button></div></div>'};
+R.ready=function(){var sched=[['Thu 3 Dec','Flyer'],['Sat 5 Dec','Story: the date'],['Wed 9 Dec','Story: line-up + post'],['Sat 12 Dec','Tonight: story']];
+  return '<div class="scr gut"><div class="bar"><button data-act="go" data-to="sent">Back</button><span>All approved</span></div><div class="body" style="overflow-y:auto"><h2 class="big">Ready to post.</h2><div class="proof">'+S.assets.map(function(x){return poster(x.k==='story'?'flyer':x.k,x)}).join('')+'</div><p class="mono" style="margin:4px 0 0">Posting plan</p><div class="sched">'+sched.map(function(s){return '<div><span>'+s[0]+'</span><span>'+s[1]+'</span></div>'}).join('')+'</div></div><div class="dock"><button class="btn" data-act="save">Save all to my phone</button><button class="link" data-act="restart">Start over</button></div></div>'};
+/* nav */
+var cur='welcome';
+function render(name){cur=name;app.innerHTML=R[name]();afterRender(name)}
+function go(name,push){if(!R[name])name='welcome';if(push!==false){path.push(cur)}
+  try{if(location.hash!=='#'+name)history.replaceState(null,'','#'+name)}catch(e){}
+  render(name)}
+function fitInputs(){app.querySelectorAll('.sentence input').forEach(function(i){i.style.width=Math.max(3,i.value.length*0.56+1)+'em'})}
+function afterRender(name){
+  if(name==='gig')fitInputs();
+  if(name==='making')setTimeout(function(){if(cur==='making')go('pack',false)},2400);
+  if(name==='pack'){var d=document.getElementById('deck');d.scrollLeft=d.clientWidth*S.cur;
+    d.addEventListener('scroll',function(){var i=Math.round(d.scrollLeft/d.clientWidth);if(i!==S.cur){S.cur=i;syncPager()}});
+    var ta=document.getElementById('capta');if(ta)ta.addEventListener('input',function(){S.cap[S.lang]=ta.value})}
+  if(name==='review')bindSwipe();
+}
+function syncPager(){document.querySelectorAll('#pager button').forEach(function(b,i){b.classList.toggle('on',i===S.cur)});var n=document.getElementById('pk-n');if(n)n.textContent=S.assets[S.cur].n}
+function bindSwipe(){var c=document.getElementById('rcard');if(!c)return;var x0=null,dx=0,sy=document.getElementById('sy'),sn=document.getElementById('sn');
+  c.addEventListener('pointerdown',function(e){x0=e.clientX;dx=0;c.classList.add('drag');try{c.setPointerCapture(e.pointerId)}catch(_){}});
+  c.addEventListener('pointermove',function(e){if(x0===null)return;dx=e.clientX-x0;c.style.transform='translateX('+dx+'px) rotate('+dx/18+'deg)';sy.style.opacity=Math.max(0,Math.min(1,dx/90));sn.style.opacity=Math.max(0,Math.min(1,-dx/90))});
+  function end(){if(x0===null)return;x0=null;c.classList.remove('drag');if(dx>90)act('yes');else if(dx<-90){c.style.transform='';sn.style.opacity=0;act('nope')}else{c.style.transform='';sy.style.opacity=0;sn.style.opacity=0}}
+  c.addEventListener('pointerup',end);c.addEventListener('pointercancel',end)}
+function modal(html){var m=document.createElement('div');m.className='modal';m.innerHTML='<div class="sheet gut">'+html+'</div>';app.appendChild(m);return m}
+function act(a,el){
+  var d=el?el.dataset:{};
+  switch(a){
+   case 'go':go(d.to);break;
+   case 'back':if(cur==='identity'&&S.step>0){S.step--;S.chosen=-1;render('identity')}else{var p=path.pop()||'welcome';go(p,false)}break;
+   case 'pick':S.id[d.k]=d.v;S.chosen=S.step;render('identity');setTimeout(function(){S.step++;S.chosen=-1;if(cur==='identity')render('identity')},320);break;
+   case 'never':S.never[d.i]=!S.never[d.i];render('identity');break;
+   case 'price':S.gig.price=d.v;render('gig');break;
+   case 'make':go('making');break;
+   case 'goto':var dk=document.getElementById('deck');dk.scrollTo({left:dk.clientWidth*(+d.i),behavior:'smooth'});break;
+   case 'lang':S.lang=d.v;render('pack');break;
+   case 'look':var A=S.assets[S.cur];if(d.v==='rough')A.r=Math.min(4,A.r+1.5);else if(d.v==='clean')A.r=Math.max(0,A.r-1.5);else A.v=(A.v+1)%3;render('pack');break;
+   case 'words':var m=modal('<h3 class="big" style="font-size:20px;margin:0">Your tagline</h3><input id="tg" value="'+esc(S.tag)+'" aria-label="Tagline"><button class="btn tp" id="tgs">Save words</button>');
+     m.querySelector('#tgs').onclick=function(){S.tag=m.querySelector('#tg').value||S.tag;S.cap.it=null;S.cap.en=null;render('pack')};break;
+   case 'send':S.assets.forEach(function(x){x.st='wait'});go('sent');break;
+   case 'copy':try{navigator.clipboard.writeText('bandstudio.os/r/cenere-rossa-7k2').then(function(){toast('Link copied')},function(){toast('Select the link to copy it')})}catch(e){toast('Select the link to copy it')}break;
+   case 'startreview':S.ri=0;go('review');break;
+   case 'approveall':S.assets.forEach(function(x){x.st='ok'});render('sent');break;
+   case 'yes':S.assets[S.ri].st='ok';S.ri++;render('review');break;
+   case 'nope':var mm=modal('<h3 class="big" style="font-size:20px;margin:0">What is off?</h3><div class="chips">'+['Too clean','Wrong info','Not us'].map(function(w){return '<button class="chip" data-why="'+w+'">'+w+'</button>'}).join('')+'</div>');
+     mm.addEventListener('click',function(e){var w=e.target.dataset&&e.target.dataset.why;if(w){S.assets[S.ri].st='no';S.assets[S.ri].why=w;S.ri++;mm.remove();render('review')}else if(e.target===mm){mm.remove();render('review')}});break;
+   case 'revise':var x=S.assets[+d.i];if(x.why==='Too clean')x.r=Math.min(4,x.r+2);else x.v=(x.v+1)%3;x.st='ok';x.why='';toast('Revised. Marco approved it.');render('sent');break;
+   case 'save':toast('Prototype only: nothing is downloaded.');break;
+   case 'restart':S.step=0;S.chosen=-1;S.assets.forEach(function(x){x.st='draft';x.r=2});S.cur=0;path=[];go('welcome');break;
+  }
+}
+app.addEventListener('click',function(e){var el=e.target.closest('[data-act]');if(el&&app.contains(el))act(el.dataset.act,el)});
+app.addEventListener('input',function(e){var f=e.target.dataset&&e.target.dataset.f;if(f){S.gig[f]=e.target.value;S.cap.it=null;S.cap.en=null;fitInputs()}});
+window.addEventListener('hashchange',function(){var n=location.hash.slice(1);if(n&&n!==cur&&R[n])render(n)});
+var h=location.hash.slice(1);S.chosen=-1;
+if(h==='sent'||h==='ready'){S.assets.forEach(function(x){x.st=h==='ready'?'ok':'wait'})}
+if(h==='making')h='pack';
+render(R[h]?h:'welcome');
+})();
+</script>
