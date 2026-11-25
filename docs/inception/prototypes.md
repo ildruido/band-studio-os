@@ -4,7 +4,7 @@ Index of throwaway mock-ups (exit criterion 4). They are Artifact pages with sam
 
 | Name | Link | Flow | Hypotheses tested | Version | Date | What we learned |
 | --- | --- | --- | --- | --- | --- | --- |
-| Band Studio OS Prototype (v1) | [Artifact](https://claude.ai/artifact/UdSMyRrJJhVYVNFJPGXmbN) (private to Ale until shared) | The whole MVP flow ([mvp.md](mvp.md)): identity, gig, pre-gig pack, bandmate approval by link, export | Shows H-01 (does the output look like "us"), H-05 (light approval), H-08 (effort of a campaign). Proves none of them: the output is canned | v1 | 2026-11-25 | Not tried by a driver yet |
+| Band Studio OS Prototype (v1) | [Artifact](https://claude.ai/artifact/UdSMyRrJJhVYVNFJPGXmbN) (private to Ale until shared) | The whole MVP flow ([mvp.md](mvp.md)): identity, gig, pre-gig pack, bandmate approval by link, export | Shows H-01 (does the output look like "us"), H-05 (light approval), H-08 (effort of a campaign). Proves none of them: the output is canned | v1 | 2026-11-25 | Ale's review (2026-11-25): the flow works, but the UX is too functional for a phone app and the design looks like a generic AI app, so it feels fake. v1 is closed. A UX design task comes before v2 (D-031) |
 
 ## Prototype v1: what it is
 
