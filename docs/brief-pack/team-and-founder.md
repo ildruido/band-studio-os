@@ -2,38 +2,38 @@
 
 > Who builds it and why.
 
-Part of the [Product Brief Pack](index.md). Each section below follows the same template: what goes here, the text in plain words, key facts, how sure we are, where it comes from, who needs it, and a link to its row in the [gap record](gaps.md).
-
-**Template status:** scaffolding only. Sections are empty until the content is transferred from inception.
+Part of the [Product Brief Pack](index.md).
 
 ## Team
 
-*What goes here:* Who builds it and why they can, written for an outside reader.
+**In plain words:** Band Studio OS is built by **Ale, part time, together with Claude** (an AI assistant). There are no employees, contractors or co-founders. This is a decision for the concept phase and a constraint, not a statement about the future.
 
-**In plain words:** *To fill.*
+**Key facts**
+- *Decided:* Ale works about 5 to 10 hours a week; no hires and no contractors.
+- *Decided:* total cash under 100 euros a month until the first paying customers.
+- *Not yet written:* a short bio of Ale for outside readers, and what experience makes the team able to build this. Ale supplies it.
 
-**Key facts:** *To fill. Each fact carries its own status tag.*
+**How sure are we:** *Decided* as a constraint. A bio is *Not yet known*.
 
-**How sure are we:** *To fill. One of the status tags in the [index](index.md#how-to-read-the-status-tags).*
+**Comes from:** [Constraints](../inception/constraints.md)
 
-**Comes from:** *To fill with links to the inception source documents.*
-
-**Must have for:** Investor deck
+**Must have for:** Investor deck · **Nice to have for:** none
 
 **Gap record:** [Team](gaps.md#team)
 
 ## Founder story
 
-*What goes here:* Why this product from this person, in Ale's own words.
+**In plain words:** *Not yet known.* The pack has no founder story. It needs to be told in Ale's own words: why this product, and why from this person. It should not be written by Claude, because it would not be true to Ale.
 
-**In plain words:** *To fill.*
+**What it should answer**
+- What was the moment or experience that made this problem personal?
+- What does Ale know about independent bands that others do not?
+- Why this approach (identity first, human approval) and not a generic AI tool?
 
-**Key facts:** *To fill. Each fact carries its own status tag.*
+**How sure are we:** *Not yet known.*
 
-**How sure are we:** *To fill. One of the status tags in the [index](index.md#how-to-read-the-status-tags).*
+**Comes from:** none. Nothing in the repository.
 
-**Comes from:** *To fill with links to the inception source documents.*
-
-**Must have for:** no output (reference only) · **Nice to have for:** Partner / press note
+**Must have for:** none · **Nice to have for:** Partner / press note
 
 **Gap record:** [Founder story](gaps.md#founder-story)
