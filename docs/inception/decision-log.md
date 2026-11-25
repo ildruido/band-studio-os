@@ -2,6 +2,30 @@
 
 Newest first. Each entry: id, date, decision, why, alternatives, who decided, status (`active`, `superseded by D-0NN`, `revisited`).
 
+### D-040 Bandmates review by private link; the server enforces the approval gate; the pilot is invite-only
+- **Date:** 2026-11-25
+- **Decision:** Bandmates open a private link (random, stored only as a hash, tied to one campaign, expiring, revocable) and give a first name once; no account. The server refuses to build an export that contains an asset that is not approved, so the gate does not depend on the screen. The free pilot uses the studio stack's invite-only sign-in with email and password; open sign-up comes after the pilot. Default rule for "approved": every invited bandmate approves and any veto blocks (assumption, settled by the pilot).
+- **Why:** Meets "no account for bandmates" and "nothing is exported without approval" with the least to build and no email service.
+- **Alternatives:** Magic-link email sign-in (needs an email service, more to build); open sign-up from day one (abuse and AI cost risk during a free pilot).
+- **Decided by:** Claude (technical), within Ale's autonomy rule
+- **Status:** active
+
+### D-039 Code places the text, AI makes the art and the words; the AI provider is swappable
+- **Date:** 2026-11-25
+- **Decision:** The AI draws background art and writes captions; a program composes the flyer and stories with the real text (band name, date, venue, link) from templates, and produces the print files. Image generation goes through one adapter; the provider is chosen by a bake-off test of at least three (spike 1), not now. Every AI call writes a cost entry, with a hard monthly cap and an alert at 80%.
+- **Why:** Image models still garble text, and a wrong date is a disaster. Prices and licence terms move quickly. The budget is under 100 EUR a month.
+- **Alternatives:** Let the image model draw all text (cheaper to build, wrong details); pick one provider now (lock-in on unverified prices and terms).
+- **Decided by:** Claude (technical), within Ale's autonomy rule
+- **Status:** active
+
+### D-038 Architecture direction: the studio web stack plus our own modules, hosted in the EU
+- **Date:** 2026-11-25
+- **Decision:** Build version 1 on the studio's `web` stack with `user`, hosted on Render in the EU, with our own modules (interim, until the harness answers) for file storage (object storage with signed links), text and image generation from a worker, and review links, and our own Postgres tables for band data. Details, options, costs, risks and seven spikes: [architecture handoff](architecture-handoff.md). The handoff was independently reviewed by a separate agent before merge.
+- **Why:** The only option that keeps the rule that every app inherits the harness without workarounds. About 13 to 18 EUR a month fixed leaves most of the 100 EUR for AI.
+- **Alternatives:** A hosted all-in-one backend (cheaper possibly, but leaves the harness pipeline); staying in Claude artifacts (no public link, no server, no keys).
+- **Decided by:** Claude (technical), within Ale's autonomy rule; Ale does not review it
+- **Status:** active (provisional until the spikes run)
+
 ### D-037 Build the Product Brief Pack as nine theme files with a separate red-amber-green gap record
 - **Date:** 2026-11-25
 - **Decision:** Build the pack in `docs/brief-pack/` as an index plus nine short theme files (story, product and roadmap, market and competition, business and go-to-market, brand and messaging, evidence and risks, team and founder, technical brief, partners and press). All 33 components from the inventory get a section with the same template, even where we can only partly fill them or not at all. A source map says which inception document feeds each section. A separate gap record rates every component red, amber or green twice: once for how complete the content is, once for how well it is backed by evidence. The first version is an honest concept-and-plan pack, not a proof pack. Ale told the thread to go ahead without a plan sign-off and to merge each PR when CI is green.

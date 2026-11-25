@@ -13,7 +13,7 @@ Decisions: D-016 to D-019 (new here), plus D-005 to D-014 in the [decision log](
 | AI cost | Cost per campaign must fit inside the price once priced (H-06, H-03). Images and template motion only in V1. | D-008, D-018 |
 | Users | One user type in V1: the driver. Bandmates approve without a full account. | D-005 |
 | Markets | Italy first, then the UK, then the rest of Europe. Italian-language and EU-law first. | D-012 |
-| Platform | Phone-first. No stack chosen yet; decided in the architecture handoff. | Inception profile |
+| Platform | Phone-first. Stack direction proposed in the [architecture handoff](architecture-handoff.md) (D-038), provisional until the spikes run. | Inception profile |
 | Architecture | Connector-based and multi-channel by design, even though V1 only exports. | D-009 |
 | Product rules | Nothing is published without a band member's approval. Output must amplify the band's identity, not generic polish. | Principles |
 | Legal and rights | Music copyright, likeness and image rights around uploads and generated assets. EU privacy rules (GDPR) apply to band and audience data. Manageable? is hypothesis H-07, a desk study still to run. | Domain risks |
