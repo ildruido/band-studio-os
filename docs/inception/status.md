@@ -1,6 +1,6 @@
 # Inception status
 
-Live tracker for the 11 exit criteria (canonical list: [workflow.md](workflow.md#exit-criteria)). Last updated: 2026-11-25 (after PR #50, inception recap).
+Live tracker for the 11 exit criteria (canonical list: [workflow.md](workflow.md#exit-criteria)). Last updated: 2026-11-26 (data controller decision, D-043).
 
 Status values: `not started`, `in progress`, `done`, `ongoing`.
 
@@ -41,6 +41,7 @@ Kept so Ale can ask for a recap. Newest first. Newest milestones only; earlier o
 
 | Date | Sub-milestone | Where | Notes |
 | --- | --- | --- | --- |
+| 2026-11-26 | Data controller decided: Ale, as an individual, for now | [decision-log.md](decision-log.md) (D-043), [architecture handoff](architecture-handoff.md#6-data-privacy-and-rights) | Privacy notice and data list still owed before the first pilot band (pilot parked) |
 | 2026-11-25 | Plan to add the discovery ways of working to app-studio, with a code-or-prose second pass | [plan](process-recap/app-studio-plan.md), [code-or-prose pass](process-recap/app-studio-plan-code-or-prose.md) | Plan only: app-studio unchanged, no harness idea filed (Ale decides what to file). Independent review applied to the second pass |
 | 2026-11-25 | Stale inception docs fixed | this file, [studies.md](../research/studies.md), `CLAUDE.md` | R-001 verdict corrected; harness version line made version-free |
 | 2026-11-25 | Inception recap, skill proposals and one-page summary | [process-recap](process-recap/recap.md) | Independent fact-check applied; eight candidate processes, none built (D-041) |

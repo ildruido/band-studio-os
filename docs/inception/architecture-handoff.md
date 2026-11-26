@@ -154,7 +154,7 @@ Obligations to plan for **(Assumption, not yet checked with a lawyer)**:
 - A way to **export and delete** a band's data. The stack's "delete user" hook is the start; our module must delete bands, files and review links too.
 - Keep data in the EU where the provider allows; where an AI provider is outside the EU, record the transfer basis and prefer providers that offer EU processing or no retention.
 - A retention rule: raw reference images and generated drafts removed a set time after the campaign (proposal: 12 months), approved exports kept until the band deletes them.
-- **Who is the controller?** Ale as an individual or a company. Open, and it blocks the pilot ([section 11](#11-open-questions)).
+- **Who is the controller?** Ale as an individual, to start with (D-043). A company can come later. The notice, the data and retention list and the processor agreements above are still owed before the first pilot band ([section 11](#11-open-questions)).
 - **AI-made material labelling.** The EU's AI Act transparency rule (Article 50) applies from August 2026, and a new product gets no grace period as far as we found (secondary sources only). We assume we count as a provider of a system that generates images, which a lawyer would have to confirm. Plan: mark image outputs in a machine-readable way (embedded metadata such as C2PA or IPTC) in the compose step, keep a per-asset "made with AI" flag, and list it in the export description. Italy's own AI law is also unchecked. Some venues refuse AI posters, which is a trust question as well.
 - **Age:** band members may be under 18. For the pilot, accounts are for adults; check the rule before open sign-up.
 - Music copyright is avoided in version 1 (no audio, no video). Likeness and image rights are limited by taking only the band's own reference images, with a clear sentence at upload: "only images you have the right to use".
@@ -282,7 +282,7 @@ Defaults let work start. Items marked **product** or **legal** are Ale's to revi
 | **Product:** who must approve an asset before export? | At least one band member's approval (the driver counts as one); every invited bandmate must approve, and any veto blocks | Pilot (reviewer completion); Ale may revise |
 | Reference images: upload or paste a link? | Upload (up to five, the band's own images; the MVP's "no uploads" means no gig photos or audio), shrunk on the phone, with the rights sentence | Rights desk study |
 | Which image provider and prompt style? | Decided by spike 1 | Spike 1 |
-| **Legal:** who is the data controller, and what is the legal form? | Ale until decided; **blocks the first pilot band** | Ale, before the pilot |
+| **Legal:** who is the data controller, and what is the legal form? | Decided (D-043): Ale as an individual, for now. A privacy notice and a data list are still needed **before the first pilot band** | Ale, before the pilot |
 | **Legal:** which AI-content labelling rules apply to us? | We assume they apply: machine-readable marking and a flag on every asset | Spike 7, a lawyer if affordable |
 | **Legal:** how long do we keep drafts and reference images? | 12 months after the campaign | Rights desk study |
 | Italian only or Italian and English at launch? | Both, Italian first | Interviews |
