@@ -2,6 +2,14 @@
 
 Newest first. Each entry: id, date, decision, why, alternatives, who decided, status (`active`, `superseded by D-0NN`, `revisited`).
 
+### D-053 The design system lives in the repo and is the source of truth for the look
+- **Date:** 2026-11-26
+- **Decision:** The Band Studio OS design system (tokens, themes Wall and Stage, components, usage rules) is committed in `docs/design-system/`. Prototype v3 follows it; v2.2 stays untouched as the interviewer build. Three contrast fixes from the design system are accepted: muted text #4E5258, veto text #9E1F16, and an ink focus ring on the wall.
+- **Why:** One written source keeps the prototype and the later build looking the same. The design system was first published only as a Claude artifact, outside the repo.
+- **Alternatives:** Keep it only as an artifact (rejected: not versioned with the product); restyle v2.2 too (rejected: it is the interviewer build and stays as is).
+- **Decided by:** Ale (approved the plan, 2026-11-26).
+- **Status:** active
+
 ### D-052 Prototype v3 shows each later journey with a "Coming soon" tag, not the hazard stripe
 - **Date:** 2026-11-26
 - **Decision:** In the customer-facing prototype, anything beyond the first version carries a plain "Soon" tag on its menu row and a slim yellow "Coming soon" strip on its screen. The hazard-tape stripe and the "Later" and "Idea" tags stay in v2.1 and v2.2, where they help an interviewer.
