@@ -28,6 +28,7 @@ None. Everything up to PR #50 is merged. Prototype v2.2 is in this PR ([prototyp
 - Page fetch tool is blocked in the cloud environment; research opens pages with `curl`. Reddit and Facebook groups are unreachable.
 - The research harness passed a one-off consistency review (no conflicts left between the framework, the type skills, the skeptic and the workflow). Harness CI checks only file health, not consistency or behaviour, so new components need a repeat review until a consistency check exists.
 - Standard-tier research uses one extra agent run (the skeptic), deep tier two. That costs usage on the Pro plan.
+- Prototype v2.2 now has the "Post it for me" and "Keep your wall" screens (they used to fall back to home); all 19 session-menu links were checked at phone width.
 - Prototype v2.2 was tested in a headless browser only, not on a real phone or in the Claude in-app browser. The v2.1 thumbnail overlap could not be reproduced, so the fix is by construction.
 - The prototype link is private to Ale. It has to be shared from the artifact before anyone else can open it. The prototype artwork is canned: it is not evidence for H-01.
 - Video: the R-009 sample uses synthetic art and placeholder sound, was not uploaded to Instagram, and ran on one local CPU core, not the real hosting plan. Rights findings are desk research, not legal advice; Meta's own help pages could not be read.
