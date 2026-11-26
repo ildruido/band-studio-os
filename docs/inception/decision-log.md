@@ -2,6 +2,30 @@
 
 Newest first. Each entry: id, date, decision, why, alternatives, who decided, status (`active`, `superseded by D-0NN`, `revisited`).
 
+### D-046 AI-made material labelling: it applies from launch; add a labelling spike and a rule on realistic people
+- **Date:** 2026-11-26
+- **Decision:** Treat the EU AI Act duty to mark AI-generated images (Article 50(2)) as applying to us from the day the product goes live, because the 2 December 2026 transition only covers systems already on the market before 2 August 2026. Keep the handoff plan (machine-readable metadata plus a "made with AI" flag on every asset), add a labelling spike before launch (which marking each image provider already embeds, whether metadata survives posting to Instagram and Stories, what the Code of Practice asks), and add a product rule: no realistic images of real people other than consenting band members. The band, as the one who publishes, is told to disclose realistic AI depictions of people.
+- **Why:** [R-008](../research/R-008-image-rights/report.md) confirmed the duty and its dates (high confidence) but could not show that a small team can meet it cheaply (insufficient evidence). Fines exist; the Commission's code of practice offers a way to show compliance.
+- **Alternatives:** Wait for a lawyer (rejected: outside budget, and the duty is clear enough to design for); skip labelling until the pilot (rejected: it applies from launch).
+- **Decided by:** Claude, under Ale's autonomy rule (2026-11-25), for Ale to revise
+- **Status:** active
+
+### D-045 What we tell bands about ownership of generated art
+- **Date:** 2026-11-26
+- **Decision:** We never promise a band exclusive ownership of a generated image. We say: you may use it for your gigs; we pass on whatever rights the image provider gives us; pure AI output may not be protected by copyright in Italy or the UK, so others could copy it; your logo, text, photos and the choices you make are yours. Open: the provider terms check must confirm we can pass rights on to bands (consumer terms grant rights to the account holder, which for an API is us).
+- **Why:** R-008 H1 (supported, medium confidence): providers' terms let the customer use output, but Italy's Law 132/2025 and the UK's section 9(3) leave ownership of pure AI output uncertain, and the UK government proposes to remove section 9(3).
+- **Alternatives:** Promise full ownership (rejected: not supportable); say nothing (rejected: bands would assume exclusivity).
+- **Decided by:** Claude, under Ale's autonomy rule, for Ale to revise
+- **Status:** active
+
+### D-044 Reference-image rule: up to five images the band has the right to use, with five conditions
+- **Date:** 2026-11-26
+- **Decision:** Keep uploads of up to five reference images (architecture handoff question 4), under five conditions: (1) only images the band owns or has permission to use, with a rights sentence at upload and the band's warranty in the terms; (2) only band members who agreed may be recognisable; no fans, crowds, minors or other people's artwork; (3) a photographer's credit field, because a photo from a paid shoot may carry a fee and a credit under Italian law (art. 98); (4) a notice-and-removal route for rights complaints; (5) images go to an AI provider only when needed and are deleted after 12 months. Gig and crowd media stays out until R-008's H5 gap is closed.
+- **Why:** R-008 H2 is insufficient evidence, leaning mixed: the band's own use looks low-risk, but our own exposure when we store and transform a photo is unsettled, and photographers' claims are real (a UK court valued one band photo on posters at about £5.7k). The rules cut the exposure without dropping uploads.
+- **Alternatives:** Links only, no uploads (rejected for now: weakens the "feels like us" promise; revisit if a lawyer disagrees); free uploads of any photo (rejected: highest risk).
+- **Decided by:** Claude, under Ale's autonomy rule, for Ale to revise
+- **Status:** active
+
 ### D-043 Ale is the data controller for now; privacy notice and data list still owed before the first pilot band
 - **Date:** 2026-11-26
 - **Decision:** Ale, as an individual, is the data controller for Band Studio OS to start with. No company is formed yet. Before the first pilot band, a privacy notice (also shown on the review-link page), a list of what data we keep and for how long, and agreements with the companies that process data for us are still required. The pilot is parked, so none of these is written now.
