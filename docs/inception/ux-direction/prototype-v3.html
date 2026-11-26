@@ -1,0 +1,669 @@
+<title>Band Studio OS</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Courier+Prime:wght@400;700&display=swap">
+<style>
+/* Concept: the band's gig wall. App chrome is concrete, ink and gaffer tape; all colour comes from the band's own posters. One phone-width column, full screen on a phone. */
+:root{
+  --wall:#CDD0CE; --ink:#101114; --tape:#F4D31B; --muted:#5B5F66; --desk:#2A2C30;
+  --display:'Archivo','Arial Narrow',Arial,sans-serif; --mono:'Courier Prime','Courier New',monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{margin:0;background:var(--desk);color:var(--ink);font:16px/1.4 var(--display);display:flex;justify-content:center}
+#app{width:100%;max-width:430px;height:100%;max-height:900px;margin:auto;position:relative;overflow:hidden;background:var(--wall);
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .13 0'/></filter><rect width='200' height='200' filter='url(%23n)'/></svg>")}
+@media (min-width:500px){#app{border-radius:28px;box-shadow:0 20px 60px rgba(0,0,0,.5)}}
+.scr{position:absolute;inset:0;display:flex;flex-direction:column;animation:in .22s ease-out}
+@keyframes in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.scr.dark{background:var(--ink);color:#EDEDEA}
+.gut{padding-left:max(18px,env(safe-area-inset-left,0px));padding-right:max(18px,env(safe-area-inset-right,0px))}
+.bar{display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:13px;padding-top:14px;padding-bottom:4px;min-height:40px}
+.bar button{font:inherit;background:none;border:0;color:inherit;padding:8px 0;cursor:pointer}
+.body{flex:1;min-height:0;display:flex;flex-direction:column;gap:14px;padding-top:8px;padding-bottom:8px}
+.dock{padding-top:10px;padding-bottom:max(20px,env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:8px}
+.big{font-weight:900;font-stretch:125%;font-size:clamp(26px,8vw,34px);line-height:.98;letter-spacing:-.01em;margin:0;text-wrap:balance}
+.mono{font-family:var(--mono);font-size:13px;margin:0}
+.muted{color:var(--muted)}.dark .muted{color:#A6A8AD}
+.tape{display:inline-block;align-self:flex-start;background:var(--tape);color:var(--ink);font-family:var(--mono);font-weight:700;font-size:13px;padding:3px 10px;transform:rotate(-2deg);box-shadow:0 1px 0 rgba(0,0,0,.25)}
+.btn{display:flex;align-items:center;justify-content:center;min-height:54px;border-radius:999px;background:var(--ink);color:#fff;font:800 16px var(--display);font-stretch:112%;border:2px solid var(--ink);width:100%;cursor:pointer;text-decoration:none}
+.btn.tp{background:var(--tape);color:var(--ink);border-color:var(--tape)}
+.btn.gh{background:transparent;color:inherit;border-color:currentColor}
+.btn[disabled]{opacity:.35;cursor:not-allowed}
+.link{background:none;border:0;font:700 14px var(--display);text-decoration:underline;color:inherit;cursor:pointer;padding:8px;align-self:center}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{border:2px solid currentColor;border-radius:999px;padding:8px 14px;font:700 14px var(--display);background:transparent;color:inherit;cursor:pointer;min-height:40px}
+.chip[aria-pressed="true"]{background:var(--tape);color:var(--ink);border-color:var(--tape)}
+:focus-visible{outline:3px solid var(--tape);outline-offset:2px}
+.dark :focus-visible,.dark.scr :focus-visible{outline-color:#fff}
+/* posters */
+.pw{position:relative;max-width:100%}
+.pw.flyer{aspect-ratio:4/5}.pw.story{aspect-ratio:9/16}.pw.post{aspect-ratio:1/1}.pw.swatch{position:absolute;inset:0}
+.px{--bg:#151517;--fg:#ECE8DE;--hot:#E1362B;--r:2;--rot:0deg;position:absolute;inset:0;overflow:hidden;container-type:inline-size;background:var(--bg);color:var(--fg);isolation:isolate;display:flex;flex-direction:column;justify-content:space-between;padding:6cqw;font-family:var(--display)}
+.px.bright{--bg:#EEECE6;--fg:#131315}
+.px.blue{--hot:#2447E6}
+.px>*{position:relative;z-index:2}
+.px .pbg{position:absolute;inset:0;z-index:0}
+.px.v0 .pbg{background:radial-gradient(circle at 76% 30%,var(--hot) 0 36%,transparent 36.5%)}
+.px.v1 .pbg{background:linear-gradient(115deg,transparent 50%,var(--hot) 50% 76%,transparent 76%)}
+.px.v2 .pbg{background:linear-gradient(to top,var(--hot) 0 26%,transparent 26%)}
+.px::before{content:"";position:absolute;inset:0;z-index:1;background-image:radial-gradient(currentColor 1.2px,transparent 1.7px);background-size:2.2cqw 2.2cqw;opacity:calc(.07*var(--r));-webkit-mask-image:linear-gradient(200deg,transparent 25%,#000);mask-image:linear-gradient(200deg,transparent 25%,#000);pointer-events:none}
+.px::after{content:"";position:absolute;inset:0;z-index:3;mix-blend-mode:multiply;opacity:calc(.12*var(--r) + .02);pointer-events:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1.4 0'/></filter><rect width='160' height='160' filter='url(%23n)'/></svg>")}
+.px.dark::after{mix-blend-mode:screen}
+.pdate{font-weight:800;font-stretch:62%;font-size:25cqw;line-height:.8;letter-spacing:-.01em}
+.pname{font-weight:900;font-stretch:125%;font-size:12.5cqw;line-height:.88;text-transform:uppercase;margin:0;text-shadow:calc(.55cqw*var(--r)) calc(.55cqw*var(--r)) 0 var(--hot);transform:rotate(var(--rot));transform-origin:left bottom}
+.px.tall .pname{font-stretch:62%;font-size:23cqw;line-height:.82}
+.px.tall .pdate{font-size:30cqw}
+.px.tilt{--rot:-4deg}
+.ptag{font-family:var(--mono);font-size:3.6cqw;font-weight:700;margin:2.2cqw 0 0;max-width:80%}
+.psub{font-weight:800;font-stretch:80%;font-size:6cqw;margin:2cqw 0 0;text-transform:uppercase}
+.pfoot{font-family:var(--mono);font-weight:700;font-size:3.4cqw;border-top:.6cqw solid currentColor;padding-top:2cqw;display:flex;justify-content:space-between;gap:3cqw}
+.plabel{font-family:var(--mono);font-weight:700;font-size:4.4cqw;text-transform:none}
+.k-story .pdate{font-size:38cqw}.k-story .pname{font-size:15cqw}.k-story.tall .pname{font-size:27cqw}.k-story .ptag{font-size:4.2cqw}.k-story .pfoot{font-size:4cqw}.k-story .psub{font-size:9cqw}
+.k-post .pdate{font-size:20cqw}.k-post .pname{font-size:11cqw}.k-post.tall .pname{font-size:19cqw}.k-post.tall .pdate{font-size:24cqw}
+.k-swatch{align-items:flex-start;justify-content:center}.k-swatch .pname{font-size:15cqw}.k-swatch.tall .pname{font-size:26cqw}.k-swatch .pdate{font-size:12cqw;margin-bottom:2cqw}
+/* home */
+.homepost{transform:rotate(-2deg);margin:6px 10px 0;width:min(100%,300px);align-self:center}
+.shelf{display:flex;gap:10px}.shelf .pw{width:74px;flex:0 0 74px}
+.shelf .px .pdate,.shelf .px .ptag,.shelf .px .psub,.shelf .px .pfoot{display:none}.shelf .px{padding:6cqw}.shelf .px .pname{font-size:15cqw}
+/* identity */
+.pair{flex:1;min-height:0;display:flex;flex-direction:column;gap:12px}
+.opt{flex:1;min-height:90px;position:relative;border:3px solid transparent;border-radius:14px;padding:0;overflow:hidden;cursor:pointer;background:none;font:inherit;color:inherit;transition:transform .15s,border-color .15s}
+.opt .pw{border-radius:11px;overflow:hidden}
+.opt .tape{position:absolute;left:10px;bottom:10px;z-index:5}
+.opt.on{border-color:var(--tape);box-shadow:0 0 0 3px var(--ink);transform:scale(.98)}
+.ticks{display:flex;gap:5px}.ticks i{flex:1;height:5px;background:rgba(0,0,0,.2);border-radius:3px}.ticks i.on{background:var(--ink)}
+.never{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.nv{border:2px solid var(--ink);border-radius:12px;min-height:84px;padding:12px;font:800 17px var(--display);font-stretch:100%;text-align:left;background:rgba(255,255,255,.35);cursor:pointer;position:relative;color:var(--ink)}
+.nv[aria-pressed="true"]{background:var(--ink);color:#fff;text-decoration:line-through;text-decoration-color:var(--tape);text-decoration-thickness:3px}
+/* gig */
+.sentence{font-size:clamp(21px,6.3vw,27px);line-height:1.75;font-weight:700}
+.sentence input{font:inherit;font-weight:900;font-stretch:112%;border:0;border-bottom:3px solid var(--ink);background:transparent;color:inherit;padding:0 2px;border-radius:0;outline-offset:3px;min-width:3ch;max-width:100%}
+/* making */
+.making{align-items:center;justify-content:center;text-align:center;gap:22px}
+.press{width:62%;max-width:260px;animation:print 2.2s steps(14,end) forwards}
+@keyframes print{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0 0 0 0)}}
+/* pack */
+.deck{flex:1;min-height:0;display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;gap:0}
+.deck::-webkit-scrollbar{display:none}
+.slide{flex:0 0 100%;scroll-snap-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6px 26px;min-height:0;gap:10px}
+.slide:not(.cap){container-type:size}
+.slide .pw{box-shadow:0 8px 22px rgba(0,0,0,.5)}
+.slide:not(.cap) .pw.flyer,.rstage .pw.flyer{width:min(100cqw,80cqh)}
+.slide:not(.cap) .pw.story,.rstage .pw.story{width:min(100cqw,56.25cqh)}
+.slide:not(.cap) .pw.post,.rstage .pw.post{width:min(100cqw,100cqh)}
+.slide.cap{justify-content:flex-start;overflow-y:auto}
+.slide.cap .pw{height:auto;width:62%;flex:0 0 auto}
+.capbox{width:100%;background:#1D1E22;border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:6px}
+.capbox textarea{background:transparent;color:#EDEDEA;border:0;font:13px/1.45 var(--mono);width:100%;min-height:92px;resize:none;padding:0}
+.pager{display:flex;gap:6px;justify-content:center;padding:6px 0}
+.pager button{font:700 12px var(--mono);padding:5px 10px;border-radius:999px;border:0;background:transparent;color:#C9CACD;cursor:pointer}
+.pager button.on{background:var(--tape);color:var(--ink)}
+.sheet{background:#1D1E22;border-radius:22px 22px 0 0;padding:14px 18px max(20px,env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:12px}
+.modal{position:absolute;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:flex-end;z-index:20;animation:in .18s}
+.modal .sheet{width:100%;background:var(--wall);color:var(--ink)}
+.modal input{font:700 18px var(--display);padding:12px;border:2px solid var(--ink);background:#fff;border-radius:10px;width:100%}
+/* review */
+.rstage{container-type:size;flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:4px 14px;touch-action:pan-y}
+.rcard{display:flex;position:relative;cursor:grab;touch-action:pan-y;user-select:none;transition:transform .2s}
+.rcard.drag{transition:none;cursor:grabbing}
+.rcard .pw{box-shadow:0 10px 26px rgba(0,0,0,.6)}
+.stamp{position:absolute;top:14%;z-index:6;font:900 26px var(--display);font-stretch:112%;padding:2px 12px;border:4px solid;transform:rotate(-10deg);opacity:0;pointer-events:none}
+.stamp.y{left:6%;color:var(--tape)}.stamp.n{right:6%;color:#FF5A4D;transform:rotate(10deg)}
+/* status + ready */
+.list{display:flex;flex-direction:column;gap:10px}
+.item{display:flex;gap:12px;align-items:center;border-bottom:2px dashed rgba(0,0,0,.35);padding-bottom:10px}
+.item .pw{width:52px!important;min-width:52px;max-width:52px;flex:0 0 52px;overflow:hidden;align-self:center}.item .t{position:relative;z-index:1}.item .px .pdate,.item .px .ptag,.item .px .psub,.item .px .pfoot{display:none}.item .px{padding:6cqw}.item .px .pname{font-size:15cqw}
+.item .t{flex:1;min-width:0}.item .t b{display:block;font-weight:800}.item .t span{font:13px var(--mono);color:var(--muted)}
+.st{font:700 12px var(--mono);padding:3px 8px;background:var(--ink);color:#fff;white-space:nowrap}
+.st.ok{background:var(--tape);color:var(--ink)}.st.no{background:#B8261C}
+.proof{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.proof .pw{width:100%}.proof .px .pdate,.proof .px .ptag,.proof .px .psub,.proof .px .pfoot{display:none}.proof .px{padding:7cqw}.proof .px .pname{font-size:16cqw}
+.sched{border:2px dashed var(--ink);padding:10px 12px;font:13px var(--mono);display:grid;gap:5px}
+.sched div{display:flex;justify-content:space-between;gap:10px}
+.link-url{min-width:0;font:700 13px var(--mono);background:rgba(0,0,0,.08);padding:10px 12px;display:flex;justify-content:space-between;gap:8px;align-items:center;word-break:break-all}
+.toast{position:absolute;left:18px;right:18px;bottom:96px;background:var(--ink);color:#fff;padding:12px 14px;font:700 14px var(--display);z-index:30;border-left:6px solid var(--tape);animation:in .2s}
+/* later journeys: hazard tape marks every screen that is not in the first version */
+.hz{height:9px;flex:0 0 auto;background:repeating-linear-gradient(-45deg,var(--tape) 0 10px,var(--ink) 10px 20px)}
+.later{display:inline-block;font:700 12px var(--mono);background:var(--ink);color:var(--tape);padding:3px 8px;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap}
+.dark .later{background:var(--tape);color:var(--ink)}
+.pin{position:relative;display:block;border:0;background:none;padding:0;cursor:pointer;text-align:left;font:inherit;color:inherit;min-width:0}
+.pin .pw{box-shadow:0 5px 14px rgba(0,0,0,.35);width:100%}
+.pin .mono{display:block;margin-top:6px}
+.pin .cn{position:absolute;top:-6px;right:-4px;z-index:6;transform:rotate(4deg)}
+.wallgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px 14px;align-items:start}
+.wallgrid>.span{grid-column:1/-1}
+.wallgrid>.pin:nth-child(odd) .pw{transform:rotate(-1.5deg)}.wallgrid>.pin:nth-child(even) .pw{transform:rotate(1.2deg)}
+.tile{border:2px dashed var(--ink);background:transparent;aspect-ratio:4/5;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;font:800 17px var(--display);cursor:pointer;color:inherit;padding:10px;position:relative;width:100%}
+.tile .cn{position:absolute;top:-6px;right:-4px}
+.tonight{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--tape);color:var(--ink);padding:14px;font:800 18px var(--display);font-stretch:110%;border:0;width:100%;cursor:pointer;text-align:left;box-shadow:0 2px 0 rgba(0,0,0,.3);transform:rotate(-1deg)}
+.nav{display:flex;border-top:2px solid var(--ink);flex:0 0 auto;padding-bottom:env(safe-area-inset-bottom,0px)}
+.nav button{flex:1;min-height:56px;background:none;border:0;font:800 14px var(--display);color:inherit;cursor:pointer}
+.nav button.on{background:var(--ink);color:var(--tape)}
+.sheetcard{display:flex;gap:14px;align-items:center;text-align:left;border:2px solid var(--ink);background:rgba(255,255,255,.4);padding:10px;cursor:pointer;font:inherit;color:inherit;width:100%;position:relative}
+.sc-p{width:84px;flex:0 0 84px;display:block}.sc-p .px .pdate,.sc-p .px .ptag,.sc-p .px .psub,.sc-p .px .pfoot{display:none}.sc-p .px{padding:7cqw}.sc-p .px .pname{font-size:15cqw}
+.sc-t{display:flex;flex-direction:column;gap:4px;align-items:flex-start;min-width:0}.sc-t b{font:900 19px var(--display);font-stretch:112%}
+.stack{display:flex}.stack .pw{width:34%;flex:0 0 34%;margin-right:-12px;box-shadow:0 3px 8px rgba(0,0,0,.4)}.stack .px .pdate,.stack .px .ptag,.stack .px .psub,.stack .px .pfoot{display:none}.stack .px{padding:7cqw}.stack .px .pname{font-size:15cqw}
+/* countdown timeline: one line down the wall, one next step */
+.tl{position:relative;display:flex;flex-direction:column;gap:18px;padding-left:30px}
+.tl::before{content:"";position:absolute;left:6px;top:8px;bottom:8px;border-left:3px dashed var(--ink)}
+.dark .tl::before{border-color:#777}
+.stop{position:relative;display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+.stop::before{content:"";position:absolute;left:-30px;top:3px;width:15px;height:15px;border-radius:50%;background:var(--wall);border:3px solid var(--ink)}
+.stop.done::before,.stop.sent::before{background:var(--ink)}
+.stop.next::before{background:var(--tape);box-shadow:0 0 0 4px var(--ink)}
+.stop.todo{opacity:.55}
+.stop b{font:800 17px var(--display)}
+.stop .mini{width:44%}.stop .mini .pw.story{width:34%}
+.today{margin-left:-30px}
+.mrow{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;text-align:left;background:rgba(255,255,255,.35);border:2px solid var(--ink);padding:10px 12px;font:800 15px var(--display);color:inherit;cursor:pointer;min-height:52px}
+.mrow small{display:block;font:400 12px var(--mono);color:var(--muted)}
+.mtag{font:700 11px var(--mono);padding:2px 7px;background:var(--tape);color:var(--ink);white-space:nowrap;text-transform:uppercase}
+.mtag.l{background:var(--ink);color:var(--tape)}
+.card{border:2px solid var(--ink);background:rgba(255,255,255,.35);padding:12px;display:flex;flex-direction:column;gap:6px;text-align:left;font:inherit;color:inherit;cursor:pointer;min-height:96px;min-width:0}
+.card b{font:800 14px var(--mono)}.card span.v{font:900 20px var(--display);font-stretch:112%}
+.card .pw{width:44px}.card .px .pdate,.card .px .ptag,.card .px .psub,.card .px .pfoot{display:none}
+.pc{border:3px solid var(--ink);padding:14px;text-align:left;background:rgba(255,255,255,.35);color:inherit;font:inherit;cursor:pointer;display:flex;flex-direction:column;gap:4px}
+.pc[aria-pressed="true"]{background:var(--tape)}
+.pc b{font:900 22px var(--display);font-stretch:112%}
+.reel{position:relative;width:min(100cqw,56.25cqh);aspect-ratio:9/16}
+.reel .pw{position:absolute;inset:0;width:100%!important;opacity:0;animation:cyc 3.6s steps(1) infinite}
+.reel .pw:nth-child(2){animation-delay:1.2s}.reel .pw:nth-child(3){animation-delay:2.4s}
+@keyframes cyc{0%{opacity:1}33.3%{opacity:0}100%{opacity:0}}
+.dots{display:flex;gap:8px;justify-content:center;padding:6px 0}.dots i{width:9px;height:9px;border-radius:50%;background:#555}.dots i.on{background:var(--tape)}
+@media (prefers-reduced-motion:reduce){.reel .pw:first-child{opacity:1!important}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.bar{gap:8px}.bar .bm{flex:1;text-align:center;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.bar>button{white-space:nowrap}
+.eb{font:700 12px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:0}.dark .eb{color:#A6A8AD}
+.pur{margin:0;font-size:16px;line-height:1.35;max-width:36ch}
+.hd{display:flex;flex-direction:column;gap:6px}
+.hd .big{font-size:clamp(26px,8vw,32px)}
+::placeholder{color:rgba(16,17,20,.38);opacity:1}.dark ::placeholder{color:#7d7f85}
+.fld{display:flex;flex-direction:column;gap:6px}.fld label{font:700 13px var(--mono)}
+.fld input,.fld textarea,.own{font:700 18px var(--display);padding:12px;border:2px solid var(--ink);background:#fff;border-radius:10px;width:100%;color:var(--ink)}
+.fld textarea{min-height:80px;resize:none;font-weight:600}
+.sel{display:flex;flex-direction:column;gap:2px;text-align:left;min-height:62px;border:2px solid var(--ink);background:rgba(255,255,255,.4);border-radius:12px;padding:10px 14px;font:inherit;color:inherit;cursor:pointer;width:100%}
+.sel b{font:800 17px var(--display);font-stretch:108%}.sel small{font:13px var(--mono);color:var(--muted)}
+.sel[aria-pressed="true"]{background:var(--tape);border-color:var(--ink);box-shadow:0 0 0 2px var(--ink)}.sel[aria-pressed="true"] small{color:var(--ink)}
+.stack1{display:flex;flex-direction:column;gap:10px}
+/* pitch */
+.fan{display:flex;justify-content:center;align-items:center;padding:18px 8px 10px}
+.fan .pw{width:40%;flex:0 0 40%;box-shadow:0 8px 20px rgba(0,0,0,.45)}
+.fan .pw:nth-child(1){transform:rotate(-7deg) translateY(10px);margin-right:-7%}.fan .pw:nth-child(2){transform:translateY(-8px);z-index:2}.fan .pw:nth-child(3){transform:rotate(7deg) translateY(10px);margin-left:-7%}
+.how{display:flex;flex-direction:column;gap:16px}.how .h1{display:flex;gap:14px;align-items:flex-start}
+.num{font:900 46px var(--display);font-stretch:62%;line-height:.8;min-width:30px;color:var(--ink)}
+.h1 b{display:block;font:800 18px var(--display);font-stretch:108%}.h1 p{margin:2px 0 0;font-size:15px;line-height:1.35}
+.prom{border-top:3px solid var(--ink);padding-top:10px;display:flex;flex-direction:column;gap:2px}.prom b{font:900 19px var(--display);font-stretch:112%}.prom p{margin:0;font-size:15px}
+.sec{font:700 12px var(--mono);letter-spacing:.06em;text-transform:uppercase;margin:6px 0 0}
+/* identity hub */
+.idcard{display:flex;gap:14px;align-items:center;border:2px solid var(--ink);background:rgba(255,255,255,.4);padding:12px}
+.idcard .sw{width:88px;flex:0 0 88px;position:relative}.idcard .t{min-width:0;display:flex;flex-direction:column;gap:6px}.idcard .t p{margin:0;font-size:14px;line-height:1.35}
+.meter{display:flex;gap:4px}.meter i{flex:1;height:6px;background:rgba(0,0,0,.2);border-radius:3px}.meter i.on{background:var(--ink)}
+.chap{display:flex;gap:12px;align-items:center;width:100%;text-align:left;background:rgba(255,255,255,.35);border:2px solid var(--ink);padding:10px 12px;font:inherit;color:inherit;cursor:pointer;min-height:62px}
+.chap .n{font:900 26px var(--display);font-stretch:62%;min-width:20px}.chap .c{flex:1;min-width:0}.chap b{display:block;font:800 16px var(--display)}.chap small{display:block;font:12px var(--mono);color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chap.next{background:var(--tape);box-shadow:0 2px 0 rgba(0,0,0,.3)}.chap.next small{color:var(--ink)}
+.tl2{font:700 11px var(--mono);padding:2px 7px;background:var(--ink);color:#fff;text-transform:uppercase;white-space:nowrap}.tl2.d{background:transparent;color:var(--ink);border:2px solid var(--ink)}
+.sum{border-left:5px solid var(--tape);background:var(--ink);color:#EDEDEA;padding:12px 14px;font-size:15px;line-height:1.4}
+.pairq .opt{min-height:120px}
+/* thumbnails: fixed boxes so a name can never run under a poster */
+.item .tb{flex:0 0 52px;width:52px;height:65px;position:relative;overflow:hidden;contain:paint;isolation:isolate}
+.item .tb .pw{position:absolute;inset:0;width:100%!important;max-width:none;min-width:0;height:100%;aspect-ratio:auto;flex:none}
+.item .px{padding:4px}.item .px .pname{font-size:9px;font-size:15cqw}
+.item .t{flex:1;min-width:0;overflow:hidden}.item .t b,.item .t span{overflow-wrap:anywhere}
+.item .st{flex:0 0 auto}
+.sc-p{flex:0 0 84px;width:84px}.sheetcard{min-width:0}.sc-t{min-width:0;flex:1}
+.nav button{min-width:0}
+@media (max-width:400px){.big{font-size:clamp(24px,7.4vw,32px)}.sel b{font-size:16px}.item{gap:10px}.st{font-size:11px;padding:3px 6px}}
+.sw .px .pdate,.sw .px .ptag,.sw .px .psub,.sw .px .pfoot{display:none}.sw .px{padding:7cqw}.sw .px .pname{font-size:15cqw}
+.tall1 .pname{font-size:12cqw}
+
+/* v3: customer navigation */
+#stage{position:absolute;inset:0}
+.bar{gap:8px}.bar .bm{flex:1;text-align:center;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar>button.bk{min-height:44px;padding:0 6px 0 0;font:800 14px var(--display);white-space:nowrap}
+.bar .bn{font:900 15px var(--display);font-stretch:112%;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lang{display:flex;border:2px solid currentColor;border-radius:999px;overflow:hidden;flex:none}
+.lang button{padding:0 9px;min-height:30px;background:none;border:0;color:inherit;font:800 12px var(--mono);cursor:pointer}
+.lang button[aria-pressed="true"]{background:var(--tape);color:var(--ink)}
+.dark .lang button[aria-pressed="true"]{background:var(--tape);color:var(--ink)}
+.soon{background:var(--tape);color:var(--ink);font:700 12px var(--mono);padding:5px 18px;text-align:center;border-bottom:2px solid var(--ink)}
+.mrow[disabled]{opacity:.45;cursor:not-allowed}
+.mrow .num2{font:900 24px var(--display);font-stretch:62%;min-width:22px}
+.mrow>span:first-child{min-width:0}
+.mrow.hot{background:var(--tape)}.mrow.hot small{color:var(--ink)}
+.stat{font:700 12px var(--mono);padding:3px 8px;background:var(--ink);color:#fff;white-space:nowrap;flex:none}
+.stat.ok{background:var(--tape);color:var(--ink)}.stat.lk{background:transparent;color:var(--ink);border:2px solid var(--ink)}
+.note{font:13px/1.45 var(--mono);color:var(--muted);margin:0}.dark .note{color:#A6A8AD}
+.rule{border-left:5px solid var(--tape);background:var(--ink);color:#EDEDEA;padding:12px 14px;font-size:15px;line-height:1.4}
+.rule b{display:block;font:800 15px var(--display);margin-bottom:2px}
+.ai{display:inline-block;font:700 12px var(--mono);background:var(--ink);color:var(--tape);padding:3px 8px;align-self:flex-start}
+.dark .ai{background:var(--tape);color:var(--ink)}
+.lockline{display:flex;gap:8px;align-items:flex-start;font:12px/1.4 var(--mono);color:#A6A8AD;padding:6px 0 0;border-top:1px dashed #555}
+.block{display:flex;flex-direction:column;gap:6px;border-top:3px solid var(--ink);padding-top:10px}
+.block b{font:900 18px var(--display);font-stretch:112%}.block p{margin:0;font-size:15px;line-height:1.4}
+.tick{display:flex;gap:10px;align-items:flex-start;font-size:14px;line-height:1.35;text-align:left;background:none;border:0;color:inherit;font-family:inherit;cursor:pointer;padding:6px 0;width:100%}
+.tick i{flex:0 0 22px;height:22px;border:2px solid var(--ink);background:#fff;position:relative;margin-top:1px}
+.tick[aria-pressed="true"] i{background:var(--tape)}.tick[aria-pressed="true"] i::after{content:"";position:absolute;left:5px;top:0;width:6px;height:12px;border:solid var(--ink);border-width:0 3px 3px 0;transform:rotate(45deg)}
+.photos{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.ph{aspect-ratio:1;border:2px dashed var(--ink);display:flex;align-items:center;justify-content:center;font:700 11px var(--mono);overflow:hidden;background:rgba(255,255,255,.3)}
+.ph.on{border-style:solid;background:repeating-linear-gradient(45deg,#8d8f8c 0 6px,#a5a7a4 6px 12px);color:var(--ink)}
+.person{display:flex;justify-content:space-between;align-items:center;gap:10px;border-bottom:2px dashed rgba(0,0,0,.3);padding:8px 0}
+.person b{font:800 16px var(--display)}
+.kv{display:flex;justify-content:space-between;gap:10px;align-items:center}
+.nav button{font-size:15px}
+.modal .sheet h3{margin:0;font:900 20px var(--display);font-stretch:112%}
+.modal .sheet p{margin:0;font-size:15px;line-height:1.4}
+.arch{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.arch .pin .pw{width:100%}.arch .px .pdate,.arch .px .ptag,.arch .px .psub,.arch .px .pfoot{display:none}.arch .px{padding:7cqw}.arch .px .pname{font-size:15cqw}
+</style>
+<div id="app"><div id="stage"></div></div>
+<script>
+(function(){
+var app=document.getElementById('app'),stage=document.getElementById('stage');
+var LANG='en';try{if((navigator.language||'').slice(0,2)==='it')LANG='it'}catch(e){}
+try{var sv=localStorage.getItem('bs3lang');if(sv==='it'||sv==='en')LANG=sv}catch(e){}
+function L(en,it){return LANG==='it'?it:en}
+function LC(en,it){return S.cl==='it'?it:en}
+var MONS={en:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],it:['gen','feb','mar','apr','mag','giu','lug','ago','set','ott','nov','dic']};
+var WDS={en:['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],it:['Dom','Lun','Mar','Mer','Gio','Ven','Sab']};
+var MONI={};MONS.en.concat(MONS.it).forEach(function(m,i){MONI[m.toLowerCase()]=(i%12)+1});
+function fd(y,m,d,lg){var D=new Date(y,m-1,d);return WDS[lg][D.getDay()]+' '+d+' '+MONS[lg][m-1]}
+function FU(y,m,d){return fd(y,m,d,LANG)}
+function FC(y,m,d){return fd(y,m,d,S.cl)}
+function DEF(){return{venue:'Sottoscala 13',date:FC(2026,12,12),time:'21:30',support:'Lupi di Periferia'}}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function slug(s){return String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]/g,'')}
+function lc(s){return s.charAt(0).toLowerCase()+s.slice(1)}
+function ob(k,en,it,en2,it2){return{k:k,e:[en,en2||''],i:[it,it2||'']}}
+function OL(o){return LANG==='it'?o.i:o.e}
+function byK(l,k){return l.filter(function(o){return o.k===k})[0]}
+/* option lists (stored by key so the language can switch at any time) */
+var GENRES=['Post-punk','Punk','Indie rock','Garage','Hardcore','Noise','Shoegaze','Alt-rock','Metal','Folk-punk','Psych','Electronic'];
+function GL(g){return LANG==='it'?({'Psych':'Psichedelica','Electronic':'Elettronica'}[g]||g):g}
+var ENERGY=[ob('slow','Slow burn','Fuoco lento','Builds, hypnotic, room to breathe','Cresce piano, ipnotico, con spazio per respirare'),ob('drive','Steady drive','Corsa dritta','Tight, fast, never lets go','Compatto, veloce, non molla mai'),ob('chaos','Full chaos','Caos totale','Loud, sweaty, falling apart on purpose','Forte, sudato, a pezzi di proposito')];
+var SONIC=[ob('fuzzy','Fuzzy','Distorto'),ob('jangly','Jangly','Cristallino'),ob('heavy','Heavy','Pesante'),ob('melodic','Melodic','Melodico'),ob('raw','Raw','Crudo'),ob('spacey','Spacey','Spaziale'),ob('fast','Fast','Veloce'),ob('bass','Bass-led','Guidato dal basso'),ob('fragile','Fragile','Fragile'),ob('angular','Angular','Spigoloso')];
+var SCENE=[ob('diy','Local DIY scene','Scena DIY locale','Bars, basements, friends’ nights','Bar, cantine, serate tra amici'),ob('squat','Social centres and squats','Centri sociali e occupazioni','Free entry, hat for the band','Ingresso libero, cappello per la band'),ob('club','The club circuit','Il circuito dei club','Booked venues, a door price','Locali con booking e biglietto'),ob('fest','Festivals','Festival','Small stages, big crowds','Palchi piccoli, tanta gente'),ob('online','Mostly online','Soprattutto online','Gigs are rare, the feed is the stage','I concerti sono rari, il palco è il feed')];
+var VIBE=[ob('sweaty','sweaty','sudata'),ob('nocturnal','nocturnal','notturna'),ob('angry','angry','rabbiosa'),ob('tender','tender','tenera'),ob('ironic','ironic','ironica'),ob('chaotic','chaotic','caotica'),ob('danceable','danceable','ballabile'),ob('dark','dark','buia'),ob('political','political','politica'),ob('tired','tired','stanca'),ob('loud','loud','rumorosa'),ob('romantic','romantic','romantica')];
+var PLACE=[ob('basement','A rehearsal basement','Una cantina di prove','Low ceiling, hot, loud','Soffitto basso, caldo, forte'),ob('carpark','A car park at 3 a.m.','Un parcheggio alle 3 di notte','Empty, orange light','Vuoto, luce arancione'),ob('seaside','A seaside town in winter','Una città di mare d’inverno','Closed, grey, a bit sad','Tutto chiuso, grigio, un po’ triste'),ob('squat','A packed squat','Un centro sociale pieno','Everyone sweating together','Tutti sudati insieme'),ob('kitchen','A kitchen at 4 a.m.','Una cucina alle 4 del mattino','Friends, smoke, one guitar','Amici, fumo, una chitarra')];
+var TONE=[ob('dry','Dry and deadpan','Secco e impassibile','Short. Never explains the joke.','Breve. Non spiega mai la battuta.'),ob('warm','Warm and cheeky','Caldo e sfacciato','Like a friend handing you a flyer.','Come un amico che ti allunga un volantino.'),ob('angry','Angry and direct','Arrabbiato e diretto','No filler. Say it and go.','Niente giri di parole. Lo dici e via.'),ob('poetic','Poetic and cryptic','Poetico e sibillino','A line that makes you wonder.','Una riga che fa pensare.')];
+var TAGS={dry:{it:['Dal vivo. Purtroppo per i vicini.','Si suona, poi si va a casa.'],en:['Live. Sorry, neighbours.','We play, then we go home.']},warm:{it:['Venite, c’è posto per tutti.','Una sera insieme, volume alto.'],en:['Come as you are. We saved you a spot.','One night together, volume up.']},angry:{it:['Alza il volume. Chiedi dopo.','Niente scuse, solo rumore.'],en:['Turn it up. Ask later.','No excuses, only noise.']},poetic:{it:['Rumore per chi è rimasto sveglio.','Di notte, tutto suona più vero.'],en:['Noise for those who stayed up.','At night everything sounds truer.']}};
+var NEVER=[ob('corp','Corporate gradients','Sfumature da multinazionale'),ob('stock','Stock photos','Foto stock'),ob('neon','Neon glow','Bagliori neon'),ob('emoji','Emoji everywhere','Emoji dappertutto'),ob('hash','Hashtag spam','Valanghe di hashtag'),ob('sym','Perfect symmetry','Simmetria perfetta'),ob('quote','Motivational quotes','Frasi motivazionali'),ob('summer','“Summer vibes”','“Summer vibes”')];
+var PAIRS=[
+ {k:'mood',q:['Which one is more you?','Quale vi somiglia di più?'],a:ob('dark','Dark and rough','Scuro e ruvido'),b:ob('bright','Bright and sharp','Chiaro e netto')},
+ {k:'type',q:['Which voice?','Quale voce?'],a:ob('wide','Loud and wide','Forte e larga'),b:ob('tall','Tall and tight','Alta e stretta')},
+ {k:'tex',q:['Which print?','Quale stampa?'],a:ob('grain','Photocopied','Fotocopiata'),b:ob('flat','Clean print','Stampa pulita')},
+ {k:'hue',q:['Which colour?','Quale colore?'],a:ob('red','Ash red','Rosso cenere'),b:ob('blue','Electric blue','Blu elettrico')},
+ {k:'lay',q:['Which stance?','Quale postura?'],a:ob('stack','Straight','Dritta'),b:ob('tilt','Crooked','Storta')}];
+var CH=[
+ {k:'sound',t:['The sound','Il suono'],s:['Genre, energy, words for your sound','Genere, energia, parole per il vostro suono'],q:[
+  {t:'multi',f:'genre',max:2,q:['What do you play?','Che genere suonate?'],why:['Shapes the look, the hashtags and how we describe you. Pick up to two.','Dà forma allo stile, agli hashtag e a come vi descriviamo. Massimo due.'],own:['Something else','Altro']},
+  {t:'single',f:'energy',o:ENERGY,q:['How does a gig of yours feel?','Com’è un vostro concerto?'],why:['Sets how rough and loud your posters get.','Decide quanto sono ruvidi e rumorosi i poster.']},
+  {t:'multi',f:'sonic',max:3,o:SONIC,q:['Which words fit your sound?','Quali parole descrivono il vostro suono?'],why:['Used to describe you in captions and press notes. Pick up to three.','Servono a descrivervi nelle didascalie e nei comunicati. Massimo tre.']}]},
+ {k:'infl',t:['Influences','Influenze'],s:['Who you sound like, where you play','A chi somigliate, dove suonate'],q:[
+  {t:'text',q:['Who do people compare you to?','A chi vi paragonano?'],why:['We nod to the same world and never copy it. Leave blanks if you like.','Restiamo nello stesso mondo senza copiare nessuno. Puoi lasciare vuoto.'],fs:[{k:'infl',i:0,l:['One','Uno'],ph:['e.g. Massimo Volume','es. Massimo Volume']},{k:'infl',i:1,l:['Two','Due'],ph:['e.g. Fugazi','es. Fugazi']},{k:'infl',i:2,l:['Three','Tre'],ph:['e.g. Joy Division','es. Joy Division']}]},
+  {t:'single',f:'scene',o:SCENE,q:['Where do you actually play?','Dove suonate davvero?'],why:['Tells us what a good poster looks like in your world.','Ci dice com’è un bel poster nel vostro mondo.']}]},
+ {k:'vibe',t:['Vibe','Atmosfera'],s:['The feel of a night with you','Come si vive una serata con voi'],q:[
+  {t:'multi',f:'vibe',max:3,o:VIBE,q:['Three words for a night with you','Tre parole per una serata con voi'],why:['They flow into captions and into how bold the posters get.','Finiscono nelle didascalie e decidono quanto sono audaci i poster.']},
+  {t:'single',f:'place',o:PLACE,q:['If your band were a place…','Se la vostra band fosse un luogo…'],why:['A picture in one line. It guides imagery and mood.','Un’immagine in una riga. Guida le immagini e l’atmosfera.']}]},
+ {k:'tone',t:['Tone of voice','Tono di voce'],s:['How you talk to your fans','Come parlate ai fan'],q:[
+  {t:'single',f:'tone',o:TONE,q:['How do you talk to your fans?','Come parlate ai vostri fan?'],why:['Sets the tone of every caption and tagline we write.','Dà il tono a ogni didascalia e a ogni slogan che scriviamo.']},
+  {t:'tag',q:['Which line sounds like you?','Quale frase vi somiglia?'],why:['It goes on your posters. Change it any time.','Finisce sui poster. Puoi cambiarla quando vuoi.']}]},
+ {k:'look',t:['Look','Stile'],s:['Five either-or picks, and your photos','Cinque scelte secche, e le vostre foto'],q:PAIRS.map(function(p,i){return{t:'pair',p:i,q:p.q,why:['Tap the one that is more you. It moves on by itself.','Tocca quella che vi somiglia di più. Si va avanti da soli.']}}).concat([{t:'photos',q:['Your own photos (optional)','Le vostre foto (facoltative)'],why:['Up to five. They help the art feel like you. Skip it and we work from your answers.','Fino a cinque. Aiutano l’immagine a somigliarvi. Se salti, lavoriamo sulle vostre risposte.']}])},
+ {k:'never',t:['Never','Mai'],s:['What is never you','Ciò che non siete mai'],q:[
+  {t:'never',q:['What is never you?','Cosa non siete mai?'],why:['Everything we make avoids these. Add your own words.','Tutto ciò che creiamo li evita. Aggiungi le tue parole.']}]},
+ {k:'story',t:['Lore','Storie'],s:['The little stories behind the band','Le piccole storie dietro la band'],q:[
+  {t:'text',q:['Tell us two true things','Raccontaci due cose vere'],why:['Little stories make posters and captions yours. Optional.','Le piccole storie rendono vostri poster e didascalie. Facoltativo.'],fs:[{k:'story1',l:['One thing people always say about the band','Una cosa che dicono sempre di voi'],ph:['e.g. They never stop thanking the sound guy','es. Ringraziano il fonico a ogni canzone'],area:1},{k:'story2',l:['Where you rehearse, and what it is like','Dove provate, e com’è'],ph:['e.g. A basement under a bar, always 30 degrees','es. Una cantina sotto un bar, sempre 30 gradi'],area:1}]}]}];
+function P(a){return a[LANG==='it'?1:0]}
+/* state */
+var S,path=[],cur='welcome';
+function mkState(){return{
+ band:{name:'',city:'',me:'',mates:['',''],chan:{}},
+ idn:{genre:[],energy:null,sonic:[],infl:['','',''],scene:null,vibe:[],place:null,tone:null,never:{},neverOwn:'',story1:'',story2:'',photos:0,photoOk:false,photoCredit:''},
+ fin:{},q:{c:'sound',i:0},looked:{},id:{mood:'dark',type:'wide',tex:'grain',hue:'red',lay:'stack'},chosen:-1,
+ gig:{venue:'',city:'',date:'',time:'',support:'',price:'8'},gigOn:false,made:false,sent:false,
+ tag:'',cl:'it',cur:0,ri:0,
+ assets:[{k:'flyer',v:0,r:2,st:'draft',why:''},{k:'story',v:1,r:2,st:'draft',why:''},{k:'story',v:2,r:2,st:'draft',why:''},{k:'post',v:0,r:2,st:'draft',why:''}],
+ cap:{it:null,en:null},has:{rel:false,tour:false,past:0},sample:false,
+ stop:null,ch:{ig:true,fb:false,bit:false},pay:'gig',helper:false};}
+S=mkState();
+function real(){return !!(S.band.name||'').trim()}
+function BN(){return (S.band.name||'').trim()||'Cenere Rossa'}
+function BNH(){var w=BN().split(/\s+/);if(w.length<2)return esc(w[0]);var best=1,bd=1e9;for(var i=1;i<w.length;i++){var a=w.slice(0,i).join(' ').length,b=w.slice(i).join(' ').length;if(Math.abs(a-b)<bd){bd=Math.abs(a-b);best=i}}return esc(w.slice(0,best).join(' '))+'<br>'+esc(w.slice(best).join(' '))}
+function CITY(){return (S.band.city||'').trim()||'Bologna'}
+function G(k){var d=DEF();return k==='city'?((S.gig.city||'').trim()||CITY()):((S.gig[k]||'').trim()||d[k])}
+function ME(){return real()?((S.band.me||'').trim()||L('You','Tu')):'Marta'}
+function MATE(){if(!real())return 'Marco';var m=S.band.mates.filter(function(x){return x.trim()})[0];return m?m.trim():L('Your bandmate','Il tuo compagno di band')}
+function PRICE(){var p=S.gig.price;return p==='free'?LC('Free entry','Ingresso libero'):'€'+p}
+function PRICEU(){var p=S.gig.price;return p==='free'?L('Free entry','Ingresso libero'):'€'+p}
+function TAG(){if(S.tag)return S.tag;var t=S.idn.tone||'poetic';return TAGS[t][S.cl][0]}
+function dnum(){var d=G('date');var m=d.match(/(\d{1,2})\s*([A-Za-zì]{3})/);if(m&&MONI[m[2].toLowerCase()]){var n=MONI[m[2].toLowerCase()];return m[1].replace(/^(\d)$/,'0$1')+'.'+(n<10?'0':'')+n}var n2=d.match(/\d{1,2}/);return n2?n2[0]:'--'}
+function poster(kind,a,over,x){
+ x=x||{};var id=Object.assign({},S.id,over||{});
+ var r=a?a.r:(id.tex==='flat'?0.4:2),v=a?a.v:0,g={venue:G('venue'),city:G('city'),date:G('date'),time:G('time'),support:G('support'),price:PRICE()};
+ var cls='px k-'+kind+' v'+v+' '+(id.mood==='bright'?'bright':'dark')+' '+id.hue+' '+id.type+' '+id.lay;
+ var name=x.name||BNH(),D=x.d||dnum(),tag=x.tag!==undefined?x.tag:esc(TAG()),sub=x.sub!==undefined?x.sub:'+ '+esc(g.support),inner;
+ var f1=x.f1!==undefined?x.f1:esc(g.venue)+', '+esc(g.city),f2=x.f2!==undefined?x.f2:esc(g.time)+' · '+esc(g.price);
+ var s1=x.f1!==undefined?x.f1:esc(g.venue),s2=x.f2!==undefined?x.f2:esc(g.time);
+ var lab=x.lab||(LC('Live','Dal vivo')+' · '+esc(g.date));
+ if(kind==='swatch'){inner='<div class="pdate">'+dnum()+'</div><div class="pname">'+name+'</div>'}
+ else if(kind==='flyer'){inner='<div class="pdate">'+D+'</div><div><div class="pname">'+name+'</div><div class="ptag">'+tag+'</div><div class="psub">'+sub+'</div></div><div class="pfoot"><span>'+f1+'</span><span>'+f2+'</span></div>'}
+ else if(kind==='story'&&v!==2){inner='<div class="plabel">'+lab+'</div><div><div class="pdate">'+D+'</div><div class="pname">'+name+'</div><div class="ptag">'+tag+'</div></div><div class="pfoot"><span>'+s1+'</span><span>'+s2+'</span></div>'}
+ else if(kind==='story'){inner='<div class="plabel">'+(x.lab||LC('On stage','Sul palco'))+'</div><div><div class="pname">'+name+'</div><div class="psub">'+sub+'</div></div><div class="pfoot"><span>'+D+' · '+s1+'</span><span>'+(x.f2!==undefined?x.f2:esc(g.price))+'</span></div>'}
+ else{inner='<div class="pdate">'+D+'</div><div class="pname">'+name+'</div><div class="pfoot"><span>'+f1+'</span><span>'+s2+'</span></div>'}
+ return '<div class="pw '+kind+'"><div class="'+cls+'" style="--r:'+r+'"><div class="pbg"></div>'+inner+'</div></div>';}
+function vw(l){return S.idn.vibe.map(function(k){var m=byK(VIBE,k);return m?m[l==='it'?'i':'e'][0]:k})}
+function tags(){return [BN(),S.idn.genre[0]||'indie',CITY(),G('venue')].map(slug).filter(Boolean).map(function(h){return '#'+h}).join(' ')}
+function aiLine(l){return l==='it'?'Immagine creata con l’IA.':'Image made with AI.'}
+function caption(l){
+ if(S.cap[l]!==null)return S.cap[l];var v=vw(l);
+ return l==='it'
+  ?BN()+' dal vivo, '+G('date')+' al '+G('venue')+' ('+G('city')+'), con '+G('support')+'. Porte alle '+G('time')+', ingresso '+(S.gig.price==='free'?'libero':'€'+S.gig.price)+'. '+(v.length?'Aspettatevi una serata '+v.join(', ')+'. ':'')+TAG()+'\n'+tags()
+  :BN()+' live, '+G('date')+' at '+G('venue')+' ('+G('city')+'), with '+G('support')+'. Doors '+G('time')+', entry '+(S.gig.price==='free'?'free':'€'+S.gig.price)+'. '+(v.length?'Expect a '+v.join(', ')+' night. ':'')+TAG()+'\n'+tags();}
+function toast(t){var e=document.createElement('div');e.className='toast';e.setAttribute('role','status');e.textContent=t;app.appendChild(e);setTimeout(function(){e.remove()},2600)}
+/* shell: top bar (Back, title, language), tab bar, headings */
+function langSw(){return '<div class="lang" role="group" aria-label="Language / Lingua"><button data-act="ui" data-v="en" aria-pressed="'+(LANG==='en')+'" aria-label="English">EN</button><button data-act="ui" data-v="it" aria-pressed="'+(LANG==='it')+'" aria-label="Italiano">IT</button></div>'}
+function top(o){o=o||{};var bl=o.label||L('Back','Indietro');var b=o.back===false?'':'<button class="bk" data-act="'+(o.act||'back')+'" aria-label="'+bl+'">← '+bl+'</button>';
+ return '<div class="bar gut">'+(o.brand?'<span class="bn">'+o.brand+'</span>':b)+(o.brand?'':'<span class="bm">'+(o.mid||'')+'</span>')+langSw()+'</div>'}
+function hd(eb,t,p){return '<div class="hd">'+(eb?'<p class="eb">'+eb+'</p>':'')+'<h2 class="big">'+t+'</h2>'+(p?'<p class="pur">'+p+'</p>':'')+'</div>'}
+function ticks(n,i){var o='';for(var t=0;t<n;t++)o+='<i class="'+(t<i?'on':'')+'"></i>';return '<div class="ticks" aria-hidden="true">'+o+'</div>'}
+function tabs(a){function b(k,to,l){return '<button data-act="tab" data-to="'+to+'"'+(a===k?' class="on" aria-current="page"':'')+'>'+l+'</button>'}return '<nav class="nav" aria-label="'+L('Main','Principale')+'">'+b('wall','wall',L('Wall','Bacheca'))+b('make','make',L('Make','Crea'))+b('us','us',L('Us','Noi'))+'</nav>'}
+function soonbar(t){return '<div class="soon">'+(t||L('Coming soon · a preview of a later version','In arrivo · anteprima di una versione futura'))+'</div>'}
+function soonTag(){return '<span class="later">'+L('Soon','Presto')+'</span>'}
+function mrow(to,t,s,tag,o){o=o||{};return '<button class="mrow'+(o.hot?' hot':'')+'" data-act="go" data-to="'+to+'"'+(o.dis?' disabled':'')+'><span>'+t+'<small>'+s+'</small></span>'+(tag||'<span aria-hidden="true">→</span>')+'</button>'}
+function chOf(k){return CH.filter(function(c){return c.k===k})[0]}
+function nDone(){return CH.filter(function(c){return S.fin[c.k]}).length}
+function opts(list,keys){return keys.map(function(k){var o=byK(list,k);return o?OL(o)[0]:k})}
+function chSum(k){var d=S.idn,x=[];
+ if(k==='sound'){if(d.genre.length)x.push(d.genre.map(GL).join(' + '));if(d.energy)x.push(lc(OL(byK(ENERGY,d.energy))[0]));if(d.sonic.length)x.push(opts(SONIC,d.sonic).join(', ').toLowerCase())}
+ else if(k==='infl'){var f=d.infl.filter(function(s){return s.trim()});if(f.length)x.push(f.join(', '));if(d.scene)x.push(OL(byK(SCENE,d.scene))[0])}
+ else if(k==='vibe'){if(d.vibe.length)x.push(opts(VIBE,d.vibe).join(', '));if(d.place)x.push(lc(OL(byK(PLACE,d.place))[0]))}
+ else if(k==='tone'){if(d.tone)x.push(OL(byK(TONE,d.tone))[0]);if(S.tag)x.push('“'+S.tag+'”')}
+ else if(k==='look'){if(Object.keys(S.looked).length){PAIRS.forEach(function(p){if(S.looked[p.k]){var o=S.id[p.k]===p.a.k?p.a:p.b;x.push(lc(OL(o)[0]))}})}if(d.photos)x.push(d.photos+' '+L('photos','foto'))}
+ else if(k==='never'){var n=Object.keys(d.never).filter(function(z){return d.never[z]}).map(function(z){return OL(byK(NEVER,z))[0]});if(d.neverOwn.trim())n.push(d.neverOwn.trim());if(n.length)x.push(n.join(', '))}
+ else if(k==='story'){if(d.story1.trim())x.push(d.story1.trim())}
+ return x.join(' · ')}
+function idSummary(){var d=S.idn,s='';
+ if(!nDone()&&!d.genre.length)return L('Answer a few chapters and this card describes your band in your own words.','Rispondi a qualche capitolo e questa scheda descrive la vostra band con parole vostre.');
+ var g=d.genre.map(GL).join(' / ').toLowerCase();
+ if(LANG==='it'){
+  s=BN()+' è una band'+(g?' '+g:'')+(real()?' di '+CITY():'')+(d.energy?', dal vivo '+lc(OL(byK(ENERGY,d.energy))[0]):'')+'.';
+  var f=d.infl.filter(function(z){return z.trim()});if(f.length)s+=' Vi paragonano a '+f.join(', ')+'.';
+  if(d.vibe.length)s+=' Una serata con voi è '+opts(VIBE,d.vibe).join(', ')+(d.place?', come '+lc(OL(byK(PLACE,d.place))[0]):'')+'.';
+  if(d.tone)s+=' Ai fan parlate in modo '+lc(OL(byK(TONE,d.tone))[0])+'.';
+  var n=Object.keys(d.never).filter(function(z){return d.never[z]}).map(function(z){return OL(byK(NEVER,z))[0]});if(n.length)s+=' Non fareste mai: '+n.join(', ').toLowerCase()+'.';
+ }else{
+  s=BN()+' is a '+(g?g+' band':'band')+(real()?' from '+CITY():'')+(d.energy?', '+lc(OL(byK(ENERGY,d.energy))[0])+' live':'')+'.';
+  var f2=d.infl.filter(function(z){return z.trim()});if(f2.length)s+=' People compare you to '+f2.join(', ')+'.';
+  if(d.vibe.length)s+=' A night with you feels '+opts(VIBE,d.vibe).join(', ')+(d.place?', like '+lc(OL(byK(PLACE,d.place))[0]):'')+'.';
+  if(d.tone){var tn=OL(byK(TONE,d.tone))[0];s+=' You talk to fans in '+(/^[aeiou]/i.test(tn)?'an ':'a ')+lc(tn)+' voice.'}
+  var n2=Object.keys(d.never).filter(function(z){return d.never[z]}).map(function(z){return OL(byK(NEVER,z))[0]});if(n2.length)s+=' You would never do: '+n2.join(', ').toLowerCase()+'.';}
+ return s}
+/* asset and gig-state helpers */
+function ANAME(i){return [[L('Flyer','Locandina')],[L('Story: the date','Story: la data')],[L('Story: the line-up','Story: il programma')],[L('Feed post','Post per il feed')]][i][0]}
+function ASHORT(i){return [L('Flyer','Locandina'),L('Story 1','Story 1'),L('Story 2','Story 2'),L('Post','Post')][i]}
+function allOk(){return S.made&&S.sent&&S.assets.every(function(x){return x.st==='ok'})}
+function gigStatus(){if(!S.gigOn)return 'none';if(!S.made)return 'new';if(!S.sent)return 'made';if(allOk())return 'ready';if(S.assets.some(function(x){return x.st==='no'}))return 'nope';return 'wait'}
+function STAT(s){return {none:L('No gig yet','Nessun concerto'),new:L('Posters not made yet','Poster da fare'),made:L('Ready to send to the band','Pronto da mandare alla band'),wait:L('Waiting on the band','In attesa della band'),nope:L('A nope needs a fix','Un no da sistemare'),ready:L('Approved. Ready to post','Approvato. Pronto da pubblicare')}[s]}
+function pastGig(i){var xs=[{d:'14.11',n:'Cenere<br>Rossa',f1:'Covo, Bologna',f2:'22:00 · €6',hue:'red'},{d:'24.10',n:'Cenere<br>Rossa',f1:'Spazio 211, Torino',f2:'21:30 · €8',hue:'blue'},{d:'03.10',n:'Cenere<br>Rossa',f1:'Cantina Blu, Firenze',f2:'21:00 · €5',hue:'red'}];return xs[i%3]}
+/* ---------- screens ---------- */
+var R={};
+var A0={r:2,v:0};
+R.welcome=function(){
+ var f=poster('flyer',{r:2,v:0},{mood:'dark',hue:'red'},{name:'Cenere<br>Rossa',d:'12.12',tag:'Rumore per chi è rimasto sveglio.',sub:'+ Lupi di Periferia',f1:'Sottoscala 13, Bologna',f2:'21:30 · €8'})
+ +poster('flyer',{r:2,v:1},{mood:'bright',hue:'blue',type:'tall'},{name:'Motel<br>Sirena',d:'19.12',tag:'Surf triste per Natale.',sub:'+ Dj Zanzara',f1:'Covo, Bologna',f2:'22:00 · €5'})
+ +poster('flyer',{r:2,v:2},{mood:'dark',hue:'blue',lay:'tilt'},{name:'Gatto<br>Nero',d:'09.01',tag:'Ultimo giro.',sub:'+ Tre Piani',f1:'Spazio 211, Torino',f2:'21:00 · €8'});
+ return '<div class="scr gut"><div class="bar"><span class="bn">Band Studio OS</span>'+langSw()+'</div><div class="body" style="overflow-y:auto;gap:18px;padding-bottom:16px"><span class="tape">'+L('For bands that do everything themselves','Per le band che fanno tutto da sole')+'</span><h1 class="big" style="font-size:clamp(34px,11vw,46px)">'+L('Your gig, on every wall.','Il tuo concerto, su tutti i muri.')+'</h1><p class="pur" style="font-size:17px">'+L('Band Studio OS turns one sentence about your gig into posters, stories and captions that look and sound like your band. Your bandmates approve. You post.','Band Studio OS trasforma una frase sul tuo concerto in poster, story e didascalie che sembrano e suonano come la tua band. I tuoi compagni approvano. Tu pubblichi.')+'</p><div class="fan" aria-hidden="true">'+f+'</div>'
+ +'<p class="sec">'+L('How it works','Come funziona')+'</p><div class="how"><div class="h1"><span class="num">1</span><div><b>'+L('Tell us who you are','Raccontaci chi siete')+'</b><p>'+L('A few minutes of real questions: your sound, your heroes, your vibe, what you would never do.','Qualche minuto di domande vere: il vostro suono, i vostri eroi, l’atmosfera, ciò che non fareste mai.')+'</p></div></div><div class="h1"><span class="num">2</span><div><b>'+L('Say what is coming up','Dicci cosa sta per succedere')+'</b><p>'+L('One sentence: where, when, who with.','Una frase: dove, quando, con chi.')+'</p></div></div><div class="h1"><span class="num">3</span><div><b>'+L('Your band says yes','La band dice sì')+'</b><p>'+L('Posters, stories and a caption in your style. Bandmates swipe yes or nope from a link. No accounts.','Poster, story e didascalia nel vostro stile. I compagni scorrono sì o no da un link. Nessun account.')+'</p></div></div></div>'
+ +'<p class="sec">'+L('Why it is different','Perché è diverso')+'</p><div class="prom"><b>'+L('Sounds like you','Suona come voi')+'</b><p>'+L('Built from your answers, not from a template. Nothing glossy, nothing generic.','Nasce dalle vostre risposte, non da un modello. Niente di patinato, niente di generico.')+'</p></div><div class="prom"><b>'+L('Nothing goes out without a yes','Niente esce senza un sì')+'</b><p>'+L('Every poster waits for your band. You post it yourself.','Ogni poster aspetta la band. Pubblichi tu.')+'</p></div><div class="prom"><b>'+L('Honest about the AI','Chiari sull’IA')+'</b><p>'+L('AI draws the art. Your name, dates and prices are set in type by us, so they are always right. Every image is marked as made with AI.','L’IA disegna l’immagine. Nome, date e prezzi li compone il nostro sistema, quindi sono sempre giusti. Ogni immagine è segnata come creata con l’IA.')+'</p></div><div class="prom"><b>'+L('Free while we learn','Gratis finché impariamo')+'</b><p>'+L('The first bands use it free and tell us what is wrong with it.','Le prime band lo usano gratis e ci dicono cosa non va.')+'</p></div></div><div class="dock"><button class="btn tp" data-act="go" data-to="onb1">'+L('Set up my band','Crea la mia band')+'</button><button class="link" data-act="sample">'+L('Or open a band that is already set up','Oppure apri una band già configurata')+'</button></div></div>'};
+R.onb1=function(){return '<div class="scr gut">'+top({mid:L('Your band · 1 of 3','La tua band · 1 di 3')})+'<div class="body" style="overflow-y:auto;gap:18px">'+ticks(3,1)+hd(L('Set up your band','Crea la tua band'),L('Who are you?','Chi siete?'),L('The basics, so every poster carries your name. About a minute.','Le basi, così ogni poster porta il vostro nome. Circa un minuto.'))+'<div class="fld"><label for="b-name">'+L('Band name','Nome della band')+'</label><input id="b-name" data-b="name" value="'+esc(S.band.name)+'" placeholder="Cenere Rossa" autocomplete="off"></div><div class="fld"><label for="b-city">'+L('Home city','Città')+'</label><input id="b-city" data-b="city" value="'+esc(S.band.city)+'" placeholder="Bologna" autocomplete="off"></div><button class="link" data-act="sample" style="align-self:flex-start;padding-left:0;font-weight:400">'+L('No band to hand? Use the sample band, Cenere Rossa.','Non hai una band sotto mano? Usa la band di esempio, Cenere Rossa.')+'</button></div><div class="dock"><button class="btn tp" id="nx" data-act="go" data-to="onb2"'+(real()?'':' disabled')+'>'+L('Next','Avanti')+'</button></div></div>'};
+R.onb2=function(){var m=S.band.mates;return '<div class="scr gut">'+top({mid:L('Your band · 2 of 3','La tua band · 2 di 3')})+'<div class="body" style="overflow-y:auto;gap:18px">'+ticks(3,2)+hd(L('Set up your band','Crea la tua band'),L('Who is in the band?','Chi suona con te?'),L('Your bandmates approve every poster from a link. They only need a name here, no account.','I compagni approvano ogni poster da un link. Qui basta il nome, niente account.'))+'<div class="fld"><label for="b-me">'+L('You (the one who handles the promotion)','Tu (chi si occupa della promozione)')+'</label><input id="b-me" data-b="me" value="'+esc(S.band.me)+'" placeholder="Marta" autocomplete="off"></div><div class="fld"><label for="b-m0">'+L('A bandmate','Un compagno di band')+'</label><input id="b-m0" data-b="m0" value="'+esc(m[0])+'" placeholder="Marco" autocomplete="off"></div><div class="fld"><label for="b-m1">'+L('Another bandmate (optional)','Un altro compagno (facoltativo)')+'</label><input id="b-m1" data-b="m1" value="'+esc(m[1])+'" placeholder="Giulia" autocomplete="off"></div></div><div class="dock"><button class="btn tp" id="nx" data-act="go" data-to="onb3"'+((S.band.me||'').trim()?'':' disabled')+'>'+L('Next','Avanti')+'</button></div></div>'};
+var CHANS=[['Instagram','Instagram'],['Facebook','Facebook'],['TikTok','TikTok'],['Bandcamp','Bandcamp'],['Spotify','Spotify'],['YouTube','YouTube'],['street','Flyers in the street|Volantini per strada'],['chat','Group chats|Gruppi di chat']];
+function chanName(c){var s=c[1].split('|');return s.length>1?P(s):s[0]}
+R.onb3=function(){return '<div class="scr gut">'+top({mid:L('Your band · 3 of 3','La tua band · 3 di 3')})+'<div class="body" style="overflow-y:auto;gap:16px">'+ticks(3,3)+hd(L('Set up your band','Crea la tua band'),L('Where do you promote today?','Dove vi promuovete oggi?'),L('So posters and captions fit where your fans are. Nothing is linked or posted.','Così poster e didascalie vanno dove stanno i fan. Non colleghiamo né pubblichiamo nulla.'))+'<div class="chips">'+CHANS.map(function(c){return '<button class="chip" data-act="chan" data-v="'+c[0]+'" aria-pressed="'+(!!S.band.chan[c[0]])+'">'+chanName(c)+'</button>'}).join('')+'</div><p class="mono" style="margin:6px 0 0">'+L('Language of your posters and captions','Lingua di poster e didascalie')+'</p><div class="chips"><button class="chip" data-act="cl" data-v="it" aria-pressed="'+(S.cl==='it')+'">Italiano</button><button class="chip" data-act="cl" data-v="en" aria-pressed="'+(S.cl==='en')+'">English</button></div></div><div class="dock"><button class="btn tp" data-act="go" data-to="onbdone">'+L('Finish setup','Concludi')+'</button></div></div>'};
+R.onbdone=function(){return '<div class="scr gut">'+top({mid:L('Setup done','Fatto'),back:false})+'<div class="body" style="overflow-y:auto;gap:16px"><div style="width:52%;align-self:center;transform:rotate(-3deg);margin-top:6px">'+poster('flyer',{r:2,v:0})+'</div>'+hd(L('Setup done','Fatto'),L('You are in, ','Ci siete, ')+esc(BN())+'.',L('That is how your name looks on a poster. It is still generic: the Identity Studio makes it yours. Seven short chapters, about five minutes. Skip any, come back any time.','Ecco come sta il vostro nome su un poster. È ancora generico: lo Studio Identità lo rende vostro. Sette capitoli brevi, circa cinque minuti. Salta quello che vuoi e torna quando vuoi.'))+'</div><div class="dock"><button class="btn tp" data-act="chap" data-k="sound">'+L('Start the Identity Studio','Inizia lo Studio Identità')+'</button><button class="link" data-act="home">'+L('Later: take me to my wall','Dopo: portami alla bacheca')+'</button></div></div>'};
+/* Wall */
+R.wall=function(){var st=gigStatus(),cta={none:['gignew',L('Tell us about your next gig','Raccontaci il prossimo concerto')],new:['gignew',L('Make the poster pack','Crea il pacchetto di poster')],made:['pack',L('Review and send to the band','Controlla e manda alla band')],wait:['approval',L('See where it stands','Vedi a che punto siamo')],nope:['approval',L('See what the band said','Vedi cosa ha detto la band')],ready:['ready',L('See the finished pack','Vedi il pacchetto finito')]}[st];
+ var main=S.gigOn?'<button class="pin" data-act="go" data-to="gig" style="width:min(62%,250px);align-self:center;transform:rotate(-2deg)" aria-label="'+L('Open the next gig','Apri il prossimo concerto')+'">'+poster('flyer',S.assets[0])+'</button><p class="mono" style="text-align:center;margin:0"><span class="stat'+(st==='ready'?' ok':'')+'">'+STAT(st)+'</span></p>'
+  :'<button class="tile" style="aspect-ratio:auto;min-height:150px" data-act="go" data-to="gignew"><span style="font-size:34px">+</span>'+L('Next gig?','Prossimo concerto?')+'</button>';
+ var sheets='';if(S.has.rel)sheets+=sheetCard('rel');if(S.has.tour)sheets+=sheetCard('tour');
+ var past='';if(S.has.past>0){var pp='';for(var i=0;i<Math.min(3,S.has.past);i++){var g=pastGig(i);pp+=poster('flyer',{r:2,v:i%3},{hue:g.hue},{name:g.n,d:g.d,f1:g.f1,f2:g.f2})}past='<p class="mono" style="margin:4px 0 0">'+L('Past gigs','Concerti passati')+'</p><div class="shelf">'+pp+'</div><button class="link" data-act="go" data-to="archive" style="align-self:flex-start;padding-left:0">'+L('See all your posters','Vedi tutti i poster')+'</button>'}
+ var idc=nDone()<7?'<button class="chap" data-act="tab" data-to="studio"><span class="n">'+nDone()+'/7</span><span class="c"><b>'+L('Your identity','La vostra identità')+'</b><small>'+L('Answer more chapters for sharper posters','Rispondi a più capitoli per poster più precisi')+'</small></span><span class="tl2 d">'+L('Continue','Continua')+'</span></button>':'';
+ return '<div class="scr gut"><div class="bar"><span class="bn">'+esc(BN())+'</span>'+langSw()+'</div><div class="body" style="overflow-y:auto;gap:14px">'+hd(L('Your wall','La vostra bacheca'),S.gigOn?L('Next up: ','Prossimo: ')+esc(G('date')):L('Nothing pinned yet.','Ancora niente appeso.'),L('Everything you promote is pinned here. Start with the next gig.','Tutto ciò che promuovete sta qui. Parti dal prossimo concerto.'))+main+idc+sheets+past+'</div><div class="dock" style="padding-top:6px;padding-bottom:8px"><button class="btn tp" data-act="go" data-to="'+cta[0]+'">'+cta[1]+'</button></div>'+tabs('wall')+'</div>'};
+function sheetCard(w){var rel=w==='rel',n=stops(w),done=n.filter(function(s){return s.st!=='todo'}).length,nx=nextIdx(w);
+ return '<button class="sheetcard span" data-act="go" data-to="'+(rel?'release':'tour')+'"><span class="sc-p">'+poster('flyer',A0,null,rel?RELX():TOURX())+'</span><span class="sc-t">'+soonTag()+'<b>'+(rel?'Notte Lunga':'Rumore Tour')+'</b><span class="mono">'+(rel?L('New single · 19 Jun','Nuovo singolo · 19 giu'):L('4 dates · 1 to 9 Oct','4 date · 1-9 ott'))+'</span><span class="mono muted">'+done+' '+L('of','di')+' '+n.length+' '+L('done','fatti')+(nx>=0?' · '+L('Next: ','Poi: ')+n[nx].n:'')+'</span></span></button>'}
+/* Make */
+R.make=function(){return '<div class="scr gut"><div class="bar"><span class="bn">'+esc(BN())+'</span>'+langSw()+'</div><div class="body" style="overflow-y:auto;gap:12px">'+hd(L('Make','Crea'),L('What are you promoting?','Cosa state promuovendo?'),L('Pick a job. Each one starts from your identity, so it always looks like you.','Scegli cosa fare. Si parte sempre dalla vostra identità, quindi sembra sempre voi.'))
+ +'<p class="sec">'+L('Available now','Disponibile ora')+'</p>'+mrow('newgig',L('A gig','Un concerto'),L('One sentence, one poster pack','Una frase, un pacchetto di poster'),'',{hot:1})
+ +'<p class="sec">'+L('Coming soon','In arrivo')+'</p>'+mrow('after',L('Thank-you for last night','Grazie per ieri sera'),L('Carousel with the venue and support tagged','Carosello con locale e band di supporto taggati'),soonTag())+mrow('release',L('A new single','Un nuovo singolo'),L('Cover, teaser, press note, release day','Copertina, teaser, comunicato, giorno di uscita'),soonTag())+mrow('tour',L('A tour','Un tour'),L('One look, a poster per date, one approval','Un solo stile, un poster a data, un’unica approvazione'),soonTag())+mrow('reel',L('A short video','Un breve video'),L('A 15-second teaser on your look','Un teaser di 15 secondi nel vostro stile'),soonTag())+mrow('night',L('Gig night','La sera del concerto'),L('Doors story and setlist poster','Story delle porte e poster della scaletta'),soonTag())
+ +'<button class="mrow" data-act="collab"><span>'+L('Collab with another band','Collaborazione con un’altra band')+'<small>'+L('A shared poster and one approval for both','Un poster in comune e un’approvazione per entrambe')+'</small></span><span class="later">'+L('Far later','Più avanti')+'</span></button></div>'+tabs('make')+'</div>'};
+/* Us */
+R.us=function(){var n=nDone();
+ return '<div class="scr gut"><div class="bar"><span class="bn">'+esc(BN())+'</span>'+langSw()+'</div><div class="body" style="overflow-y:auto;gap:14px">'+hd(L('Us','Noi'),L('Who you are.','Chi siete.'),L('Your identity, your band and your settings.','La vostra identità, la band e le impostazioni.'))
+ +'<div class="idcard"><span class="sw">'+poster('flyer',{r:2,v:0})+'</span><span class="t"><b style="font:800 15px var(--display)">'+n+' '+L('of 7 chapters','di 7 capitoli')+'</b><span class="meter">'+CH.map(function(c){return '<i class="'+(S.fin[c.k]?'on':'')+'"></i>'}).join('')+'</span><p>'+esc(idSummary())+'</p></span></div>'
+ +mrow('studio',L('Identity Studio','Studio Identità'),L('Sound, look, tone, what is never you','Suono, stile, tono, ciò che non siete'),'<span class="tl2'+(n>=7?'':' d')+'">'+(n>=7?L('Done','Fatto'):n+'/7')+'</span>')
+ +mrow('band',L('Band and helpers','Band e aiuti'),L('Names, channels, caption language','Nomi, canali, lingua delle didascalie'))
+ +mrow('archive',L('Past posters','Poster passati'),L('Every poster you have pinned','Tutti i poster che avete appeso'),soonTag())
+ +mrow('channels',L('Post it for me','Pubblica al posto mio'),L('Link accounts so approved packs post themselves','Collega gli account e i pacchetti approvati escono da soli'),soonTag())
+ +mrow('plan',L('Keep your wall','Tieni la bacheca'),L('What a gig or a month costs','Quanto costa un concerto o un mese'),'')
+ +mrow('rights',L('AI, rights and your data','IA, diritti e dati'),L('What is AI-made, what you own, what we keep','Cosa fa l’IA, cosa è vostro, cosa conserviamo'))
+ +'<p class="sec">'+L('Settings','Impostazioni')+'</p><div class="mrow" style="cursor:default"><span>'+L('App language','Lingua dell’app')+'<small>'+L('Posters and captions have their own language, set in Band and helpers','Poster e didascalie hanno una lingua propria, in Band e aiuti')+'</small></span>'+langSw()+'</div><button class="link" data-act="reset" style="align-self:flex-start;padding-left:0">'+L('Start over (clears this demo)','Ricomincia (cancella questa demo)')+'</button></div>'+tabs('us')+'</div>'};
+R.studio=function(){var n=nDone(),nx=null;CH.forEach(function(c){if(!nx&&!S.fin[c.k])nx=c.k});
+ var rows=CH.map(function(c,i){var sm=chSum(c.k),d=!!S.fin[c.k];return '<button class="chap'+(c.k===nx?' next':'')+'" data-act="chap" data-k="'+c.k+'"><span class="n">'+(i+1)+'</span><span class="c"><b>'+P(c.t)+'</b><small>'+esc(sm||P(c.s))+'</small></span><span class="tl2'+(d?'':' d')+'">'+(d?L('Done','Fatto'):c.k===nx?L('Next','Poi'):L('Start','Inizia'))+'</span></button>'}).join('');
+ return '<div class="scr gut">'+top({mid:L('Identity Studio','Studio Identità')})+'<div class="body" style="overflow-y:auto;gap:14px">'+hd(L('Identity Studio','Studio Identità'),L('Who you are.','Chi siete.'),L('Everything we make is built from your answers. Do the chapters in any order and change them any time.','Tutto ciò che creiamo parte dalle vostre risposte. Fai i capitoli in qualsiasi ordine e cambiali quando vuoi.'))+'<div class="idcard"><span class="sw">'+poster('flyer',{r:2,v:0})+'</span><span class="t"><b style="font:800 15px var(--display)">'+n+' '+L('of 7 chapters','di 7 capitoli')+'</b><span class="meter">'+CH.map(function(c){return '<i class="'+(S.fin[c.k]?'on':'')+'"></i>'}).join('')+'</span><p>'+esc(idSummary())+'</p></span></div><div class="stack1">'+rows+'</div></div>'+tabs('us')+'</div>'};
+function curQ(){var c=chOf(S.q.c);return c.q[Math.min(S.q.i,c.q.length-1)]}
+R.ask=function(){var c=chOf(S.q.c),n=c.q.length,i=Math.min(S.q.i,n-1),q=c.q[i],d=S.idn,h='',last=i===n-1,btn='';
+ var ctl='<div class="body" style="overflow-y:auto;gap:16px">'+ticks(n,i+1)+hd(L('Identity Studio · ','Studio Identità · ')+P(c.t),P(q.q),P(q.why));
+ if(q.t==='multi'){var list=q.o||GENRES.map(function(g){return{k:g,e:[g],i:[GL(g)]}});h='<div class="chips">'+list.map(function(o){return '<button class="chip" data-act="tog" data-f="'+q.f+'" data-max="'+q.max+'" data-v="'+esc(o.k)+'" aria-pressed="'+(d[q.f].indexOf(o.k)>-1)+'">'+esc(OL(o)[0])+'</button>'}).join('')+'</div>'+(q.own?'<input class="own" id="own" aria-label="'+P(q.own)+'" placeholder="'+P(q.own)+'" autocomplete="off">':'')+'<p class="mono muted" id="cnt" style="margin:0">'+d[q.f].length+' '+L('of','di')+' '+q.max+' '+L('picked','scelti')+'</p>';btn=1}
+ else if(q.t==='single'){h='<div class="stack1">'+q.o.map(function(o){var l=OL(o);return '<button class="sel" data-act="one" data-f="'+q.f+'" data-v="'+o.k+'" aria-pressed="'+(d[q.f]===o.k)+'"><b>'+esc(l[0])+'</b><small>'+esc(l[1])+'</small></button>'}).join('')+'</div>'}
+ else if(q.t==='pair'){var p=PAIRS[q.p];var opt=function(o){var ov={};ov[p.k]=o.k;return '<button class="opt'+(S.id[p.k]===o.k&&S.chosen===q.p?' on':'')+'" data-act="pk" data-p="'+q.p+'" data-k="'+p.k+'" data-v="'+o.k+'" aria-label="'+esc(OL(o)[0])+'">'+poster('swatch',null,ov)+'<span class="tape">'+esc(OL(o)[0])+'</span></button>'};h='<div class="pair pairq" style="flex:1;min-height:260px">'+opt(p.a)+opt(p.b)+'</div>'}
+ else if(q.t==='text'){h=q.fs.map(function(f,j){var v=f.i!==undefined?d[f.k][f.i]:d[f.k];return '<div class="fld"><label for="t'+j+'">'+P(f.l)+'</label>'+(f.area?'<textarea id="t'+j+'" data-tk="'+f.k+'" placeholder="'+esc(P(f.ph))+'">'+esc(v)+'</textarea>':'<input id="t'+j+'" data-tk="'+f.k+'" data-ti="'+f.i+'" value="'+esc(v)+'" placeholder="'+esc(P(f.ph))+'" autocomplete="off">')+'</div>'}).join('');btn=1}
+ else if(q.t==='tag'){var Ls=TAGS[d.tone||'poetic'][S.cl];h='<div class="stack1">'+Ls.map(function(l){return '<button class="sel" data-act="tagpick" data-v="'+esc(l)+'" aria-pressed="'+(S.tag===l)+'"><b>“'+esc(l)+'”</b><small>'+(d.tone?esc(OL(byK(TONE,d.tone))[0]):L('A starting line','Una frase di partenza'))+'</small></button>'}).join('')+'</div><div class="fld"><label for="tagown">'+L('Or write your own','Oppure scrivi la tua')+'</label><input id="tagown" data-tk="tagown" placeholder="'+L('A line that sounds like you','Una frase che vi somiglia')+'" value="'+(Ls.indexOf(S.tag)>-1?'':esc(S.tag))+'" autocomplete="off"></div>';btn=1}
+ else if(q.t==='never'){h='<div class="chips">'+NEVER.map(function(o){return '<button class="chip" data-act="nev" data-v="'+o.k+'" aria-pressed="'+(!!d.never[o.k])+'">'+esc(OL(o)[0])+'</button>'}).join('')+'</div><div class="fld"><label for="own">'+L('Words you would never use','Parole che non usereste mai')+'</label><input id="own" class="own" data-tk="neverOwn" placeholder="'+L('e.g. Unleash, Epic night','es. Scatenarsi, Serata epica')+'" value="'+esc(d.neverOwn)+'" autocomplete="off"></div>';btn=1}
+ else if(q.t==='photos'){var ph='';for(var z=0;z<5;z++)ph+='<div class="ph'+(z<d.photos?' on':'')+'">'+(z<d.photos?L('photo','foto'):'+')+'</div>';
+  h='<div class="photos" aria-label="'+L('Your photos','Le vostre foto')+'">'+ph+'</div><div class="rule"><b>'+L('Before you add a photo','Prima di aggiungere una foto')+'</b>'+L('Only photos you own or have permission to use. Only band members who agreed may be recognisable: no fans, crowds, children or other people’s artwork. Photos are deleted after 12 months, and you can remove any of them now.','Solo foto vostre o che avete il permesso di usare. Solo i membri della band che hanno detto sì possono essere riconoscibili: niente fan, folla, minori o opere di altri. Le foto vengono cancellate dopo 12 mesi e puoi toglierle quando vuoi.')+'</div><button class="tick" data-act="photook" aria-pressed="'+d.photoOk+'"><i></i><span>'+L('These photos are mine, or I have permission to use them, and the band members in them agreed.','Queste foto sono mie, o ho il permesso di usarle, e i membri della band presenti hanno detto sì.')+'</span></button><div class="fld"><label for="pcr">'+L('Photo credit (if a photographer took them)','Crediti foto (se le ha scattate un fotografo)')+'</label><input id="pcr" data-tk="photoCredit" value="'+esc(d.photoCredit)+'" placeholder="'+L('e.g. Photo by Giulia R.','es. Foto di Giulia R.')+'" autocomplete="off"></div><div class="chips"><button class="chip" data-act="photoadd"'+(d.photoOk&&d.photos<5?'':' disabled style="opacity:.4"')+'>'+L('Add a sample photo','Aggiungi una foto di esempio')+'</button>'+(d.photos?'<button class="chip" data-act="photodel">'+L('Remove one','Toglierne una')+'</button>':'')+'</div><p class="note">'+L('Prototype: no file is uploaded.','Prototipo: nessun file viene caricato.')+'</p>';btn=1}
+ return '<div class="scr gut">'+top({mid:P(c.t)+' · '+(i+1)+' '+L('of','di')+' '+n,act:'qback'})+ctl+h+'</div><div class="dock">'+(btn?'<button class="btn tp" data-act="qnext">'+(last?L('Done','Fatto'):L('Next','Avanti'))+'</button>':'')+'<button class="link" data-act="qskip">'+(last?L('Skip and finish this chapter','Salta e concludi il capitolo'):L('Skip this one','Salta questa'))+'</button></div></div>'};
+R.band=function(){var m=S.band.mates,mem='<div class="person"><span><b>'+esc(ME())+'</b></span><span class="stat ok">'+L('Driver','Guida')+'</span></div>';
+ [S.band.mates[0]||(!real()?'Marco':''),S.band.mates[1]||(!real()?'Giulia':'')].forEach(function(x){if(x)mem+='<div class="person"><span><b>'+esc(x)+'</b></span><span class="stat">'+L('Approves','Approva')+'</span></div>'});
+ if(S.helper)mem+='<div class="person"><span><b>'+L('Your manager','Il vostro manager')+'</b></span><span class="stat ok">'+L('Driver','Guida')+'</span></div>';
+ return '<div class="scr gut">'+top({mid:L('Band and helpers','Band e aiuti')})+'<div class="body" style="overflow-y:auto;gap:16px">'+hd(L('Us','Noi'),L('Your band.','La vostra band.'),L('The driver runs the promotion. Bandmates only approve, from a link, with no account.','Chi guida cura la promozione. I compagni approvano soltanto, da un link, senza account.'))
+ +'<div class="fld"><label for="b-name">'+L('Band name','Nome della band')+'</label><input id="b-name" data-b="name" value="'+esc(BN())+'" autocomplete="off"></div><div class="fld"><label for="b-city">'+L('Home city','Città')+'</label><input id="b-city" data-b="city" value="'+esc(CITY())+'" autocomplete="off"></div>'
+ +'<p class="sec">'+L('Members','Membri')+'</p><div>'+mem+'</div>'+(S.helper?'':'<button class="mrow" data-act="helper"><span>'+L('Add a helper','Aggiungi un aiuto')+'<small>'+L('A manager or friend who can drive too','Un manager o un amico che può guidare')+'</small></span>'+soonTag()+'</button>')
+ +'<p class="sec">'+L('Where you promote','Dove vi promuovete')+'</p><div class="chips">'+CHANS.map(function(c){return '<button class="chip" data-act="chan" data-v="'+c[0]+'" aria-pressed="'+(!!S.band.chan[c[0]])+'">'+chanName(c)+'</button>'}).join('')+'</div>'
+ +'<p class="sec">'+L('Language of posters and captions','Lingua di poster e didascalie')+'</p><div class="chips"><button class="chip" data-act="cl" data-v="it" aria-pressed="'+(S.cl==='it')+'">Italiano</button><button class="chip" data-act="cl" data-v="en" aria-pressed="'+(S.cl==='en')+'">English</button></div></div>'+tabs('us')+'</div>'};
+/* Gig */
+R.gignew=function(){var D=DEF();function f(k,ph){return '<input id="f-'+k+'" data-f="'+k+'" value="'+esc(S.gig[k])+'" placeholder="'+esc(k==='city'?CITY():D[k])+'" aria-label="'+ph+'" autocomplete="off">'}
+ return '<div class="scr gut">'+top({mid:L('Gig pack · 1 of 4','Concerto · 1 di 4')})+'<div class="body" style="overflow-y:auto;gap:16px">'+hd(L('Make a gig pack','Crea il pacchetto concerto'),L('Tell us about the gig','Raccontaci il concerto'),L('One sentence. We turn it into a flyer, two stories, a feed post and a caption.','Una frase. La trasformiamo in una locandina, due story, un post e una didascalia.'))+'<div class="sentence">'+esc(BN())+L(' play ',' suonano al ')+f('venue',L('Venue','Locale'))+L(' in ',' a ')+f('city',L('City','Città'))+L(' on ',' il ')+f('date',L('Date','Data'))+L(', doors ',', porte alle ')+f('time',L('Doors','Porte'))+L(', with ',', con ')+f('support',L('Support act','Band di supporto'))+'.</div><div class="chips"><button class="chip" data-act="price" data-v="8" aria-pressed="'+(S.gig.price==='8')+'">'+L('Tickets €8','Biglietto €8')+'</button><button class="chip" data-act="price" data-v="free" aria-pressed="'+(S.gig.price==='free')+'">'+L('Free entry','Ingresso libero')+'</button><button class="chip" data-act="price" data-v="10" aria-pressed="'+(S.gig.price==='10')+'">'+L('€10 at the door','€10 alla porta')+'</button></div></div><div class="dock"><button class="btn tp" data-act="make">'+(S.made?L('Make the posters again','Rifai i poster'):L('Make my pack','Crea il mio pacchetto'))+'</button></div></div>'};
+R.making=function(){return '<div class="scr gut making"><div class="press">'+poster('flyer',S.assets[0])+'</div><p class="mono">'+L('Printing in your style…','Stampiamo nel vostro stile…')+'</p></div>'};
+R.pack=function(){var a=S.assets;
+ var slides=a.map(function(x,i){return i===3?'<div class="slide cap" data-i="3">'+poster('post',x)+'<div class="capbox"><div class="chips"><button class="chip" data-act="lang" data-v="it" aria-pressed="'+(S.cl==='it')+'">Italiano</button><button class="chip" data-act="lang" data-v="en" aria-pressed="'+(S.cl==='en')+'">English</button></div><textarea id="capta" aria-label="'+L('Caption','Didascalia')+'">'+esc(caption(S.cl))+'</textarea><div class="lockline"><span aria-hidden="true">■</span><span>'+esc(aiLine(S.cl))+' '+L('Added to every caption on purpose, so it cannot be edited out.','Aggiunta a ogni didascalia di proposito, quindi non si può togliere.')+'</span></div></div></div>':'<div class="slide" data-i="'+i+'">'+poster(x.k,x)+'</div>'}).join('');
+ return '<div class="scr dark">'+top({mid:'<span id="pk-n">'+ANAME(S.cur)+'</span>'})+'<p class="eb gut" style="margin:0">'+L('Gig pack · 2 of 4 · swipe, tweak, then send','Pacchetto concerto · 2 di 4 · scorri, ritocca, poi manda')+'</p><div class="pager" id="pager">'+a.map(function(x,i){return '<button data-act="goto" data-i="'+i+'" class="'+(i===S.cur?'on':'')+'">'+ASHORT(i)+'</button>'}).join('')+'</div><div class="deck" id="deck">'+slides+'</div><div class="sheet gut"><span class="ai">'+L('Art made with AI · text set by us','Immagine creata con l’IA · testo composto da noi')+'</span><div class="chips"><button class="chip" data-act="look" data-v="rough">'+L('Rougher','Più ruvido')+'</button><button class="chip" data-act="look" data-v="clean">'+L('Cleaner','Più pulito')+'</button><button class="chip" data-act="look" data-v="another">'+L('Another','Un altro')+'</button><button class="chip" data-act="words">'+L('Change words','Cambia parole')+'</button></div><button class="btn tp" data-act="send">'+L('Send to the band','Manda alla band')+'</button></div></div>'};
+R.gig=function(){var st=gigStatus(),A=S.assets;
+ function step(n,to,t,s,tag,dis,hot){return '<button class="mrow'+(hot?' hot':'')+'" data-act="go" data-to="'+to+'"'+(dis?' disabled':'')+'><span><span class="num2">'+n+'</span> '+t+'<small>'+s+'</small></span>'+(tag||'')+'</button>'}
+ var cta={new:['gignew',L('Make the posters','Crea i poster')],made:['pack',L('Review and send to the band','Controlla e manda alla band')],wait:['approval',L('See where it stands','Vedi a che punto siamo')],nope:['approval',L('See what the band said','Vedi cosa ha detto la band')],ready:['ready',L('See the finished pack','Vedi il pacchetto finito')]}[st]||['gignew',L('Make the posters','Crea i poster')];
+ return '<div class="scr gut">'+top({mid:esc(G('date'))})+'<div class="body" style="overflow-y:auto;gap:14px"><div style="display:flex;gap:14px;align-items:flex-end"><div style="width:38%;flex:0 0 38%;transform:rotate(-2deg)">'+poster('flyer',A[0])+'</div><div style="display:flex;flex-direction:column;gap:6px;min-width:0"><p class="eb">'+L('Gig','Concerto')+'</p><h2 class="big" style="font-size:24px">'+esc(G('venue'))+'</h2><p class="mono">'+esc(G('city'))+' · '+esc(G('time'))+'</p><span class="stat'+(st==='ready'?' ok':'')+'" style="align-self:flex-start;white-space:normal">'+STAT(st)+'</span></div></div>'
+ +'<p class="pur">'+L('Everything for this gig, in order. Each step opens when the one before is done.','Tutto per questo concerto, in ordine. Ogni passo si apre quando il precedente è fatto.')+'</p>'
+ +step(1,'gignew',L('Details','Dettagli'),esc(G('venue'))+', '+esc(G('date')),'<span class="stat ok">'+L('Set','Fatti')+'</span>')
+ +step(2,S.made?'pack':'gignew',L('Posters','Poster'),S.made?L('Four posters and a caption','Quattro poster e una didascalia'):L('Not made yet','Ancora da fare'),S.made?'<span class="stat ok">'+L('Made','Pronti')+'</span>':'')
+ +step(3,'approval',L('Band approval','Approvazione della band'),S.sent?(allOk()?L('Everyone said yes','Tutti hanno detto sì'):L('A private link is out','Il link privato è partito')):L('Send the posters first','Manda prima i poster'),S.sent?'<span class="stat'+(allOk()?' ok':'')+'">'+(allOk()?L('Approved','Approvato'):L('Open','Aperto'))+'</span>':'<span class="stat lk">'+L('Locked','Bloccato')+'</span>',!S.sent)
+ +step(4,'ready',L('Ready to post','Pronto da pubblicare'),allOk()?L('Proof sheet and posting plan','Prova di stampa e piano di pubblicazione'):L('Opens when the band says yes','Si apre quando la band dice sì'),allOk()?'<span class="stat ok">'+L('Open','Aperto')+'</span>':'<span class="stat lk">'+L('Locked','Bloccato')+'</span>',!allOk())
+ +step(5,'night',L('Gig night','La sera del concerto'),L('Doors story and setlist poster','Story delle porte e poster della scaletta'),soonTag())
+ +step(6,'after',L('After the gig','Dopo il concerto'),L('A thank-you made for you','Un grazie già pronto'),soonTag())+'</div><div class="dock" style="padding-top:6px;padding-bottom:8px"><button class="btn tp" data-act="go" data-to="'+cta[0]+'">'+cta[1]+'</button></div>'+tabs('wall')+'</div>'};
+R.approval=function(){var A=S.assets,done=allOk();
+ var items=A.map(function(x,i){var lab=x.st==='ok'?'<span class="st ok">'+L('Approved','Approvato')+'</span>':x.st==='no'?'<span class="st no">Nope</span>':'<span class="st">'+L('Waiting','In attesa')+'</span>';
+  var act=x.st==='no'?'<button class="chip" data-act="revise" data-i="'+i+'" style="margin-top:6px">'+L('Revise this','Rivedi questo')+'</button>':'';
+  return '<div class="item"><div class="tb">'+poster(x.k,x)+'</div><div class="t"><b>'+ANAME(i)+'</b><span>'+(x.st==='no'?esc(MATE())+': “'+esc(x.why)+'”':x.st==='ok'?esc(MATE())+L(' said yes',' ha detto sì'):esc(MATE())+L(' has not seen it',' non l’ha ancora visto'))+'</span>'+act+'</div>'+lab+'</div>'}).join('');
+ return '<div class="scr gut">'+top({mid:L('Gig pack · 3 of 4','Concerto · 3 di 4')})+'<div class="body" style="overflow-y:auto">'+hd(L('Band approval','Approvazione della band'),done?L('Everyone said yes.','Tutti hanno detto sì.'):L('Waiting on the band.','In attesa della band.'),done?L('All four are approved. One step left.','Tutti e quattro approvati. Manca un passo.'):L('Send this link. Bandmates open it, swipe, done. No account needed.','Manda questo link. I compagni lo aprono, scorrono, fatto. Nessun account.'))
+ +'<div class="rule"><b>'+L('How approval works','Come funziona l’approvazione')+'</b>'+L('Each poster needs a yes from at least one bandmate. Any nope stops it until you revise it. Nothing can be saved or posted before that.','Ogni poster ha bisogno del sì di almeno un compagno. Un solo no lo ferma finché non lo rivedi. Prima di allora non si può salvare né pubblicare nulla.')+'</div>'
+ +(done?'':'<div class="link-url"><span>bandstudio.os/r/'+slug(BN())+'-7k2</span><button class="chip" data-act="copy" style="min-height:34px;padding:4px 10px;flex:none;white-space:nowrap">'+L('Copy','Copia')+'</button></div>')+'<div class="list">'+items+'</div></div><div class="dock">'+(done?'<button class="btn tp" data-act="go" data-to="ready">'+L('See the finished pack','Vedi il pacchetto finito')+'</button>':'<button class="btn tp" data-act="startreview">'+L('See what '+esc(MATE())+' sees','Guarda cosa vede '+esc(MATE()))+'</button><button class="link" data-act="approveall">'+L('Prototype shortcut: approve everything','Scorciatoia del prototipo: approva tutto')+'</button>')+'</div></div>'};
+R.review=function(){var A=S.assets,i=S.ri;if(i>=A.length)return R.thanks();var a=A[i];
+ return '<div class="scr dark">'+top({mid:L(esc(MATE())+'’s phone','Telefono di '+esc(MATE()))+'',back:true,act:'back'}).replace(L('Back','Indietro'),L('Close preview','Chiudi anteprima'))+'<p class="mono gut muted" style="margin:2px 0 6px">'+esc(BN())+L(' wants your OK (',' vuole il tuo OK (')+(i+1)+L(' of ',' di ')+A.length+L('). Swipe right for yes, left for nope.','). Scorri a destra per sì, a sinistra per no.')+'</p><div class="rstage"><div class="rcard" id="rcard"><div class="stamp y" id="sy">'+L('YES','SÌ')+'</div><div class="stamp n" id="sn">NOPE</div>'+poster(a.k,a)+'</div></div><div class="gut" style="padding-top:4px"><span class="ai">'+L('Art made with AI','Immagine creata con l’IA')+'</span></div><div class="dock gut" style="flex-direction:row"><button class="btn gh" data-act="nope" style="flex:1">Nope</button><button class="btn tp" data-act="yes" style="flex:1.4">'+L('Yes, post it','Sì, pubblicate')+'</button></div></div>'};
+R.thanks=function(){var A=S.assets,n=A.filter(function(x){return x.st==='no'}).length;return '<div class="scr dark gut"><div class="bar"><span class="bn">'+esc(BN())+'</span>'+langSw()+'</div><div class="body" style="justify-content:center"><h2 class="big">'+L('Thanks','Grazie')+(MATE()===L('Your bandmate','Il tuo compagno di band')?'':', '+esc(MATE()))+'.</h2><p style="font-size:17px;max-width:28ch;margin:0">'+L('You said yes to '+(A.length-n)+' and nope to '+n+'. '+esc(ME())+' gets it now.','Hai detto sì a '+(A.length-n)+' e no a '+n+'. Ora tocca a '+esc(ME())+'.')+'</p></div><div class="dock"><button class="btn tp" data-act="back">'+L('Back to '+esc(ME())+'’s phone','Torna al telefono di '+esc(ME()))+'</button></div></div>'};
+R.ready=function(){
+ if(!allOk())return '<div class="scr gut">'+top({mid:L('Gig pack · 4 of 4','Concerto · 4 di 4')})+'<div class="body" style="overflow-y:auto">'+hd(L('Ready to post','Pronto da pubblicare'),L('Not yet.','Non ancora.'),L('Saving and posting open only after the band has approved every poster. This is checked by our server, not just on your screen.','Salvare e pubblicare si apre solo quando la band ha approvato ogni poster. Lo controlla il nostro server, non solo lo schermo.'))+'<span class="stat lk" style="align-self:flex-start">'+L('Locked','Bloccato')+'</span></div><div class="dock"><button class="btn tp" data-act="go" data-to="'+(S.sent?'approval':'gig')+'">'+(S.sent?L('See where approval stands','Vedi a che punto è l’approvazione'):L('Back to the gig','Torna al concerto'))+'</button></div>'+tabs('wall')+'</div>';
+ var sched=[[FU(2026,12,3),L('Flyer','Locandina')],[FU(2026,12,5),L('Story: the date','Story: la data')],[FU(2026,12,9),L('Story: line-up + post','Story: programma + post')],[FU(2026,12,12),L('Tonight: story','Stasera: story')]];
+ return '<div class="scr gut">'+top({mid:L('Gig pack · 4 of 4','Concerto · 4 di 4')})+'<div class="body" style="overflow-y:auto">'+hd(L('Ready to post','Pronto da pubblicare'),L('Ready to post.','Pronto da pubblicare.'),L('Four approved posters and a posting plan. You post them by hand on these dates.','Quattro poster approvati e un piano. Li pubblichi a mano in queste date.'))+'<div class="proof">'+S.assets.map(function(x){return poster(x.k==='story'?'flyer':x.k,x)}).join('')+'</div><span class="ai">'+L('Every file is marked as made with AI','Ogni file è segnato come creato con l’IA')+'</span><p class="mono" style="margin:4px 0 0">'+L('Posting plan','Piano di pubblicazione')+'</p><div class="sched">'+sched.map(function(s){return '<div><span>'+s[0]+'</span><span>'+s[1]+'</span></div>'}).join('')+'</div>'
+ +'<div class="block"><b>'+L('Before you post','Prima di pubblicare')+'</b><p>'+L('The caption carries the line “'+aiLine('en')+'”. Keep it. If a poster shows a realistic person, say that it is AI-made.','La didascalia contiene la riga “'+aiLine('it')+'”. Lasciala. Se un poster mostra una persona realistica, dì che è creata con l’IA.')+'</p></div>'
+ +'<div class="block"><b>'+L('What you can do with them','Cosa potete farci')+'</b><p>'+L('Use them for your gigs. Pure AI art may not be protected by copyright, so others could copy it. Your logo, text and photos stay yours.','Usateli per i vostri concerti. L’arte creata solo dall’IA potrebbe non essere protetta dal diritto d’autore, quindi altri potrebbero copiarla. Logo, testi e foto restano vostri.')+'</p></div>'
+ +mrow('plan',L('Keep your wall','Tieni la bacheca'),L('Pay after the posters, not before','Paghi dopo i poster, non prima'),'')+mrow('channels',L('Post it for me','Pubblica al posto mio'),L('Link accounts, posts go out on the plan','Collega gli account, i post escono secondo il piano'),soonTag())+mrow('night',L('Gig night','La sera del concerto'),L('Doors story and setlist poster','Story delle porte e poster della scaletta'),soonTag())+mrow('after',L('After the gig','Dopo il concerto'),L('A thank-you made for you','Un grazie già pronto'),soonTag())
+ +'</div><div class="dock"><button class="btn" data-act="save">'+L('Save all to my phone','Salva tutto sul telefono')+'</button><button class="link" data-act="tab" data-to="wall">'+L('Back to my wall','Torna alla bacheca')+'</button></div></div>'};
+/* later journeys */
+function RELX(){return{name:'Notte<br>Lunga',d:'19.06',tag:LC('The new single.','Il nuovo singolo.'),sub:LC('New single','Nuovo singolo'),f1:LC('Out 19 June','Esce il 19 giugno'),f2:LC('Everywhere','Ovunque'),lab:LC('New single','Nuovo singolo')}}
+function TOURX(){return{name:'Rumore<br>Tour',d:'01.10',tag:LC('Four cities, four nights.','Quattro città, quattro sere.'),sub:'Torino · Milano · Bologna · Firenze',f1:LC('1 to 9 October','1-9 ottobre'),f2:LC('4 dates','4 date'),lab:LC('On tour','In tour')}}
+function XO(b,o){return Object.assign({},b,o)}
+var ST={rel:[{st:'done'},{st:'todo'},{st:'todo'},{st:'todo'},{st:'todo'}],tour:[{st:'todo'},{st:'todo'},{st:'todo'},{st:'todo'},{st:'todo'}],night:[{st:'todo'},{st:'todo'}]};
+ST.rel.concat(ST.tour,ST.night).forEach(function(s){s.r=2;s.v=0});
+function DEFS(w,i){var R_=RELX(),T=TOURX();
+ if(w==='rel')return [
+  {t:FU(2027,5,22),w:L('4 weeks out','4 settimane prima'),n:L('Cover and announcement','Copertina e annuncio'),k:'post',x:XO(R_,{lab:LC('Cover','Copertina')})},
+  {t:FU(2027,6,5),w:L('2 weeks out','2 settimane prima'),n:L('Teaser reel, 15 seconds','Teaser, 15 secondi'),k:'reel',x:XO(R_,{lab:'Teaser'})},
+  {t:FU(2027,6,14),w:L('5 days out','5 giorni prima'),n:L('Press note for small blogs','Comunicato per i blog piccoli'),k:'text',text:'Cenere Rossa, post-punk da Bologna, pubblica «Notte Lunga» il 19 giugno. Cinque minuti di rumore per chi è rimasto sveglio. Ascolto in anteprima su richiesta.'},
+  {t:FU(2027,6,19),w:L('Release day','Giorno di uscita'),n:L('Out today','Fuori oggi'),k:'story',x:XO(R_,{lab:LC('Out today','Fuori oggi'),sub:LC('Listen now','Ascolta ora')})},
+  {t:FU(2027,6,23),w:L('4 days after','4 giorni dopo'),n:L('Thank you for listening','Grazie per l’ascolto'),k:'post',x:XO(R_,{name:LC('Thank<br>you','Grazie<br>a tutti'),tag:'',sub:'',f1:LC('Notte Lunga is out','Notte Lunga è fuori'),f2:LC('Listen now','Ascolta ora')})}][i];
+ if(w==='tour')return [
+  {t:FU(2027,9,6),w:L('4 weeks out','4 settimane prima'),n:L('Announce the tour: one look, four dates','Annuncia il tour: uno stile, quattro date'),k:'flyer',x:T},
+  {t:FU(2027,9,20),w:L('2 weeks out','2 settimane prima'),n:L('Ticket nudge for each city','Promemoria biglietti per ogni città'),k:'story',x:XO(T,{lab:LC('Tickets','Biglietti'),sub:LC('Tickets are live','Biglietti in vendita')})},
+  {t:FU(2027,9,27),w:L('Week of','Settimana del tour'),n:L('One story per city','Una story per città'),k:'story',x:XO(T,{name:'Torino',lab:LC('This week','Questa settimana'),f1:'Bunker 9',f2:'21:30'})},
+  {t:FU(2027,10,1),w:L('Opening night','Prima data'),n:L('Tonight: Torino','Stasera: Torino'),k:'story',x:XO(T,{name:LC('Tonight<br>Torino','Stasera<br>Torino'),lab:LC('Tonight','Stasera'),f1:'Bunker 9',f2:'21:30'})},
+  {t:FU(2027,10,11),w:L('After the tour','Dopo il tour'),n:L('Thank you, four cities','Grazie, quattro città'),k:'post',x:XO(T,{name:LC('Thanks<br>x4','Grazie<br>x4'),tag:'',sub:'',f1:'Torino · Milano · Bologna · Firenze',f2:LC('See you soon','A presto')})}][i];
+ return [
+  {t:'21:00',w:L('Doors','Porte'),n:L('Doors story','Story delle porte'),k:'story',x:{d:'12.12',name:'Cenere<br>Rossa',lab:LC('Tonight','Stasera'),tag:LC('Doors are open.','Porte aperte.'),f1:'Sottoscala 13',f2:LC('Doors 21:30','Porte 21:30')}},
+  {t:L('Before the set','Prima del set'),w:L('Merch table','Banchetto'),n:L('Setlist poster','Poster della scaletta'),k:'flyer',x:{d:'12.12',name:'Set<br>list',tag:'Fuoco lento · Cinghia · Nebbia a Marzo · Sveglio',sub:'+ Lupi di Periferia',f1:LC('Scan for our links','Inquadra per i nostri link'),f2:LC('Tonight','Stasera')}}][i]}
+function stp(w,i){return Object.assign({},DEFS(w,i),ST[w][i])}
+function stops(w){return ST[w].map(function(s,i){return stp(w,i)})}
+function nextIdx(w){var a=ST[w];for(var i=0;i<a.length;i++)if(a[i].st==='todo')return i;return -1}
+function stopHtml(w,s,i,nx){var cls='stop '+(s.st==='done'?'done':s.st==='sent'?'sent':i===nx?'next':'todo'),data=' data-act="openstop" data-s="'+w+'" data-i="'+i+'"';
+ var h='<span class="mono muted">'+s.t+' · '+s.w+'</span><b>'+s.n+'</b>';
+ if(s.st==='done')h+='<span class="st ok">'+L('Approved','Approvato')+'</span>';
+ else if(s.st==='sent')h+='<span class="st">'+L('Waiting on the band','In attesa della band')+'</span>';
+ else if(i===nx){h+=(s.k==='text'?'<div class="capbox" style="background:rgba(0,0,0,.08);color:var(--ink)"><span class="mono">'+esc(s.text.slice(0,70))+'…</span></div>':'<div class="mini">'+poster(s.k==='reel'?'story':s.k,s,null,s.x)+'</div>')+'<button class="btn tp" style="width:auto;padding:0 26px;min-height:46px"'+data+'>'+(s.k==='reel'?L('Watch the reel','Guarda il teaser'):s.k==='text'?L('Read the note','Leggi il comunicato'):L('Make it','Crealo'))+'</button>'}
+ return '<div class="'+cls+'">'+h+'</div>'}
+function timeline(w,today){var st=stops(w),nx=nextIdx(w),out='';st.forEach(function(s,i){if(i===nx&&today)out+='<div class="today"><span class="tape">'+L('Today · ','Oggi · ')+today+'</span></div>';out+=stopHtml(w,s,i,nx)});return '<div class="tl">'+out+'</div>'}
+function sheetScr(w){var rel=w==='rel',st=stops(w),done=st.filter(function(s){return s.st!=='todo'}).length,x=rel?RELX():TOURX();
+ return '<div class="scr">'+soonbar()+top({mid:rel?L('A new single','Un nuovo singolo'):L('A tour','Un tour')})+'<div class="body gut" style="overflow-y:auto;gap:18px"><div style="display:flex;gap:14px;align-items:flex-end"><div style="width:40%;flex:0 0 40%;transform:rotate(-2deg)">'+poster('flyer',A0,null,x)+'</div><div style="display:flex;flex-direction:column;gap:6px;min-width:0"><h2 class="big" style="font-size:26px">'+(rel?'Notte Lunga':'Rumore Tour')+'</h2><p class="mono">'+(rel?L('New single · out ','Nuovo singolo · esce ')+FU(2027,6,19):L('4 dates · ','4 date · ')+L('1 to 9 Oct','1-9 ott'))+'</p><p class="mono muted">'+done+' '+L('of','di')+' '+st.length+' '+L('done · one look, one approval link','fatti · uno stile, un link di approvazione')+'</p></div></div>'+timeline(w,rel?FU(2027,5,31):FU(2027,9,1))+'</div>'+tabs('wall')+'</div>'}
+R.release=function(){return sheetScr('rel')};
+R.tour=function(){return sheetScr('tour')};
+R.stop=function(){if(!S.stop)S.stop={w:'tour',i:0};var w=S.stop.w,s=stp(w,S.stop.i),sent=s.st!=='todo';
+ var bar=soonbar()+top({mid:s.n}),dock='<div class="sheet gut"><span class="ai">'+L('Art made with AI','Immagine creata con l’IA')+'</span>'+(s.k==='text'?'':'<div class="chips"><button class="chip" data-act="slook" data-v="rough">'+L('Rougher','Più ruvido')+'</button><button class="chip" data-act="slook" data-v="clean">'+L('Cleaner','Più pulito')+'</button><button class="chip" data-act="slook" data-v="another">'+L('Another','Un altro')+'</button></div>')+'<button class="btn tp" data-act="sendstop"'+(sent?' disabled':'')+'>'+(sent?L('Waiting on the band','In attesa della band'):L('Send to the band','Manda alla band'))+'</button></div>';
+ if(s.k==='text')return '<div class="scr dark">'+bar+'<div class="body gut"><h2 class="big" style="font-size:24px">'+s.n+'</h2><div class="capbox"><textarea id="ptext" aria-label="'+L('Press note','Comunicato')+'" style="min-height:150px">'+esc(s.text)+'</textarea></div><p class="mono muted">'+L('Written from your words and your Never list. Edit it freely.','Scritto con le vostre parole e la lista dei “Mai”. Modificalo come vuoi.')+'</p></div>'+dock.replace('<span class="ai">'+L('Art made with AI','Immagine creata con l’IA')+'</span>','')+'</div>';
+ return '<div class="scr dark">'+bar+'<p class="mono gut muted" style="margin:2px 0 6px">'+esc(s.n)+'</p><div class="rstage">'+poster(s.k,s,null,s.x)+'</div>'+dock+'</div>'};
+R.reel=function(){var s=stp('rel',1),sent=s.st!=='todo';
+ return '<div class="scr dark">'+soonbar()+top({mid:L('Short video','Breve video')})+'<p class="mono gut muted" style="margin:2px 0 6px">'+L('15 seconds · your own audio · posters move on your look','15 secondi · il vostro audio · i poster si muovono nel vostro stile')+'</p><div class="rstage"><div class="reel">'+poster('story',{r:2,v:0},null,s.x)+poster('story',{r:2,v:1},null,s.x)+poster('story',{r:2,v:2},null,s.x)+'</div></div><div class="sheet gut"><span class="ai">'+L('Art made with AI','Immagine creata con l’IA')+'</span><p class="mono muted" style="margin:0">'+L('Prototype only: no video is made here. Real video uses only music and images you upload, and everyone shown must agree.','Solo prototipo: qui non si crea nessun video. Il video vero usa solo musica e immagini che carichi tu, e tutte le persone mostrate devono essere d’accordo.')+'</p><button class="btn tp" data-act="sendreel"'+(sent?' disabled':'')+'>'+(sent?L('Waiting on the band','In attesa della band'):L('Use this reel','Usa questo teaser'))+'</button></div></div>'};
+R.night=function(){var s0=ST.night[0];return '<div class="scr gut">'+soonbar().replace('class="soon"','class="soon" style="margin:0 -18px"')+top({mid:L('Gig night','La sera del concerto')})+'<div class="body" style="overflow-y:auto;gap:18px"><span class="tape">'+esc(G('date'))+' · '+esc(G('venue'))+'</span><h2 class="big">'+L('Tonight.','Stasera.')+'</h2><p class="pur">'+L('Small posts to make on the night itself, in your look.','Piccoli post da fare la sera stessa, nel vostro stile.')+'</p><div class="tl"><div class="stop done"><span class="mono muted">19:30</span><b>Soundcheck</b></div><div class="stop next"><span class="mono muted">21:00 · '+L('Doors','Porte')+'</span><b>'+L('Tell people the doors are open','Di’ alla gente che si entra')+'</b><button class="btn tp" style="width:auto;padding:0 26px;min-height:46px" data-act="openstop" data-s="night" data-i="0">'+L('Post the doors story','Pubblica la story delle porte')+'</button></div><div class="stop"><span class="mono muted">22:15 · '+L('You are on','Tocca a voi')+'</span><b>'+L('Setlist poster for the merch table','Poster della scaletta per il banchetto')+'</b><button class="chip" data-act="openstop" data-s="night" data-i="1">'+L('Make it','Crealo')+'</button></div><div class="stop todo"><span class="mono muted">'+L('Tomorrow','Domani')+'</span><b>'+L('The thank-you is ready','Il grazie è pronto')+'</b><button class="chip" data-act="go" data-to="after">'+L('Look','Guarda')+'</button></div></div></div>'+tabs('wall')+'</div>'};
+R.after=function(){var xs=[['flyer',{name:LC('Thanks<br>Bologna','Grazie<br>Bologna'),d:'12.12',tag:LC('Last night was loud.','Ieri sera è stato rumoroso.'),sub:'+ Lupi di Periferia',f1:'Sottoscala 13',f2:LC('See you 17 Jan','Ci vediamo il 17 gen')},0],['story',{name:LC('Thanks<br>Lupi','Grazie<br>Lupi'),d:'12.12',lab:LC('Thank you','Grazie'),tag:'@lupidiperiferia · @sottoscala13',f1:'Sottoscala 13',f2:LC('Next: 17 Jan','Poi: 17 gen')},1],['post',{name:LC('Next:<br>17 Jan','Prossimo:<br>17 gen'),d:'17.01',tag:'',f1:'Cantina Blu, Firenze',f2:LC('Tickets soon','Biglietti presto')},0]];
+ return '<div class="scr dark">'+soonbar()+top({mid:L('After the gig','Dopo il concerto')})+'<p class="mono gut muted" style="margin:2px 0 0">'+L('Thank-you for last night. No photos needed.','Grazie per ieri sera. Non servono foto.')+'</p><div class="deck" id="deck">'+xs.map(function(p){return '<div class="slide">'+poster(p[0],{r:2,v:p[2]},null,p[1])+'</div>'}).join('')+'</div><div class="dots" id="dots"><i class="on"></i><i></i><i></i></div><div class="sheet gut"><span class="ai">'+L('Art made with AI','Immagine creata con l’IA')+'</span><p class="mono muted" style="margin:0">'+L('Tags Lupi di Periferia and the venue. Your own photos come later still.','Tagga Lupi di Periferia e il locale. Le vostre foto arrivano ancora dopo.')+'</p><button class="btn tp" data-act="sendafter">'+L('Send to the band','Manda alla band')+'</button><button class="link" style="color:#fff" data-act="newgig">'+L('Set up the 17 Jan gig','Prepara il concerto del 17 gen')+'</button></div></div>'};
+R.archive=function(){var o='';for(var i=0;i<12;i++)o+='<button class="pin" data-act="reuse" aria-label="'+L('Reuse this look','Riusa questo stile')+'">'+poster('flyer',{r:2,v:i%3},{mood:i%4===1?'bright':'dark',hue:i%3===1?'blue':'red'},{d:String(28-i*2).replace(/^(\d)$/,'0$1')+'.'+(i<6?'01':'12')})+'</button>';
+ return '<div class="scr gut">'+soonbar()+top({mid:L('Past posters','Poster passati')})+'<div class="body" style="overflow-y:auto">'+hd(L('Archive','Archivio'),L('Everything you pinned.','Tutto ciò che avete appeso.'),L('Open any old poster to reuse its look in one tap.','Apri un vecchio poster per riusarne lo stile con un tocco.'))+'<div class="arch">'+o+'</div></div>'+tabs('us')+'</div>'};
+R.channels=function(){function r(k,t,x){return '<div class="mrow" style="cursor:default"><span>'+t+'<small>'+x+'</small></span><button class="chip" data-act="ch" data-v="'+k+'" aria-pressed="'+(!!S.ch[k])+'">'+(S.ch[k]?L('Linked','Collegato'):L('Link','Collega'))+'</button></div>'}
+ return '<div class="scr gut">'+soonbar()+top({mid:L('Post it for me','Pubblica al posto mio')})+'<div class="body" style="overflow-y:auto;gap:12px">'+hd(L('Linked channels','Canali collegati'),L('Post it for me.','Pubblica al posto mio.'),L('Link a channel and an approved pack goes out on its plan dates. Nothing posts before the whole band says yes.','Collega un canale e un pacchetto approvato esce alle date del piano. Niente parte prima del sì di tutta la band.'))+r('ig','Instagram',L('Posts and stories','Post e story'))+r('fb',L('Facebook page','Pagina Facebook'),L('Event and posts','Evento e post'))+r('bit','Bandsintown',L('Reach partner: promote the gig to fans nearby','Partner per la diffusione: porta il concerto ai fan vicini'))+'<p class="note">'+L('Prototype only: no account is linked.','Solo prototipo: nessun account viene collegato.')+'</p></div>'+tabs('us')+'</div>'};
+R.plan=function(){return '<div class="scr gut">'+top({mid:L('Keep your wall','Tieni la bacheca')})+'<div class="body" style="overflow-y:auto;gap:14px">'+hd(L('Plan','Piano'),L('Keep your wall.','Tieni la bacheca.'),L('You are asked after seeing your posters, not before.','Te lo chiediamo dopo aver visto i poster, non prima.'))+'<button class="pc" data-act="payp" data-v="gig" aria-pressed="'+(S.pay==='gig')+'"><b>'+L('This gig only','Solo questo concerto')+'</b><span class="mono">€ — · '+L('set by the price test','da definire con il test sui prezzi')+'</span></button><button class="pc" data-act="payp" data-v="month" aria-pressed="'+(S.pay==='month')+'"><b>'+L('Every gig, monthly','Tutti i concerti, ogni mese')+'</b><span class="mono">€ — · '+L('unlimited gigs, one band','concerti illimitati, una band')+'</span></button><p class="note">'+L('Bands in the first pilot use it free. Nobody is charged in this prototype.','Le band del primo pilota lo usano gratis. In questo prototipo non si paga nulla.')+'</p></div><div class="dock"><button class="btn tp" data-act="payok">'+L('Keep going','Continua')+'</button><button class="link" data-act="back">'+L('Not now','Non ora')+'</button></div></div>'};
+R.rights=function(){function b(t,p){return '<div class="block"><b>'+t+'</b><p>'+p+'</p></div>'}
+ return '<div class="scr gut">'+top({mid:L('AI, rights and data','IA, diritti e dati')})+'<div class="body" style="overflow-y:auto;gap:14px">'+hd(L('Us','Noi'),L('AI, rights and your data.','IA, diritti e i vostri dati.'),L('Plain words, draft wording.','Parole semplici, testo in bozza.'))
+ +b(L('You decide','Decidete voi'),L('Nothing is saved or posted until a bandmate has said yes. Our server enforces this.','Niente viene salvato o pubblicato finché un compagno non ha detto sì. Lo fa rispettare il nostro server.'))
+ +b(L('What AI does','Cosa fa l’IA'),L('AI draws the art and suggests words. Your name, dates and prices are set in type by us. Every image carries a “made with AI” mark in the file and a line in your caption.','L’IA disegna le immagini e suggerisce le parole. Nome, date e prezzi li compone il nostro sistema. Ogni immagine ha il segno “creata con l’IA” nel file e una riga nella didascalia.'))
+ +b(L('What you own','Cosa è vostro'),L('Use the art for your gigs. We cannot promise you exclusive ownership: pure AI art may not be protected by copyright in Italy or the UK, so others could copy it. Your logo, text and photos stay yours.','Usate le immagini per i vostri concerti. Non possiamo promettere la proprietà esclusiva: l’arte creata solo dall’IA potrebbe non essere protetta dal diritto d’autore in Italia e nel Regno Unito, quindi altri potrebbero copiarla. Logo, testi e foto restano vostri.'))
+ +b(L('Your photos','Le vostre foto'),L('Up to five. Only photos you may use, with band members who agreed. We add a credit field for photographers, delete photos after 12 months, and remove anything on a rights complaint. We never make realistic pictures of real people except consenting band members.','Fino a cinque. Solo foto che potete usare, con membri della band che hanno detto sì. Abbiamo un campo per i crediti dei fotografi, cancelliamo le foto dopo 12 mesi e togliamo ciò che riceve un reclamo sui diritti. Non creiamo mai immagini realistiche di persone reali, tranne i membri della band che hanno acconsentito.'))
+ +b(L('Where your data lives','Dove stanno i dati'),L('In the EU. Drafts are kept for 12 months. Bandmates need no account, only a private link. You can ask us to delete your band at any time.','Nell’UE. Le bozze restano per 12 mesi. I compagni non hanno bisogno di un account, solo di un link privato. Puoi chiederci di cancellare la band quando vuoi.'))
+ +'<p class="note">'+L('Draft wording for the prototype. The privacy notice and terms are written before the first band uses the product.','Testo in bozza per il prototipo. Informativa privacy e termini saranno scritti prima che la prima band usi il prodotto.')+'</p></div>'+tabs('us')+'</div>'};
+/* ---------- engine ---------- */
+var TAB={wall:'wall',gig:'wall',approval:'wall',ready:'wall',night:'wall',after:'wall',release:'wall',tour:'wall',make:'make',us:'us',studio:'us',band:'us',rights:'us',archive:'us',channels:'us',plan:'us'};
+var SHARED={archive:1,channels:1,plan:1,night:1,after:1};
+var PARENT={onb1:'welcome',onb2:'onb1',onb3:'onb2',gig:'wall',approval:'gig',ready:'gig',review:'approval',pack:'gig',gignew:'wall',studio:'us',band:'us',rights:'us',archive:'us',channels:'us',plan:'us',night:'gig',after:'gig',release:'wall',tour:'wall',stop:'wall',reel:'make',ask:'studio'};
+var FLOW={welcome:1,onb1:1,onb2:1,onb3:1,onbdone:1,ask:1,gignew:1,making:1,pack:1,review:1,thanks:1,stop:1,reel:1};
+function render(name){cur=name;app.querySelectorAll('.modal').forEach(function(m){m.remove()});stage.innerHTML=R[name]();var sc=stage.firstChild;if(sc){var b=sc.querySelector('.body');if(b)b.scrollTop=0}afterRender(name);try{if(location.hash!=='#'+name)history.replaceState(null,'','#'+name)}catch(e){}
+ var h=stage.querySelector('.big');if(h){h.setAttribute('tabindex','-1')}}
+function go(name,o){o=o||{};if(!R[name])name='welcome';
+ if(o.reset)path=[];else if(!o.replace&&cur&&cur!==name&&cur!=='making')path.push(cur);
+ if(path.length>40)path.shift();
+ render(name)}
+function goBack(){var p=path.pop();if(!p||p===cur)p=PARENT[cur]||'wall';if(p==='making')p='gignew';render(p)}
+function tabTo(t){path=[];render({wall:'wall',make:'make',us:'us',studio:'studio'}[t]||t)}
+function loadSample(){S=mkState();S.cl='it';S.sample=true;S.gigOn=true;S.band={name:'Cenere Rossa',city:'Bologna',me:'Marta',mates:['Marco','Giulia'],chan:{Instagram:1,Facebook:1,chat:1}};S.has={rel:true,tour:true,past:3};S.fin={sound:true,infl:true,vibe:true,tone:true};
+ S.idn=Object.assign(S.idn,{genre:['Post-punk'],energy:'slow',sonic:['raw','angular'],infl:['Massimo Volume','Fugazi',''],scene:'diy',vibe:['nocturnal','tired','loud'],place:'basement',tone:'poetic'});resetStops()}
+function resetStops(){['rel','tour','night'].forEach(function(w){ST[w].forEach(function(s,i){s.st=(w==='rel'&&i===0)?'done':'todo';s.r=2;s.v=0})})}
+function prep(n){if(!real()&&!S.sample&&n!=='welcome'&&!/^onb/.test(n))loadSample();
+ if(n==='approval'||n==='review'){if(!S.gigOn)S.gigOn=true;S.made=true;if(!S.sent){S.sent=true;S.assets.forEach(function(x){if(x.st==='draft')x.st='wait'})}}
+ if(n==='pack'||n==='gig'||n==='ready'){if(n==='pack'&&!S.gigOn)S.gigOn=true;if(n==='pack'&&!S.made)S.made=true}}
+function afterRender(name){
+ if(name==='making'){setTimeout(function(){if(cur==='making'){S.made=true;S.gigOn=true;render('pack')}},2400)}
+ app.querySelectorAll('.sentence input').forEach(inW);
+ if(name==='pack'){var d=document.getElementById('deck');if(d){d.scrollLeft=S.cur*d.clientWidth;d.addEventListener('scroll',function(){var i=Math.round(d.scrollLeft/d.clientWidth);if(i!==S.cur){S.cur=i;syncPager()}})}}
+ if(name==='after'){var d2=document.getElementById('deck');if(d2)d2.addEventListener('scroll',function(){var i=Math.round(d2.scrollLeft/d2.clientWidth);document.querySelectorAll('#dots i').forEach(function(x,k){x.classList.toggle('on',k===i)})})}
+ if(name==='review')bindSwipe();
+ var tb=stage.querySelector('.nav');if(!tb){}}
+function inW(i){var v=i.value||i.placeholder||'';i.style.width=Math.max(3,v.length*0.56+.4)+'em'}
+function syncPager(){document.querySelectorAll('#pager button').forEach(function(b,i){b.classList.toggle('on',i===S.cur)});var n=document.getElementById('pk-n');if(n)n.textContent=ANAME(S.cur)}
+function bindSwipe(){var c=document.getElementById('rcard');if(!c)return;var x0=null,dx=0,sy=document.getElementById('sy'),sn=document.getElementById('sn');
+ c.addEventListener('pointerdown',function(e){x0=e.clientX;dx=0;c.classList.add('drag');try{c.setPointerCapture(e.pointerId)}catch(_){}});
+ c.addEventListener('pointermove',function(e){if(x0===null)return;dx=e.clientX-x0;c.style.transform='translateX('+dx+'px) rotate('+dx/18+'deg)';sy.style.opacity=Math.max(0,Math.min(1,dx/90));sn.style.opacity=Math.max(0,Math.min(1,-dx/90))});
+ function end(){if(x0===null)return;x0=null;c.classList.remove('drag');if(dx>90)act('yes');else if(dx<-90){c.style.transform='';sn.style.opacity=0;act('nope')}else{c.style.transform='';sy.style.opacity=0;sn.style.opacity=0}}
+ c.addEventListener('pointerup',end);c.addEventListener('pointercancel',end)}
+function modal(html){var m=document.createElement('div');m.className='modal';m.innerHTML='<div class="sheet gut" role="dialog" aria-modal="true">'+html+'</div>';m.addEventListener('click',function(e){if(e.target===m)m.remove()});app.appendChild(m);var f=m.querySelector('button,input');if(f)f.focus();return m}
+function advance(){var c=chOf(S.q.c);if(S.q.i<c.q.length-1){S.q.i++;render('ask')}else{S.fin[c.k]=true;path=[];toast(L('Saved: ','Salvato: ')+P(c.t)+L('. It shapes your next poster.','. Darà forma al prossimo poster.'));render('studio')}}
+function act(a,el){
+ var f=function(k){return el&&el.getAttribute('data-'+k)};
+ switch(a){
+ case 'ui':LANG=f('v');try{localStorage.setItem('bs3lang',LANG)}catch(e){}document.documentElement.lang=LANG;var st=stage.querySelector('.body');var sc=st?st.scrollTop:0;var ae=document.activeElement&&document.activeElement.id;render(cur);var b2=stage.querySelector('.body');if(b2)b2.scrollTop=sc;toast(L('English','Italiano'));break;
+ case 'back':goBack();break;
+ case 'tab':tabTo(f('to'));break;
+ case 'home':path=[];render('wall');break;
+ case 'go':var to=f('to');if(to==='newgig'){act('newgig');break}prep(to);go(to);break;
+ case 'sample':loadSample();path=[];render('wall');break;
+ case 'reset':S=mkState();resetStops();path=[];render('welcome');break;
+ case 'chan':var v=f('v');S.band.chan[v]=!S.band.chan[v];el.setAttribute('aria-pressed',!!S.band.chan[v]);break;
+ case 'cl':S.cl=f('v');S.tag='';S.cap={it:null,en:null};render(cur);break;
+ case 'lang':S.cl=f('v');render('pack');break;
+ case 'chap':S.q={c:f('k'),i:0};go('ask');break;
+ case 'qback':if(S.q.i>0){S.q.i--;render('ask')}else goBack();break;
+ case 'tog':var q=curQ(),L2=S.idn[f('f')],v2=f('v'),mx=+f('max'),ix=L2.indexOf(v2);if(ix>-1)L2.splice(ix,1);else{if(L2.length>=mx)L2.shift();L2.push(v2)}readOwn();el.parentNode.querySelectorAll('.chip').forEach(function(c){c.setAttribute('aria-pressed',L2.indexOf(c.getAttribute('data-v'))>-1)});var cn=document.getElementById('cnt');if(cn)cn.textContent=L2.length+' '+L('of','di')+' '+mx+' '+L('picked','scelti');break;
+ case 'one':S.idn[f('f')]=f('v');if(f('f')==='tone')S.tag='';el.parentNode.querySelectorAll('.sel').forEach(function(c){c.setAttribute('aria-pressed',c===el)});setTimeout(advance,260);break;
+ case 'pk':var k=f('k');S.id[k]=f('v');S.looked[k]=1;S.chosen=+f('p');el.parentNode.querySelectorAll('.opt').forEach(function(c){c.classList.toggle('on',c===el)});setTimeout(advance,320);break;
+ case 'tagpick':S.tag=f('v');el.parentNode.querySelectorAll('.sel').forEach(function(c){c.setAttribute('aria-pressed',c===el)});var o=document.getElementById('tagown');if(o)o.value='';break;
+ case 'nev':var nv=f('v');S.idn.never[nv]=!S.idn.never[nv];el.setAttribute('aria-pressed',!!S.idn.never[nv]);break;
+ case 'photook':S.idn.photoOk=!S.idn.photoOk;render('ask');break;
+ case 'photoadd':if(S.idn.photoOk&&S.idn.photos<5){S.idn.photos++;render('ask')}break;
+ case 'photodel':if(S.idn.photos>0){S.idn.photos--;render('ask')}break;
+ case 'qnext':readOwn();advance();break;
+ case 'qskip':var cc=chOf(S.q.c);if(S.q.i<cc.q.length-1&&!/^(never|story)$/.test(cc.k)){S.q.i++;render('ask')}else{S.fin[cc.k]=true;path=[];render('studio')}break;
+ case 'price':S.gig.price=f('v');el.parentNode.querySelectorAll('.chip').forEach(function(c){c.setAttribute('aria-pressed',c===el)});break;
+ case 'newgig':if(S.gigOn&&S.made){S.has.past++;S.gig={venue:'',city:'',date:'',time:'',support:'',price:'8'};S.made=false;S.sent=false;S.cap={it:null,en:null};S.cur=0;S.assets.forEach(function(x){x.st='draft';x.r=2;x.why='';x.v=({flyer:0})[x.k]||0});S.assets[1].v=1;S.assets[2].v=2}S.gigOn=true;go('gignew');break;
+ case 'make':S.gigOn=true;S.cur=0;S.made=false;go('making');break;
+ case 'goto':var d=document.getElementById('deck');S.cur=+f('i');d.scrollTo({left:S.cur*d.clientWidth,behavior:'smooth'});syncPager();break;
+ case 'look':var asx=S.assets[S.cur];if(f('v')==='rough')asx.r=Math.min(3,asx.r+1);else if(f('v')==='clean')asx.r=Math.max(0.3,asx.r-1);else asx.v=(asx.v+1)%3;render('pack');break;
+ case 'words':modal('<h3>'+L('Change words','Cambia parole')+'</h3><p>'+L('Edit the line on your posters. Date, venue and price stay as you typed them.','Modifica la frase sui poster. Data, locale e prezzo restano come li hai scritti.')+'</p><input id="tg" value="'+esc(TAG())+'" aria-label="'+L('Tagline','Slogan')+'"><button class="btn tp" data-act="settag">'+L('Use this line','Usa questa frase')+'</button><button class="link" data-act="closemodal">'+L('Cancel','Annulla')+'</button>');break;
+ case 'settag':S.tag=document.getElementById('tg').value.trim();render('pack');break;
+ case 'closemodal':var m=app.querySelector('.modal');if(m)m.remove();break;
+ case 'send':var ta=document.getElementById('capta');if(ta)S.cap[S.cl]=ta.value;S.sent=true;S.assets.forEach(function(x){if(x.st==='draft')x.st='wait'});path=['wall','gig'];go('approval',{replace:true});break;
+ case 'copy':try{navigator.clipboard.writeText('bandstudio.os/r/'+slug(BN())+'-7k2').then(function(){toast(L('Link copied','Link copiato'))},function(){toast(L('Select the link to copy it','Seleziona il link per copiarlo'))})}catch(e){toast(L('Select the link to copy it','Seleziona il link per copiarlo'))}break;
+ case 'startreview':S.ri=S.assets.findIndex(function(x){return x.st==='wait'});if(S.ri<0)S.ri=0;go('review');break;
+ case 'approveall':S.assets.forEach(function(x){x.st='ok'});render('approval');break;
+ case 'revise':var ra=S.assets[+f('i')];ra.st='wait';ra.v=(ra.v+1)%3;ra.why='';render('approval');toast(L('A new version is back with the band.','Una nuova versione è tornata alla band.'));break;
+ case 'yes':S.assets[S.ri].st='ok';nextReview();break;
+ case 'nope':modal('<h3>'+L('What is wrong?','Cosa non va?')+'</h3><div class="chips">'+[[L('Too clean','Troppo pulito')],[L('Wrong info','Info sbagliate')],[L('Not us','Non siamo noi')],[L('Wrong date','Data sbagliata')],[L('Text typo','Refuso')],[L('Colours','Colori')],[L('Other','Altro')]].map(function(r){return '<button class="chip" data-act="why" data-v="'+esc(r[0])+'">'+r[0]+'</button>'}).join('')+'</div><button class="link" data-act="closemodal">'+L('Cancel','Annulla')+'</button>');break;
+ case 'why':var wa=S.assets[S.ri];wa.st='no';wa.why=f('v');var mm=app.querySelector('.modal');if(mm)mm.remove();nextReview();break;
+ case 'openstop':S.stop={w:f('s'),i:+f('i')};go('stop');break;
+ case 'slook':var ss=ST[S.stop.w][S.stop.i];if(f('v')==='rough')ss.r=Math.min(3,ss.r+1);else if(f('v')==='clean')ss.r=Math.max(0.3,ss.r-1);else ss.v=(ss.v+1)%3;render('stop');break;
+ case 'sendstop':ST[S.stop.w][S.stop.i].st='sent';toast(L('Sent to the band.','Mandato alla band.'));goBack();break;
+ case 'sendreel':ST.rel[1].st='sent';toast(L('Sent to the band.','Mandato alla band.'));goBack();break;
+ case 'sendafter':toast(L('Sent to the band.','Mandato alla band.'));break;
+ case 'ch':var ck=f('v');S.ch[ck]=!S.ch[ck];render('channels');break;
+ case 'payp':S.pay=f('v');el.parentNode.querySelectorAll('.pc').forEach(function(c){c.setAttribute('aria-pressed',c===el)});break;
+ case 'payok':toast(L('Noted. Nobody is charged in this prototype.','Segnato. In questo prototipo non si paga.'));goBack();break;
+ case 'save':toast(L('Saved to your phone (prototype: nothing is downloaded).','Salvato sul telefono (prototipo: non scarica nulla).'));break;
+ case 'reuse':modal('<h3>'+L('Reuse this look?','Riusare questo stile?')+'</h3><p>'+L('Start a new gig pack with the same look.','Parti con un nuovo pacchetto concerto con lo stesso stile.')+'</p><button class="btn tp" data-act="newgigm">'+L('Start a new gig','Nuovo concerto')+'</button><button class="link" data-act="closemodal">'+L('Not now','Non ora')+'</button>');break;
+ case 'newgigm':var m3=app.querySelector('.modal');if(m3)m3.remove();act('newgig');break;
+ case 'collab':modal('<h3>'+L('Collab with another band','Collaborazione con un’altra band')+'</h3><p>'+L('Far later. Two bands, one shared poster, one approval each. Not in the first versions.','Più avanti. Due band, un poster in comune, un’approvazione a testa. Non nelle prime versioni.')+'</p><button class="btn tp" data-act="closemodal">OK</button>');break;
+ case 'helper':S.helper=true;render('band');toast(L('Prototype: your manager now shows as a driver.','Prototipo: il manager ora risulta come guida.'));break;
+ case 'words2':break}}
+function nextReview(){var A=S.assets,i=S.ri+1;while(i<A.length&&A[i].st!=='wait')i++;S.ri=i;render('review')}
+function readOwn(){var q=curQ(),o=document.getElementById('own');if(q.t==='multi'&&q.own&&o&&o.value.trim()){var L2=S.idn[q.f];if(L2.length>=q.max)L2.shift();L2.push(o.value.trim());o.value=''}}
+app.addEventListener('click',function(e){var el=e.target.closest('[data-act]');if(!el||el.disabled)return;act(el.getAttribute('data-act'),el)});
+app.addEventListener('input',function(e){var t=e.target;
+ if(t.hasAttribute('data-b')){var k=t.getAttribute('data-b');if(k==='m0')S.band.mates[0]=t.value;else if(k==='m1')S.band.mates[1]=t.value;else S.band[k]=t.value;var nx=document.getElementById('nx');if(nx){nx.disabled=(cur==='onb1'?!real():!(S.band.me||'').trim())}}
+ else if(t.hasAttribute('data-f')){S.gig[t.getAttribute('data-f')]=t.value;inW(t)}
+ else if(t.hasAttribute('data-tk')){var tk=t.getAttribute('data-tk');if(tk==='tagown'){S.tag=t.value.trim();app.querySelectorAll('.sel').forEach(function(c){c.setAttribute('aria-pressed',false)})}else if(t.hasAttribute('data-ti')&&t.getAttribute('data-ti')!=='undefined')S.idn[tk][+t.getAttribute('data-ti')]=t.value;else S.idn[tk]=t.value}
+ else if(t.id==='capta')S.cap[S.cl]=t.value});
+window.addEventListener('hashchange',function(){var h=(location.hash||'').slice(1);if(h&&h!==cur&&R[h]){prep(h);path=[];render(h)}});
+document.documentElement.lang=LANG;
+var h0=(location.hash||'').slice(1);if(h0&&R[h0]&&h0!=='welcome'){prep(h0);render(h0)}else render('welcome');
+})();
+</script>
