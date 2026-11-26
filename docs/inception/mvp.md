@@ -63,7 +63,7 @@ Ranked as in the [research plan](../research/research-plan.md). The MVP tests th
 | **H-03** The driver pays per campaign at a price that covers cost | **Not tested by the free pilot** (D-029) | **E3 fake-door price test**; pilot bands asked for a paid-campaign commitment at the end | Untested |
 | **H-02** The driver exists and the problem hurts | Activation and repeat use | **E1 interviews** (R-003), before or alongside the build | Untested |
 | H-06 AI cost per campaign fits the price | AI cost per generation, logged | E2 first data; pilot data | Untested |
-| H-07 Rights and likeness risks are manageable | None: no uploads in the MVP, only references | Desk study; reference images need a rule | Untested |
+| H-07 Rights and likeness risks are manageable | None: no uploads in the MVP, only references | Desk study [R-008](../research/R-008-image-rights/report.md) done: partly supported; reference-image rule D-044; lawyer check and provider-terms spike still owed | Partly supported (desk) |
 | H-08 A campaign is far faster than today | Time to campaign (metric 2) | Pilot measure against the E1 baseline | Untested |
 | H-05 Bandmates approve through a light flow | Reviewer completion rate | Pilot | Untested |
 

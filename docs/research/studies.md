@@ -11,4 +11,4 @@ Index of every study run under the [research framework](framework.md). Add a row
 | R-006 | [Market sizing](R-006-market-sizing/protocol.md) | Market analysis | standard | Needs primary research |
 | R-007 | [Canva gap check](R-007-canva-gap-check/protocol.md) | Competitor gap check (R-004 S2 follow-up) | standard | Needs primary research (desk and Gemini routes done) |
 | R-005 | [Competitive analysis](R-005-competitive-analysis/protocol.md) | Competitive analysis | standard | Reshape (C2 kill criterion triggered by Bandsintown Boost, accepted by Ale, D-027; C1 needs primary research) |
-| R-008 | [Image rights for band promo content](R-008-image-rights/protocol.md) | Generic desk research (H-07, roadmap N5) | standard | In progress (protocol committed) |
+| R-008 | [Image rights for band promo content](R-008-image-rights/protocol.md) | Generic desk research (H-07, roadmap N5) | standard | [Reshape](R-008-image-rights/report.md) (H1 supported; H2 and H3 feasibility insufficient evidence; L8 stays blocked; D-044 to D-046) |

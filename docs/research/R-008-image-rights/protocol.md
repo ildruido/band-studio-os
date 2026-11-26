@@ -60,4 +60,4 @@ One session of roughly 3 to 4 hours of searching and reading. Stop at the box an
 
 Filled in during the research. Each one: date, what changed, why, and what it means for the conclusions.
 
-- None yet.
+- Logged in [the report](report.md#deviations-from-the-protocol): several planned searches (trademarks, artist style, UK ICO, Garante) were not run; Midjourney and Adobe terms could not be opened.

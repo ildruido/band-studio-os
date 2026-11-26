@@ -68,7 +68,7 @@ Every component has **two** ratings, because "we can write it" and "it is proven
 | **A pilot** | Proof points, customer story, testimonials, repeat use |
 | **Decisions from Ale** | Name and tagline, whether there is an investor ask, founder story, team bio, fact sheet details |
 | **Spikes from the architecture handoff** | Image provider and its cost, print quality, storage on phones, then the final architecture and non-functional targets |
-| **Rights desk study** | Legal and safety, reference-image rule, parts of the FAQ |
+| **Rights desk study** (done, R-008; follow-ups remain) | Legal and safety, reference-image rule, parts of the FAQ |
 
 ## Component detail
 
@@ -220,8 +220,8 @@ Every component has **two** ratings, because "we can write it" and "it is proven
 
 - **Section:** [Brand and messaging, FAQ and objections](brand-and-messaging.md#faq-and-objections)
 - **Content:** 🟡 Amber. **Evidence:** 🔴 Red.
-- **What is missing:** Answers backed by evidence; legal answers on image ownership and data.
-- **How it would be filled:** Blind test results; rights desk study; lawyer input if the budget ever allows.
+- **What is missing:** Answers backed by evidence; a lawyer's view on image ownership and data. The rights desk study (R-008) now gives a first answer on ownership, uploads and AI labelling.
+- **How it would be filled:** Blind test results; lawyer input if the budget ever allows.
 - **Needs Ale:** No
 
 ### Traction and validation
@@ -300,8 +300,8 @@ Every component has **two** ratings, because "we can write it" and "it is proven
 
 - **Section:** [Technical brief, Legal and safety](technical-brief.md#legal-and-safety)
 - **Content:** 🟡 Amber. **Evidence:** 🔴 Red.
-- **What is missing:** A position per risk; any legal review; the rights desk study; the privacy notice and data list (Ale is the controller for now, D-043; both owed before the first pilot band).
-- **How it would be filled:** Run the desk study; decide the reference-image rule; ask a lawyer only for risks the study cannot settle (outside the current budget).
+- **What is missing:** Any legal review; the labelling spike (D-046); crowd and UK photo rules for gig media (L8); provider terms that confirm we can pass rights to bands; the privacy notice and data list (Ale is the controller for now, D-043; both owed before the first pilot band). Positions now exist for uploads (D-044), ownership (D-045) and labelling (D-046), from [R-008](../research/R-008-image-rights/report.md) (desk research, not legal advice).
+- **How it would be filled:** The labelling and provider-terms spikes; a follow-up desk study before L8; ask a lawyer only for risks these cannot settle (outside the current budget).
 - **Needs Ale:** Later
 
 ### Open technical questions
