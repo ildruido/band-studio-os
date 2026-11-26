@@ -300,7 +300,7 @@ Every component has **two** ratings, because "we can write it" and "it is proven
 
 - **Section:** [Technical brief, Legal and safety](technical-brief.md#legal-and-safety)
 - **Content:** 🟡 Amber. **Evidence:** 🔴 Red.
-- **What is missing:** A position per risk; any legal review; the rights desk study.
+- **What is missing:** A position per risk; any legal review; the rights desk study; the privacy notice and data list (Ale is the controller for now, D-043; both owed before the first pilot band).
 - **How it would be filled:** Run the desk study; decide the reference-image rule; ask a lawyer only for risks the study cannot settle (outside the current budget).
 - **Needs Ale:** Later
 

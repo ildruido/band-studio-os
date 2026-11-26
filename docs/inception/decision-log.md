@@ -2,6 +2,14 @@
 
 Newest first. Each entry: id, date, decision, why, alternatives, who decided, status (`active`, `superseded by D-0NN`, `revisited`).
 
+### D-043 Ale is the data controller for now; privacy notice and data list still owed before the first pilot band
+- **Date:** 2026-11-26
+- **Decision:** Ale, as an individual, is the data controller for Band Studio OS to start with. No company is formed yet. Before the first pilot band, a privacy notice (also shown on the review-link page), a list of what data we keep and for how long, and agreements with the companies that process data for us are still required. The pilot is parked, so none of these is written now.
+- **Why:** Ale chose the simplest option as a start. It removes the "who is the controller" blocker; the remaining pilot prerequisites stay on the list.
+- **Alternatives:** Form a company first (rejected for now: cost and effort before any pilot); leave it open (rejected: it blocked the pilot).
+- **Decided by:** Ale
+- **Status:** active (revisit if a company is formed or paying customers arrive)
+
 ### D-042 Prototype v2.2: user-ready version with a pitch, onboarding, a deeper Identity Studio and a session menu
 - **Date:** 2026-11-25
 - **Decision:** Build prototype v2.2 as a new artifact (v2 and v2.1 stay). It adds a home page that pitches the product, a three-step band setup, an Identity Studio of seven question chapters (sound, influences, vibe, tone of voice, look, never, lore) whose answers change the posters and captions, three-tab navigation (Wall, Make, Us), a heading and one-line purpose on every screen, and a facilitator "session menu" that jumps to any journey. Chat mode and reading Instagram or Bandcamp links stay out (D-034).

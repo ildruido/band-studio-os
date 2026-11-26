@@ -117,7 +117,7 @@ Part of the [Product Brief Pack](index.md). What to build is in [Product and roa
 | Music copyright | Version 1 uses no audio and makes no video, so none of the band's music enters the product. Becomes real with after-the-gig material and audio-synced video |
 | Likeness and image rights | Version 1 takes up to five reference images from the band, not photos of fans or people at gigs. A rule for reference images is still needed (upload or link) |
 | Ownership of generated assets | Not yet known; depends on the image generation provider's terms. The provider test checks them before one is chosen |
-| Data protection | EU rules (GDPR) apply to band and audience data. EU hosting, no raw media in analytics, a way to export and delete a band's data, a list of the companies that process data for us. Who is legally responsible for the data is still open ([details](../inception/architecture-handoff.md#6-data-privacy-and-rights)) |
+| Data protection | EU rules (GDPR) apply to band and audience data. EU hosting, no raw media in analytics, a way to export and delete a band's data, a list of the companies that process data for us. Ale is the data controller for now (D-043); the privacy notice and a data list are still owed before the first pilot ([details](../inception/architecture-handoff.md#6-data-privacy-and-rights)) |
 | Human approval | Nothing is exported without bandmate approval |
 | AI-made material disclosure | Not decided. Some venues refuse AI-made posters, which makes this a trust question as well as a legal one |
 
@@ -140,7 +140,7 @@ One list, with where each gets answered.
 | Which AI image provider? | Provider bake-off test (spike 1 in the [handoff](../inception/architecture-handoff.md#8-risks-and-spikes)). Stack and hosting: answered in the handoff |
 | How many bandmates must approve before export? | Pilot (default: every invited bandmate; any veto blocks). Review links answered in the handoff |
 | Does the storage and signed-link setup work on real phones? | Spike 3 |
-| Who is legally responsible for the data, and in what form? | Ale, before the pilot |
+| Who is legally responsible for the data? | Decided (D-043): Ale as an individual for now. Privacy notice and data list still owed before the pilot |
 | Reference images: upload or link? | Rights desk study |
 | Which languages at launch: Italian only, or Italian and English? | Interviews, then scope |
 | Is a simple A4 or A3 print file enough? | Pilot |
