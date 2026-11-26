@@ -1,6 +1,6 @@
 # Inception status
 
-Live tracker for the 11 exit criteria (canonical list: [workflow.md](workflow.md#exit-criteria)). Last updated: 2026-11-26 (design system committed to the repo, D-053; rights desk study R-008, D-044 to D-046; short-video proof of concept R-009, D-047 to D-049).
+Live tracker for the 11 exit criteria (canonical list: [workflow.md](workflow.md#exit-criteria)). Last updated: 2026-11-26 (prototype v3 aligned to the design system, D-053; design system committed to the repo, D-053; rights desk study R-008, D-044 to D-046; short-video proof of concept R-009, D-047 to D-049).
 
 Status values: `not started`, `in progress`, `done`, `ongoing`.
 
