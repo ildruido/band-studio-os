@@ -68,7 +68,7 @@ Order within Later follows what G1 and G2 show. Each is a candidate, not a promi
 - **Ale's hours:** interviews and the blind test need his time. They are the long pole, not the build.
 - **Research before build:** if Ale chooses to build before G1, the riskiest assumption, "feels like us", is still untested. That is allowed, but should be a decision, not a drift.
 - **Lead rests on plans:** the gap against Canva and Simplified is not shown yet (R-005). Nothing on this roadmap closes it except E2 and the pilot.
-- **Rights:** MVP avoids uploads; L8 cannot start before H-07 is answered.
+- **Rights:** MVP avoids uploads; L8 cannot start before H-07 is answered. R-008 answered it only for the band's own reference images; crowd and UK photo rules for gig media are still open, so L8 stays blocked until a follow-up study.
 
 ## Assumptions to confirm
 

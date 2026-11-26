@@ -115,13 +115,13 @@ Part of the [Product Brief Pack](index.md). What to build is in [Product and roa
 | Topic | Position today |
 | --- | --- |
 | Music copyright | Version 1 uses no audio and makes no video, so none of the band's music enters the product. Becomes real with after-the-gig material and audio-synced video |
-| Likeness and image rights | Version 1 takes up to five reference images from the band, not photos of fans or people at gigs. A rule for reference images is still needed (upload or link) |
-| Ownership of generated assets | Not yet known; depends on the image generation provider's terms. The provider test checks them before one is chosen |
+| Likeness and image rights | Version 1 takes up to five reference images from the band, not photos of fans or people at gigs. Rule decided (D-044): only images the band has the right to use, only agreeing band members recognisable, photographer credit field, a removal route, deletion after 12 months. Photographers have real claims; our own exposure as the app that stores and transforms a photo is not settled ([R-008](../research/R-008-image-rights/report.md)) |
+| Ownership of generated assets | Providers' terms let the customer use output, but copyright in pure AI output is uncertain in Italy and the UK, so we never promise exclusivity (D-045). The provider test must confirm we can pass rights on to bands |
 | Data protection | EU rules (GDPR) apply to band and audience data. EU hosting, no raw media in analytics, a way to export and delete a band's data, a list of the companies that process data for us. Ale is the data controller for now (D-043); the privacy notice and a data list are still owed before the first pilot ([details](../inception/architecture-handoff.md#6-data-privacy-and-rights)) |
 | Human approval | Nothing is exported without bandmate approval |
-| AI-made material disclosure | Not decided. Some venues refuse AI-made posters, which makes this a trust question as well as a legal one |
+| AI-made material disclosure | The EU rule to mark AI images applies to us from launch (D-046); the metadata plan is not yet proven and a spike is added. Some venues refuse AI-made posters, which is a trust question as well |
 
-**What is not done:** a desk study on rights is planned but not run; no lawyer has seen anything. Which risks need a lawyer is an open question.
+**What is not done:** the rights desk study is done ([R-008](../research/R-008-image-rights/report.md), not legal advice); no lawyer has seen anything. Still open: the provider terms for passing rights to bands, whether marking survives social media, crowd and UK photo rules (feature L8). Which risks need a lawyer is an open question.
 
 **How sure are we:** the risk list is *Provisional*; the positions are *Not yet known* beyond "avoid uploads in version 1".
 
@@ -141,7 +141,7 @@ One list, with where each gets answered.
 | How many bandmates must approve before export? | Pilot (default: every invited bandmate; any veto blocks). Review links answered in the handoff |
 | Does the storage and signed-link setup work on real phones? | Spike 3 |
 | Who is legally responsible for the data? | Decided (D-043): Ale as an individual for now. Privacy notice and data list still owed before the pilot |
-| Reference images: upload or link? | Rights desk study |
+| Reference images: upload or link? | Decided (D-044): upload, five conditions |
 | Which languages at launch: Italian only, or Italian and English? | Interviews, then scope |
 | Is a simple A4 or A3 print file enough? | Pilot |
 | Which identity inputs measurably change output? | Blind output test, then pilot |
