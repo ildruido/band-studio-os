@@ -212,15 +212,15 @@ Every component has **two** ratings, because "we can write it" and "it is proven
 
 - **Section:** [Brand and messaging, Visual assets](brand-and-messaging.md#visual-assets)
 - **Content:** 🟡 Amber. **Evidence:** 🟡 Amber.
-- **What is missing:** Logo, product colours, final name, screenshots of real output, a product video.
-- **How it would be filled:** Name decision first, then a logo and brand colours; screenshots from real output; the short-video proof of concept on the roadmap.
+- **What is missing:** Logo, product colours, final name, screenshots of real output, a product video. A throwaway 12-second sample video exists ([R-009](../research/R-009-short-video-poc/spike/sample.mp4)) but uses made-up art and placeholder sound, so it is not a product video.
+- **How it would be filled:** Name decision first, then a logo and brand colours; screenshots from real output; a video made from real generated output, once the pipeline is real (template motion first, D-047).
 - **Needs Ale:** Name first
 
 ### FAQ and objections
 
 - **Section:** [Brand and messaging, FAQ and objections](brand-and-messaging.md#faq-and-objections)
 - **Content:** 🟡 Amber. **Evidence:** 🔴 Red.
-- **What is missing:** Answers backed by evidence; legal answers on image ownership and data.
+- **What is missing:** Answers backed by evidence; legal answers on image ownership and data. Desk-research answers on likeness, AI-output ownership and music in video now exist ([R-009](../research/R-009-short-video-poc/report.md), D-049) but are not legal advice.
 - **How it would be filled:** Blind test results; rights desk study; lawyer input if the budget ever allows.
 - **Needs Ale:** No
 

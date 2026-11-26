@@ -22,8 +22,8 @@ Goal: know whether the output can feel like "us" and whether the problem is real
 | N2 | **E1 driver interviews** (R-003), including the price conversation | Tests H-02, sets the time baseline for H-08, recruits pilot bands | D-014 |
 | N3 | **E2 "is this us?" blind output test**, including Canva and Simplified output as comparison | Tests H-01 and R-005's open gap (C1); first AI cost data (H-06) | D-014, R-005 |
 | N4 | **E3 fake-door price test** | Tests H-03, which the free pilot does not (D-029) | D-014 |
-| N5 | Rights desk study (H-07) and size emails (H-09) | Cheap and independent of the others | Research plan |
-| N6 | Short-video proof of concept | Feasibility and cost of video, so the Later horizon is real (D-018) | D-018 |
+| N5 | Rights desk study (H-07; image, likeness, AI-output and music-in-video parts done in R-009, D-049; band-recording and wider music rights still open) and size emails (H-09) | Cheap and independent of the others | Research plan |
+| N6 | Short-video proof of concept (**done**, R-009: template motion feasible, AI video deferred; D-047, D-048) | Feasibility and cost of video, so the Later horizon is real (D-018) | D-018 |
 | N7 | Architecture handoff, App profile draft, exit gate and sign-off | Exit criteria 5, 6, 11 | Workflow |
 
 Fieldwork (N2 to N4) is postponed until Ale says go (D-014).
@@ -53,7 +53,7 @@ Order within Later follows what G1 and G2 show. Each is a candidate, not a promi
 | --- | --- | --- |
 | L1 | **Post-gig momentum**, light first: thank-you carousel with no uploads (D-028 puts it first after the MVP) | G2 |
 | L2 | **Payments**: pay per campaign, then a subscription (D-008) | G2, E3 price |
-| L3 | **Short video** from the N6 result (D-018) | N6 feasibility and cost |
+| L3 | **Short video** from the N6 result (D-018): starts as template motion from the approved poster (D-047); AI clips only after a quality test (D-048) | N6 feasibility and cost |
 | L4 | **Identity Studio growth**: add identity variables that measurably change output (D-006) | Pilot output data |
 | L5 | **UK launch and English** after Italy (D-012) | G2 and paying Italian bands |
 | L6 | **Connectors**: direct publishing, scheduling, reach partners such as Bandsintown Boost (D-009, D-027) | Demand from pilot |

@@ -24,7 +24,7 @@ Part of the [Product Brief Pack](index.md). Start with [Story](story.md) for the
 | --- | --- | --- |
 | After-the-gig material (thank-you carousel, highlight reels) | Ale chose pre-gig only; it also keeps uploads and rights risk out | First item after the first version |
 | Payments | Free pilot first | After the price test |
-| AI video and audio-synced teasers | Cost and feasibility unknown | A short video proof of concept first, then later |
+| Short video (stories and reels for a gig) | Feasibility shown by a throwaway spike: template motion from the approved poster, about 12 seconds, cost close to zero. AI video clips not shown (quality unproven, D-048) | Later (L3), template motion first (D-047) |
 | Direct posting to social channels and scheduling | Export-only keeps version 1 small | Later, as connectors |
 | Full approval system with roles | One driver, light approval is enough | Later |
 | Full identity studio (band lore, sound-to-look matching, per-campaign overrides) | Start light, grow by testing | Later, driven by output tests |
@@ -76,7 +76,7 @@ Part of the [Product Brief Pack](index.md). Start with [Story](story.md) for the
 3. A blind "is this us?" test: bands compare our output against their own flyer and against Canva and Simplified output.
 4. A fake-door price test: would they commit money?
 5. A desk study on rights (music, likeness, images) and a short size check by email.
-6. A short-video proof of concept, to learn if and at what cost video is possible later.
+6. A short-video proof of concept, done ([R-009](../research/R-009-short-video-poc/report.md)): template motion is feasible and cheap; AI video is deferred.
 7. The architecture handoff and Ale's sign-off to end the concept phase.
 
 Postponed: the field work in 2 to 4 waits until Ale says go.

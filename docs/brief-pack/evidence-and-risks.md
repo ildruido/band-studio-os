@@ -26,7 +26,9 @@ Part of the [Product Brief Pack](index.md). This file is the honest centre of th
 
 **What the free pilot cannot show:** willingness to pay. The price test carries that.
 
-**Not run, still wanted:** a desk study on music and image rights; a short size check by email; a short-video proof of concept.
+**Run since:** [R-009](../research/R-009-short-video-poc/report.md), a short-video proof of concept and a desk study on image, likeness and AI-output rights (low confidence; template motion technically feasible, AI video deferred; not legal advice).
+
+**Not run, still wanted:** the wider music-rights desk study (band recordings and composition); a short size check by email; a lawyer check before the first pilot band.
 
 **How sure are we:** *Not yet known.* The honest line for any outside reader today is "not yet tested".
 
@@ -46,7 +48,7 @@ Likelihood and impact are **our judgement**, not measured. "Open" means no mitig
 | **Bands will not pay, or cannot** | Money is the top barrier named by independent artists; most do music part time; many who pay for promotion lose money | High / very high | Price test; pay-per-campaign before subscription; free pilot to learn first; keep AI cost under about 30% of price |
 | **Canva, Simplified or others close the gap** | The generic "brief in, campaign out" flow already exists for small businesses; band templates are an easy release | High / high | Position on the band's identity layer, not the generic flow; watch for band pages and pricing moves |
 | **Authenticity backlash against AI-made posters** | Some venues (so far US and Canada) refuse AI-made posters | Medium / high | Output clearly the band's own; band curates; nothing published without approval; talk about "your band's material", not "AI posters" |
-| **AI generation cost is higher than the price** | Cash limit is under 100 euros a month; video would cost more | Medium / high | Log cost per generation from day one; images only in the first version; price test |
+| **AI generation cost is higher than the price** | Cash limit is under 100 euros a month; AI video clips would roughly double the cost per campaign (R-009, estimate) | Medium / high | Log cost per generation from day one; images only in the first version; price test |
 | **Music, likeness and image rights** | Uploaded media and generated assets raise copyright and image-rights questions; a lawyer is outside the budget | Medium / high | No uploads of gig photos or audio in the first version; desk study still to run; reference-image rule |
 | **The market is small or shrinking** | UK grassroots shows fell 8.3% since 2023; Italian clubs are in difficulty; the pool of payers is small | Medium / high | Wide-range sizing is honest about it; no upfront size target; income ladder shows how few payers are needed |
 | **The problem is real but not top of mind** | Promotion ranked below money and time in the survey we found | Medium / high | Driver interviews, unprompted ranking |

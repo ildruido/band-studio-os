@@ -2,6 +2,30 @@
 
 Newest first. Each entry: id, date, decision, why, alternatives, who decided, status (`active`, `superseded by D-0NN`, `revisited`).
 
+### D-049 Video rights rules: own images and own audio only, consent for faces, AI label on anything AI-made
+- **Date:** 2026-11-26
+- **Decision:** When video arrives (L3), the product follows four rules. (1) It uses only images and audio the band uploads and warrants it may use; it never supplies music. (2) Every real person shown must have agreed: the uploader confirms it, and any AI step that animates a real face needs an explicit "all shown members agreed" flag. (3) Anything AI-generated carries the "made with AI" flag, the machine-readable marking from the [architecture handoff](architecture-handoff.md) and a visible label in the exported description. (4) Template motion from a still is not AI video, but it inherits the label of an AI-generated base image. A lawyer check on likeness, band recordings in promo video and AI-output ownership joins the D-043 list of things owed before the first pilot band.
+- **Why:** [R-009](../research/R-009-short-video-poc/report.md) (V5): Italian copyright law article 96 needs consent to reproduce a portrait, the EU AI Act asks for marking and disclosure of AI-made video, Instagram's licensed music library is for personal use, and Italy and the UK treat AI-made output differently. Desk research only, not legal advice.
+- **Alternatives:** Supply licensed music (rejected: cost and a licensing business we do not need); skip the rules until the pilot (rejected: they shape the upload screen).
+- **Decided by:** Claude under Ale's autonomy rule (2026-11-25); Ale may revise.
+- **Status:** active
+
+### D-048 AI video clips are deferred until a real quality test; cost envelope and terms check set now
+- **Date:** 2026-11-26
+- **Decision:** No AI image-to-video in the first video release. It is considered only after a paid test on a real poster shows the clips keep the band's look at no more than 0.35 USD per usable 5-second clip, and only through the swappable provider adapter, with a provider whose terms do not claim training rights on uploaded images. Text is always placed by code, whatever makes the motion. The test is not started (it needs a paid account: steps are in the PR description).
+- **Why:** [R-009](../research/R-009-short-video-poc/report.md) (V2 to V4): API prices are low (0.25 to 0.35 USD per 5 s at two providers' own pages) but the cost per usable clip is unmeasured, independent evidence on text and identity fidelity is mixed and none covers a band's poster, fans react badly to AI-looking band promo, and Runway's general terms reserve training rights on inputs and outputs (API terms unchecked).
+- **Alternatives:** Build AI clips into L3 now (rejected: unproven quality and budget pressure); drop AI video for good (rejected: prices fall and quality moves fast).
+- **Decided by:** Claude under Ale's autonomy rule (2026-11-25); Ale may revise.
+- **Status:** active
+
+### D-047 Short video starts as template motion from the approved poster; L3 stays on the roadmap on that basis
+- **Date:** 2026-11-26
+- **Decision:** The first video the product makes is a 9:16 story of about 12 seconds: slow motion on the approved poster art, text placed by code, the band's own audio, rendered with ffmpeg in the server worker (no AI video). It stays Later (L3), after V1 (D-018 unchanged). The roadmap item N6 is done.
+- **Why:** [R-009](../research/R-009-short-video-poc/report.md) (V1): the throwaway spike rendered a 12-second 1080x1920 H.264 and AAC story in about 22 seconds on one CPU core, 2.2 MB, at a marginal cost close to zero, with correct text. It does not prove the look (synthetic art, placeholder sound) or an Instagram upload.
+- **Alternatives:** Hosted AI video first (rejected: D-048); export stills only (kept as the fallback if the template look is not good enough); no video at all (rejected: Ale wants feasibility shown).
+- **Decided by:** Claude under Ale's autonomy rule (2026-11-25); Ale may revise.
+- **Status:** active
+
 ### D-043 Ale is the data controller for now; privacy notice and data list still owed before the first pilot band
 - **Date:** 2026-11-26
 - **Decision:** Ale, as an individual, is the data controller for Band Studio OS to start with. No company is formed yet. Before the first pilot band, a privacy notice (also shown on the review-link page), a list of what data we keep and for how long, and agreements with the companies that process data for us are still required. The pilot is parked, so none of these is written now.

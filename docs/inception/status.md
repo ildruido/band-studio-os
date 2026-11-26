@@ -1,6 +1,6 @@
 # Inception status
 
-Live tracker for the 11 exit criteria (canonical list: [workflow.md](workflow.md#exit-criteria)). Last updated: 2026-11-26 (data controller decision, D-043).
+Live tracker for the 11 exit criteria (canonical list: [workflow.md](workflow.md#exit-criteria)). Last updated: 2026-11-26 (short-video proof of concept and rights desk study, R-009, D-047 to D-049).
 
 Status values: `not started`, `in progress`, `done`, `ongoing`.
 
@@ -30,6 +30,7 @@ None. Everything up to PR #50 is merged. Prototype v2.2 is in this PR ([prototyp
 - Standard-tier research uses one extra agent run (the skeptic), deep tier two. That costs usage on the Pro plan.
 - Prototype v2.2 was tested in a headless browser only, not on a real phone or in the Claude in-app browser. The v2.1 thumbnail overlap could not be reproduced, so the fix is by construction.
 - The prototype link is private to Ale. It has to be shared from the artifact before anyone else can open it. The prototype artwork is canned: it is not evidence for H-01.
+- Video: the R-009 sample uses synthetic art and placeholder sound, was not uploaded to Instagram, and ran on one local CPU core, not the real hosting plan. Rights findings are desk research, not legal advice; Meta's own help pages could not be read.
 - CI covers docs and harness files only; there are no code tests during inception.
 - App profile Phase set to discovery, undecided values say TBD (D-024). Harness synced to 0.28.1 (latest stable; Project instructions review pending with the coordinator).
 - The `Harness` check runs on every PR, and main requires the `health` check, so PRs self-merge when it is green (proven).
@@ -41,6 +42,7 @@ Kept so Ale can ask for a recap. Newest first. Newest milestones only; earlier o
 
 | Date | Sub-milestone | Where | Notes |
 | --- | --- | --- | --- |
+| 2026-11-26 | Short-video proof of concept and image-rights desk study (N6, part of N5) | [R-009 report](../research/R-009-short-video-poc/report.md), [sample video](../research/R-009-short-video-poc/spike/sample.mp4) | Template motion works (12 s story renders in ~22 s on one core); AI video deferred (D-047, D-048); rights rules for video (D-049). Not uploaded to Instagram; no lawyer check |
 | 2026-11-26 | Data controller decided: Ale, as an individual, for now | [decision-log.md](decision-log.md) (D-043), [architecture handoff](architecture-handoff.md#6-data-privacy-and-rights) | Privacy notice and data list still owed before the first pilot band (pilot parked) |
 | 2026-11-25 | Plan to add the discovery ways of working to app-studio, with a code-or-prose second pass | [plan](process-recap/app-studio-plan.md), [code-or-prose pass](process-recap/app-studio-plan-code-or-prose.md) | Plan only: app-studio unchanged, no harness idea filed (Ale decides what to file). Independent review applied to the second pass |
 | 2026-11-25 | Stale inception docs fixed | this file, [studies.md](../research/studies.md), `CLAUDE.md` | R-001 verdict corrected; harness version line made version-free |
