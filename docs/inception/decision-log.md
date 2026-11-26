@@ -2,6 +2,30 @@
 
 Newest first. Each entry: id, date, decision, why, alternatives, who decided, status (`active`, `superseded by D-0NN`, `revisited`).
 
+### D-052 Prototype v3 shows each later journey with a "Coming soon" tag, not the hazard stripe
+- **Date:** 2026-11-26
+- **Decision:** In the customer-facing prototype, anything beyond the first version carries a plain "Soon" tag on its menu row and a slim yellow "Coming soon" strip on its screen. The hazard-tape stripe and the "Later" and "Idea" tags stay in v2.1 and v2.2, where they help an interviewer.
+- **Why:** A real customer would not see "Later" or "Idea". The tag still shows what is ready now (one gig pack) and what is on the way, so a test session can keep the two apart.
+- **Alternatives:** Hide later journeys until they exist (rejected: Ale asked for them to be reachable); keep the interviewer stripe (rejected: it is facilitator language).
+- **Decided by:** Claude under Ale's autonomy rule (2026-11-25); Ale may revise.
+- **Status:** active
+
+### D-051 Rights and AI rules shown in the prototype UI, with an "AI, rights and your data" page
+- **Date:** 2026-11-26
+- **Decision:** v3 puts the rules in the screens: a "made with AI" tag on the pack, the bandmate view and every later poster; a locked, non-editable AI line in every caption (D-046, D-049); the ownership wording of D-045 on the Ready page and on a plain-words rights page under Us; the five photo conditions of D-044 as a consent check, a credit field and a limit of five at the optional photos step; the server-side export lock explained where saving is blocked; EU storage and 12-month retention stated. Approval default shown to the band: each poster needs a yes from at least one bandmate and any nope blocks it (architecture handoff default, still for Ale to revise).
+- **Why:** The rules only protect anyone if the customer meets them at the moment they matter. The wording is draft and not legal advice.
+- **Alternatives:** Keep them in a terms page only (rejected: nobody reads it).
+- **Decided by:** Claude under Ale's autonomy rule; Ale may revise.
+- **Status:** active
+
+### D-050 Prototype v3: the customer app, with its own navigation and an Italian version
+- **Date:** 2026-11-26
+- **Decision:** Build prototype v3 as the real app a customer would see, with no interviewer menu (v2.2 stays unchanged for test sessions). Three tabs: Wall, Make, Us. Back always goes to the screen you came from. The gig has its own page that lists its six steps in order, each opening when the one before is done. Focused flows (setup, identity questions, posters, bandmate view) hide the tabs. Language switch EN/IT sits in the top bar of every screen, and a full Italian version is included. The language of posters and captions is a separate band setting from the language of the app. Link: https://claude.ai/artifact/KTR4cNiwywTXAzzKqVi6Gx.
+- **Why:** Ale asked for the final-style app with a clear information architecture, easy back navigation and Italian (Italy is the first market, D-021). Keeping the poster language separate lets an English-speaking user make Italian posters and the other way round.
+- **Alternatives:** One language setting for both (rejected: a band may want Italian posters from an English phone); more tabs (rejected: three is enough for this scope).
+- **Decided by:** Ale (request) and Claude (design), under the autonomy rule.
+- **Status:** active
+
 ### D-049 Video rights rules: own images and own audio only, consent for faces, AI label on anything AI-made
 - **Date:** 2026-11-26
 - **Decision:** When video arrives (L3), the product follows four rules. (1) It uses only images and audio the band uploads and warrants it may use; it never supplies music. (2) Every real person shown must have agreed: the uploader confirms it, and any AI step that animates a real face needs an explicit "all shown members agreed" flag. (3) Anything AI-generated carries the "made with AI" flag, the machine-readable marking from the [architecture handoff](architecture-handoff.md) and a visible label in the exported description. (4) Template motion from a still is not AI video, but it inherits the label of an AI-generated base image. A lawyer check on likeness, band recordings in promo video and AI-output ownership joins the D-043 list of things owed before the first pilot band.
