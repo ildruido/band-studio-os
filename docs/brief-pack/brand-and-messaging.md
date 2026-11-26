@@ -41,7 +41,7 @@ Part of the [Product Brief Pack](index.md). The product's own brand is **mostly 
 
 **What does not exist:** logo, product colours and fonts as a brand (the fonts above are the app's), screenshots of real generated output, a product video, a demo recording.
 
-**Links:** [UX direction and board](../inception/ux-direction.md), [design alternatives](../inception/design-alternatives.md), [prototypes](../inception/prototypes.md).
+**Links:** [design system](../design-system/README.md) (tokens, themes, components, usage rules), [UX direction and board](../inception/ux-direction.md), [design alternatives](../inception/design-alternatives.md), [prototypes](../inception/prototypes.md).
 
 **How sure are we:** the look is *Decided* for the prototype stage; "approved for now". Not yet shown to bands (v2.2 is built for that).
 

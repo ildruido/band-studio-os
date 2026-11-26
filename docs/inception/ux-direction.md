@@ -1,6 +1,6 @@
 # UX design direction for prototype v2
 
-Status: **approved by Ale for now, 2026-11-25** (D-032). Visual board: [Artifact](https://claude.ai/artifact/TCjoXd1hdqoMApWqQZ58ws) (private to Ale until shared). Source: [ux-direction/board.html](ux-direction/board.html).
+Status: **approved by Ale for now, 2026-11-25** (D-032). Visual board: [Artifact](https://claude.ai/artifact/TCjoXd1hdqoMApWqQZ58ws) (private to Ale until shared). Source: [ux-direction/board.html](ux-direction/board.html). The look is now also written down as the [design system](../design-system/README.md) (D-053).
 
 ## Why
 
