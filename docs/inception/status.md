@@ -33,7 +33,7 @@ None. Everything up to PR #50 is merged. Prototype v3 is in this PR ([prototypes
 - The prototype link is private to Ale. It has to be shared from the artifact before anyone else can open it. The prototype artwork is canned: it is not evidence for H-01.
 - Video: the R-009 sample uses synthetic art and placeholder sound, was not uploaded to Instagram, and ran on one local CPU core, not the real hosting plan. Rights findings are desk research, not legal advice; Meta's own help pages could not be read.
 - CI covers docs and harness files only; there are no code tests during inception.
-- App profile Phase set to discovery, undecided values say TBD (D-024). Harness synced to 0.48.1 (Project instructions review pending with the coordinator).
+- App profile Phase set to discovery, undecided values say TBD (D-024). Harness synced to 0.48.1 with the `research` and `discovery` modules (D-054; Project instructions review pending with the coordinator).
 - The `Harness` check runs on every PR, and main requires the `health` check, so PRs self-merge when it is green (proven).
 - Canva's own pages still return 403 to automated access (Adobe, PosterMyWall, Mew and Simplified open). R-007 used independent reviews for Canva instead. The gap against incumbents narrowed: Simplified and Canva AI 2.0 now advertise a "brief in, campaign out" flow for general businesses; nobody independent tests it for bands. A timed trial is still the missing evidence (Ale declined it, D-025).
 
@@ -43,6 +43,7 @@ Kept so Ale can ask for a recap. Newest first. Newest milestones only; earlier o
 
 | Date | Sub-milestone | Where | Notes |
 | --- | --- | --- | --- |
+| 2026-11-27 | Harness 0.48.1 with the shared research and discovery modules | `CLAUDE.md` (Discovery profile), [decision-log.md](decision-log.md) (D-054) | The app's own research and inception skills and agent replaced by the modules; documents and decisions unchanged; the old framework copy is now a pointer |
 | 2026-11-26 | Short-video proof of concept and image-rights desk study (N6, part of N5) | [R-009 report](../research/R-009-short-video-poc/report.md), [sample video](../research/R-009-short-video-poc/spike/sample.mp4) | Template motion works (12 s story renders in ~22 s on one core); AI video deferred (D-047, D-048); rights rules for video (D-049). Not uploaded to Instagram; no lawyer check |
 | 2026-11-26 | Data controller decided: Ale, as an individual, for now | [decision-log.md](decision-log.md) (D-043), [architecture handoff](architecture-handoff.md#6-data-privacy-and-rights) | Privacy notice and data list still owed before the first pilot band (pilot parked) |
 | 2026-11-25 | Plan to add the discovery ways of working to app-studio, with a code-or-prose second pass | [plan](process-recap/app-studio-plan.md), [code-or-prose pass](process-recap/app-studio-plan-code-or-prose.md) | Plan only: app-studio unchanged, no harness idea filed (Ale decides what to file). Independent review applied to the second pass |

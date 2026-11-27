@@ -2,6 +2,12 @@
 
 Newest first. Each entry: id, date, decision, why, alternatives, who decided, status (`active`, `superseded by D-0NN`, `revisited`).
 
+### D-054 Inception runs on the shared research and discovery modules (2026-11-27)
+- Status: Active
+- Decision: The app's own research and inception skills and the research-skeptic agent are replaced by app-studio's research and discovery modules (harness 0.48.1). Documents stay in docs/inception/ and docs/research/, the decision log stays here, and the Discovery profile's sign-off mode is autonomous with record.
+- Why: The modules were built from this app's own method (app-studio #355, #356); one shared copy keeps the method current without local drift.
+- Decided by: Ale (app-studio #360 brief, 2026-11-27)
+
 ### D-053 The design system lives in the repo and is the source of truth for the look
 - **Date:** 2026-11-26
 - **Decision:** The Band Studio OS design system (tokens, themes Wall and Stage, components, usage rules) is committed in `docs/design-system/`. Prototype v3 follows it; v2.2 stays untouched as the interviewer build. Three contrast fixes from the design system are accepted: muted text #4E5258, veto text #9E1F16, and an ink focus ring on the wall.

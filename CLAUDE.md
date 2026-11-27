@@ -1,13 +1,13 @@
 # Band Studio OS — project instructions
 
-**Phase: Inception** (App profile Phase: discovery). No production code until Ale signs off on the exit gate. Follow [docs/inception/workflow.md](docs/inception/workflow.md) and its skills in `.claude/skills/`.
+**Phase: Inception** (App profile Phase: discovery). No production code until Ale signs off on the exit gate. Follow the discovery module's workflow ([WORKFLOW.md](.claude/packs/discovery/WORKFLOW.md)) and its skills, reading the Discovery profile below. [docs/inception/workflow.md](docs/inception/workflow.md) keeps this app's original inception plan and 11 exit criteria as history.
 
 - Ask Ale only product decisions, one question at a time, each with a recommended answer. Decide technical details yourself and record them in the PR description.
 - English everywhere: docs, commits, PRs and chat.
 - One PR per artifact. Inception-only exception to app-studio's "never commit straight to `main`": typos and decision log entries may go straight to `main` from a local session. A cloud session can push only its own branch, so it opens a PR for those too. `new-app` drops this exception when inception closes.
 - Merge your own PR as soon as the task is done and CI is green. The `Harness` workflow checks harness and docs PRs. There are no code tests yet (inception), so say so when you merge.
 - Keep [docs/inception/status.md](docs/inception/status.md) current: update it in the same PR whenever an artifact's status or an open PR/risk changes.
-- Every piece of research follows [docs/research/framework.md](docs/research/framework.md) and the `research-protocol` skill, during and after inception.
+- Every piece of research follows the `research` skill and its method ([FRAMEWORK.md](.claude/packs/research/FRAMEWORK.md)), during and after inception.
 - Log every product decision in [docs/inception/decision-log.md](docs/inception/decision-log.md) in the same turn. This decision log stays the home for product decisions after inception too.
 - `app-studio` is the build-phase harness. Read it, but never change it from here (no edits or PRs). An idea for improving the harness, including our discovery and inception skills once they're proven, goes through the `harness-idea` skill, which opens an issue there. Pull harness updates only when asked, with `harness-sync`. Its core (version pinned in `.claude/studio/lock.json`) was installed early, only so the health check and the `Harness` workflow guard this repo during inception. The build-phase skills (`build-feature`, `release`, `test-handoff`) aren't used until inception closes. `new-app` then adds the stack packs and merges the rest of the template into this file.
 
@@ -41,34 +41,31 @@ Read by the app-studio harness skills and its health check. Values marked TBD ar
 
 - **Build / QA / Release / Preview:** TBD (not decided yet).
 
-## Inception profile
+## Discovery profile
 
-The inception skills in `.claude/skills/` are generic. They read this section for everything specific to this product. Keep it current as the artifacts evolve.
+The discovery skills are generic: they read this section for everything about this product. Keep it current as the documents evolve (`node .claude/hooks/app-setup.mjs discovery-profile set "Row=value"`). What each row means: `.claude/packs/discovery/STACK.md`.
 
 | Field | Value |
 | --- | --- |
-| Product | Band Studio OS (working title): an AI-powered control room for emergent, independent bands |
-| Target users | Low-budget, time-poor indie and rock bands, usually run by one or two active members |
-| Starting idea | [docs/inception/starting-idea.md](docs/inception/starting-idea.md) (original idea, kept unchanged; a starting point, not a bible) |
-| Market segments | Band and artist tools, AI design and content tools, social schedulers, and DIY help (friends, freelancers) |
-| Optional skills | `product-management:*`, `anthropic-skills:deep-research`, `frontend-design` (used when available) |
+| Product        | Band Studio OS (working title): an AI-powered control room for emergent, independent bands |
+| Target users   | Low-budget, time-poor indie and rock bands, usually run by one or two active members |
+| Starting idea  | `docs/inception/starting-idea.md` (a starting point, not a fixed plan) |
+| Docs folder    | `docs/inception/` |
+| Sign-off mode  | autonomous with record |
+| Exit criteria  | default; criterion 3 is proven by docs/research/research-plan.md (this app has no hypotheses.md); add: project and app repo set up on the harness; add: Product Brief Pack in docs/brief-pack/ (D-036) |
+| Principles     | Authenticity first: amplify a band's grit and subcultural identity, never sanitized corporate polish. Human in the loop: the AI proposes, the band curates; nothing is published without approval. |
+| Domain risks   | Music copyright, likeness and image rights, AI generation cost (video and media), and uploading large media files. |
+| Prototype look and feel | Gritty and subcultural, phone-first. Fake data uses realistic band names, venues and flyers. |
 
-### Principles
+### Discovery profile notes
 
-- **Authenticity first:** amplify a band's grit and subcultural identity, never sanitized corporate polish.
-- **Human in the loop:** the AI proposes, the band curates; nothing is published without approval.
+Facts the Discovery profile has no row for. They replace the old Inception profile (its other rows moved into the table above).
 
-### Key concepts
-
-Identity Studio (brand context, Grit slider, anti-moodboard, lore), Consensus Engine (drivers and reviewers, swipe-to-vote), Staged Campaign Wizard (gig promotion: setup, pre-gig blitz, post-gig momentum).
-
-### Domain risks
-
-Music copyright, likeness and image rights, AI generation cost (video and media), and uploading large media files.
-
-### Prototype look and feel
-
-Gritty and subcultural, phone-first. Fake data uses realistic band names, venues and flyers.
+- **Market segments:** band and artist tools, AI design and content tools, social schedulers, and DIY help (friends, freelancers).
+- **Key concepts:** Identity Studio (brand context, Grit slider, anti-moodboard, lore), Consensus Engine (drivers and reviewers, swipe-to-vote), Staged Campaign Wizard (gig promotion: setup, pre-gig blitz, post-gig momentum).
+- **Optional skills:** `product-management:*`, `anthropic-skills:deep-research`, `frontend-design` (used when available; `frontend-design` for prototypes).
+- **Documents named differently from the module's defaults:** the hypotheses live in `docs/research/research-plan.md` (no `hypotheses.md`); the old 11 exit criteria are in `docs/inception/workflow.md` (history), and the Exit criteria row above maps them onto the default list.
+- **Research method:** no difference from the module's `FRAMEWORK.md` worth keeping (checked when the module replaced the app's own copy; see `docs/research/framework.md`).
 
 ## Roles
 

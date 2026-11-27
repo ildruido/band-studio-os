@@ -1,6 +1,6 @@
 # Sizing sheet
 
-Part of a market analysis study. Fill in during the research; keep it with the study's `report.md`.
+Part of a market size study (`market-size.md` branch of the research skill). Fill it in during the research and keep it as `sizing.md` beside the study's `report.md`.
 
 ## Definition (pre-registered)
 
@@ -8,12 +8,12 @@ Part of a market analysis study. Fill in during the research; keep it with the s
 - **Value basis (price, model, per year):**
 - **Geography and year:**
 - **Segment boundary (in / out):**
-- **Minimum business threshold (set by the product owner before searching):**
+- **Minimum threshold the business needs (set by the App Creator before searching):**
 - **Currency and price year:**
 
 ## Assumptions register
 
-| Id | Assumption | Low | Base | High | Source id or `(Assumption)` | Grade | Swing rank |
+| Id | Assumption | Low | Base | High | Evidence id or `(Assumption)` | Grade | Swing rank |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | A1 | | | | | | | |
 
@@ -25,9 +25,9 @@ Part of a market analysis study. Fill in during the research; keep it with the s
 | Share with the need | | | | |
 | Share who would pay | | | | |
 | Price x frequency | | | | |
-| **SAM (value)** | | | | |
+| **Reachable market (SAM, value)** | | | | |
 | Reach x conversion x time | | | | |
-| **SOM (value)** | | | | |
+| **Obtainable market (SOM, value)** | | | | |
 
 ## Top-down
 
@@ -56,6 +56,6 @@ Part of a market analysis study. Fill in during the research; keep it with the s
 
 | | Low | Base | High | Method | Confidence |
 | --- | --- | --- | --- | --- | --- |
-| TAM | | | | | |
-| SAM | | | | | |
-| SOM | | | | | |
+| Total market (TAM) | | | | | |
+| Reachable market (SAM) | | | | | |
+| Obtainable market (SOM) | | | | | |
