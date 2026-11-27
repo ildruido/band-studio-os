@@ -6,10 +6,14 @@
 //   node studio-sync.mjs inventory [--app <dir>] [--studio <dir>]   read-only look at an existing app before it migrates (migrate-app skill)
 //   node studio-sync.mjs health  [--app <dir>] [--studio <dir>]   is the harness sound? (pre-commit hook, CI)
 //   node studio-sync.mjs release-gate [--app <dir>]   exit 1 while the access model, or an AI public use decision it needs, is blank (release skill)
-//   node studio-sync.mjs phase   [--app <dir>] [--build-only]   print the App profile's Phase (discovery | build); --build-only exits 1 in discovery (build-feature, release, test-handoff)
+//   node studio-sync.mjs phase   [--app <dir>] [--build-only | --discovery-only]   print the App profile's Phase (discovery | build); --build-only exits 1 in discovery (build-feature, release, test-handoff), --discovery-only exits 1 once the app is building (discovery-bound skills)
 //   node studio-sync.mjs status [--studio <dir>] [--scaffold]   read-only: version, next free patch/minor, live-check state (app-studio threads)
 //   node studio-sync.mjs release-prepare [--app <dir>] [--version X.Y.Z] [--apply]   propose the version and move Unreleased into a dated section; dry run unless --apply (release skill)
-//   node studio-sync.mjs pull    [--app <dir>] [--studio <dir>] [--force]
+//   node studio-sync.mjs release-cut --version X.Y.Z [--app <dir>]   release gate, clean current main, release branch, package.json bump, changelog; never commits (release skill)
+//   node studio-sync.mjs release-tag-check X.Y.Z [--app <dir>]   exit 0 once tag vX.Y.Z is on origin; without a Release tag workflow prints the by-hand steps (release skill)
+//   node studio-sync.mjs live-check-pass   moved: node scripts/release.mjs pass-main <version>
+//   node studio-sync.mjs pull    [--app <dir>] [--studio <dir>] [--force] [--dry-run]   --dry-run changes nothing and prints what the pull would do
+//   node studio-sync.mjs sync    [--app <dir>] [--studio <dir>] [--force] [--dry-run]   fast-forward app-studio to origin main, then its own pull and health, then the commit line (harness-sync skill)
 //   node studio-sync.mjs pack add <name...> [--slug <kebab>] [--title <Name>]   add stack packs or feature modules (packs/ in app-studio)
 //   node studio-sync.mjs pack remove <name...> [--force]   drop stack packs the app no longer uses
 //   node studio-sync.mjs ack [<path...>]    mark pack starter files as reviewed against app-studio
@@ -23,13 +27,17 @@
 // notes, kept in step like the skills, under .claude/packs/<name>/) and `starter/` files (CI, configs,
 // server, adapters: copied once, with {{slug}} and {{title}} filled in, and the app's own afterwards;
 // check only notes when app-studio's version changed, and pull refreshes the ones left unedited).
+// A module may also ship skills (`skills/<skill>/`) and agents (`agents/<agent>.md`): they land in
+// .claude/skills/ and .claude/agents/, tracked like the core's, and go with `pack remove`. A name the
+// core, another pack or the app itself already uses is a clash: `pack add`, `pull` and health fail on it.
 // health fails (exit 1) on what would mislead a session: shared files edited or missing here, an
 // unfilled App profile, harness hooks missing from settings.json, malformed app skills or agents,
 // broken links in the docs (and in the app's own .claude/ Markdown), a missing Harness workflow.
 // Being behind app-studio is only a note: it never blocks a commit or PR.
-// Every command run in an app also turns on the hooks that work wherever a session starts: the git
-// pre-commit hook (core.hooksPath), and in a cloud session the app's Claude Code hooks forwarded to
-// the parent folder, which is the session's top folder when several repos are attached.
+// Hooks that work wherever a session starts (the git pre-commit hook via core.hooksPath, and in a cloud
+// session the app's Claude Code hooks forwarded to the user settings) are turned on only by `hooks` and
+// by the SessionStart hook (`check --warn`). A plain `check` or `health` only reports: if they are off, it
+// says so and names `hooks`, so looking at an app never changes a session's settings.
 // Exit codes: 0 in step, 1 drift or skipped files, 2 usage error. --warn always exits 0 and prints
 // only when something needs attention (for a SessionStart hook).
 import { spawnSync } from "node:child_process";
@@ -39,15 +47,18 @@ import {
   copyFileSync,
   existsSync,
   mkdirSync,
+  mkdtempSync,
   readdirSync,
   readFileSync,
   realpathSync,
+  renameSync,
+  rmdirSync,
   rmSync,
   statSync,
   writeFileSync,
 } from "node:fs";
 import { basename, dirname, join, relative, resolve, sep } from "node:path";
-import { tmpdir } from "node:os";
+import { homedir, tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 
 const LOCK = ".claude/studio/lock.json";
@@ -119,24 +130,178 @@ export function studioVersion(studio) {
     .version;
 }
 
-/**
- * The version the master copy is on, when its CHANGELOG entry says "Live check: pending": released,
- * but not yet confirmed in the studio-scratch Project. Apps must not pull it until a later commit
- * on main changes the line to "Live check: passed". No changelog or no marker means no gate.
- */
-export function livePending(studio) {
-  const file = join(studio, "CHANGELOG.md");
-  if (!existsSync(file)) return null;
-  const version = studioVersion(studio);
-  const text = readFileSync(file, "utf8").replace(/\r\n/g, "\n");
-  const start = text.indexOf(`\n## [${version}]`);
-  if (start < 0) return null;
-  const end = text.indexOf("\n## [", start + 1);
-  const entry = text.slice(start, end < 0 ? undefined : end);
-  return /^[\s>*_-]*Live check:\s*\**\s*pending/im.test(entry) ? version : null;
+// release.mjs sits next to the master script only. An app's own copy of this file runs without it
+// (its `health` and `check` never need release data), so the import is optional.
+let release = null;
+try {
+  release = await import("./release.mjs");
+} catch {
+  release = null;
 }
 
-// ---------- changelog excerpt ----------
+/**
+ * Releases between the app's version (`since`) and the master copy's version whose check on main is
+ * still pending, as version numbers, oldest first. Released but not yet confirmed in studio-scratch:
+ * apps must not move past any of them until `release.mjs pass-main` ran. Every release in range
+ * counts, not only the newest. No release data means no gate.
+ */
+export function pendingInRange(studio, since) {
+  if (!release || !studio || !existsSync(join(studio, "plugins/studio/.claude-plugin/plugin.json"))) return [];
+  const g = release.gate(release.loadAll(studio), studioVersion(studio), since);
+  return g.data.blocking.map((b) => b.version).reverse();
+}
+
+// ---------- released view ----------
+// app-studio releases in batches: a merged change waits in releases/unreleased/ until a release is cut, and the plugin version moves
+// only then. Apps get releases, so while a change that reaches apps is waiting, every app-side command reads app-studio as it was at
+// the newest commit that holds exactly the current release (same version, no such entry), not as the checkout is now.
+
+const UNRELEASED = "releases/unreleased";
+
+/** Unreleased entries that change what apps get, in the checkout (ref null) or at a commit. An unreadable entry counts. */
+export function unreleasedForApps(studio, ref = null) {
+  let names, read;
+  if (ref) {
+    names = (gitOut(studio, "ls-tree", "--name-only", ref, `${UNRELEASED}/`) ?? "").split("\n").filter((f) => f.endsWith(".json"));
+    read = (f) => gitOut(studio, "show", `${ref}:${f}`);
+  } else {
+    const dir = join(studio, UNRELEASED);
+    names = existsSync(dir) ? readdirSync(dir).filter((f) => f.endsWith(".json")).map((f) => `${UNRELEASED}/${f}`) : [];
+    read = (f) => readFileSync(join(studio, f), "utf8");
+  }
+  return names.filter((f) => { try { return JSON.parse(read(f)).kind !== "internal"; } catch { return true; } });
+}
+
+/** The newest commit that holds exactly release `version`, or null when this clone's history does not reach it. */
+function releaseCommit(studio, version) {
+  // First parents only: on a checkout of main these are main's own commits (squash merges). A checkout moved to a build branch is the
+  // live check's case, which reads the checkout as it is (--live-check), so its work-in-progress commits are not judged here.
+  for (const sha of (gitOut(studio, "rev-list", "--first-parent", "-n", "500", "HEAD") ?? "").split("\n").filter(Boolean)) {
+    let v = null;
+    try { v = JSON.parse(gitOut(studio, "show", `${sha}:plugins/studio/.claude-plugin/plugin.json`)).version; } catch {}
+    if (v !== version) return null; // an older release: the one asked for was never on its own in this history
+    if (!unreleasedForApps(studio, sha).length) return sha;
+  }
+  return null;
+}
+
+/**
+ * Where to read app-studio from: { dir } is the checkout itself when nothing app-facing is waiting for a release, else a copy of the
+ * release's commit (kept in the temp folder, one per commit). { error } when that commit cannot be found: nothing is copied then.
+ */
+export function releasedView(studio, { deepen = true } = {}) {
+  if (!unreleasedForApps(studio).length) return { dir: studio };
+  const version = studioVersion(studio);
+  const stop = (why) => ({ error: `app-studio holds changes that are not released yet, and release v${version} ${why}, so nothing was changed. Fix the app-studio checkout (a full clone of its main branch), then run this again.` });
+  if (!existsSync(join(studio, ".git"))) return stop("cannot be read back (the folder is not a git checkout)");
+  let sha = releaseCommit(studio, version);
+  // A shallow clone may end before the release: fetch more history, except for the quiet start-up check (no network there).
+  if (!sha && deepen && (gitOut(studio, "rev-parse", "--is-shallow-repository") ?? "").trim() === "true") {
+    spawnSync("git", ["-C", studio, "fetch", "-q", "--deepen=500", "origin"], { encoding: "utf8" });
+    sha = releaseCommit(studio, version);
+  }
+  if (!sha) return stop("was not found in the checkout's history");
+  // The copy lives in the user's own cache folder (never a shared temp folder another user could fill) and counts only once
+  // its marker, written last, names the commit.
+  let cache = join(homedir(), ".cache", "app-studio-releases");
+  try { mkdirSync(cache, { recursive: true }); } catch { cache = mkdtempSync(join(tmpdir(), "app-studio-releases-")); }
+  const dir = join(cache, `${version}-${sha.slice(0, 12)}`);
+  const marker = (d) => join(d, ".release-commit");
+  const whole = (d) => isStudio(d) && existsSync(marker(d)) && readFileSync(marker(d), "utf8").trim() === sha;
+  if (whole(dir)) return { dir, sha };
+  const tmp = `${dir}.${process.pid}.tmp`;
+  rmSync(tmp, { recursive: true, force: true });
+  mkdirSync(tmp, { recursive: true });
+  const tar = join(tmp, ".release.tar");
+  const ok = spawnSync("git", ["-C", studio, "archive", "--format=tar", "-o", tar, sha], { encoding: "utf8" }).status === 0 && spawnSync("tar", ["-xf", tar, "-C", tmp], { encoding: "utf8" }).status === 0;
+  rmSync(tar, { force: true });
+  if (!ok || !isStudio(tmp)) { rmSync(tmp, { recursive: true, force: true }); return stop("could not be copied out of git"); }
+  writeFileSync(marker(tmp), `${sha}\n`);
+  // A whole copy is never removed (another run may be reading it); a half-written one from a stopped run is replaced.
+  if (existsSync(dir) && !whole(dir)) rmSync(dir, { recursive: true, force: true });
+  try { renameSync(tmp, dir); } catch { rmSync(tmp, { recursive: true, force: true }); /* another run copied it first */ }
+  return whole(dir) ? { dir, sha } : stop("could not be copied out of git");
+}
+
+// ---------- sync report ----------
+
+/**
+ * The minimal report after a sync, from the release records: one line per release newer than
+ * `since` (not past the master copy's version), then what needs the App Creator. Plain code, no tokens.
+ * Details of one release: `node scripts/release.mjs details <version>`.
+ */
+export function syncReport(studio, since) {
+  if (!release) return "No release data next to this script; nothing to report.";
+  const all = release.loadAll(studio);
+  const current = studioVersion(studio);
+  const valid = /^\d+\.\d+\.\d+$/.test(since ?? "");
+  const range = release.summary(all, current, since);
+  if (!range.data.length) return `No releases newer than ${since}${valid ? "" : " (unknown app version)"}: nothing to report.`;
+  const steps = (who) =>
+    release.actions(all, current, since, who).data
+      .map((d) => ({ version: d.version, steps: d.steps.map((s) => actionStep(s, who, release.cmp(d.version, release.LEGACY_LAST) <= 0)).filter(Boolean) }))
+      .filter((d) => d.steps.length);
+  const show = (data) => data.flatMap((d) => [`    ${d.version}:`, ...d.steps.map((s, i) => `      ${i + 1}. ${s}`)]);
+  const [app, admin] = [steps("app"), steps("admin")];
+  const large = range.data.length >= LARGE_JUMP;
+  const lines = [`Releases ${valid ? `${since} -> ${current}` : `up to ${current}`}:`, ...(large ? largeJumpLines(all, range) : range.text.split("\n")).map((l) => `  ${l}`), "", "Needs you:"];
+  if (!app.length && !admin.length) lines.push("  nothing");
+  if (app.length) lines.push("  App actions (do these in this app):", ...show(app));
+  if (admin.length) lines.push("  Admin actions (relay to the App Creator, exact steps):", ...show(admin));
+  if (large) lines.push("", `Large jump: ${range.data.length} releases in one sync. Before you commit, read part 9 of the harness-sync skill's sync-notes.md (${join(studio, "plugins/studio/skills/harness-sync/sync-notes.md")}).`);
+  lines.push("", `Details of one release, only if asked: node ${join(studio, "scripts/release.mjs")} details <version>`);
+  return lines.join("\n");
+}
+
+// From this many releases in one sync the report is the large-jump one: only what apps received is listed, the rest is counted.
+export const LARGE_JUMP = 20;
+
+/** The release lines of a large jump: releases apps received one per line (as in the short report), internal and pre-record ones counted. */
+function largeJumpLines(all, range) {
+  const versions = new Set(range.data.map((d) => d.version));
+  const inRange = all.filter((r) => versions.has(r.version));
+  const old = inRange.filter((r) => r.legacy);
+  const internal = inRange.filter((r) => !r.legacy && r.kind === "internal");
+  const shown = new Set(inRange.filter((r) => !r.legacy && r.kind !== "internal").map((r) => r.version));
+  // A release's line and the lines of its batched changes stay together.
+  const out = [];
+  let keep = false;
+  for (const line of range.text.split("\n")) {
+    const v = /^(\d+\.\d+\.\d+)\s/.exec(line)?.[1];
+    if (v) keep = shown.has(v);
+    if (keep) out.push(line);
+  }
+  if (internal.length) out.push(`and ${internal.length} internal release${internal.length === 1 ? "" : "s"} (app-studio's own tooling: nothing in them reaches an app)`);
+  if (old.length) out.push(`and ${old.length} older release${old.length === 1 ? "" : "s"}, ${old[old.length - 1].version} to ${old[0].version} (from before release records; their steps, if any, are under "Needs you")`);
+  return out;
+}
+
+/**
+ * One recorded step as an app should read it, or null when it asks for nothing. A record's step is a plain sentence ("none" asks
+ * for nothing). A step of a release from before the records (`legacy`) is a whole changelog paragraph that only mentions an
+ * **App action** or **Admin action** somewhere: what is kept is the sentence that starts at that marker, up to the next marker,
+ * and nothing when it says "none". A paragraph with no such marker is kept whole unless it says there is no action.
+ */
+export function actionStep(step, who, legacy = false) {
+  const text = String(step).trim();
+  if (/^(none|nothing|n\/a|not needed)\.?$/i.test(text)) return null;
+  if (!legacy) return text;
+  const kind = who === "admin" ? "Admin" : "App";
+  // "**App action:**", "**App action**:", "**App action** (only ...)"; at the start of the line the opening ** was already stripped.
+  const marker = new RegExp(`(?:\\*\\*|^)${kind} action(?::\\*\\*|\\*\\*:|\\*\\*(?=\\s*\\())`, "gi");
+  const stop = /\*\*(?:App|Admin|Ale) action|\sNo \*\*|\sNot verified/g;
+  const found = [...text.matchAll(marker)];
+  if (!found.length) return new RegExp(`\\bno \\*\\*${kind} action\\*\\*`, "i").test(text) ? null : text;
+  const parts = [];
+  for (const m of found) {
+    const from = m.index + m[0].length;
+    stop.lastIndex = from;
+    const end = stop.exec(text)?.index ?? text.length;
+    const body = text.slice(from, end).trim();
+    if (body && !/^:?\s*(none|not needed|nothing)\b/i.test(body)) parts.push(body.replace(/^:\s*/, ""));
+  }
+  return parts.length ? parts.join(" ") : null;
+}
 
 const semver = (v) => String(v).split(".").map((n) => parseInt(n, 10) || 0);
 const cmpVersion = (a, b) => {
@@ -145,50 +310,8 @@ const cmpVersion = (a, b) => {
   return 0;
 };
 
-/**
- * The CHANGELOG entries newer than `since` (and not newer than `upTo`), newest first, as text, so a
- * sync reads a few KB instead of the whole file. Plain code, no tokens. `[Unreleased]` is studio-only
- * and never listed. Selection is by version number, so a `since` that has no entry of its own still
- * works; with no usable `since` the newest three entries are shown, with a note.
- */
-export function changelogSince(text, since, upTo) {
-  const parts = text.replace(/\r\n/g, "\n").split(/\n(?=## \[)/);
-  const entries = parts
-    .map((body) => ({ body: body.trim(), version: /^## \[(\d+\.\d+\.\d+)\]/.exec(body.trim())?.[1] }))
-    .filter((e) => e.version);
-  const valid = /^\d+\.\d+\.\d+$/.test(since ?? "");
-  const known = valid && entries.some((e) => e.version === since);
-  let picked = valid ? entries.filter((e) => cmpVersion(e.version, since) > 0) : entries.slice(0, 3);
-  if (upTo) picked = picked.filter((e) => cmpVersion(e.version, upTo) <= 0);
-  const notes = [];
-  if (!valid) notes.push("No usable app version, so the newest entries are shown.");
-  else if (!known) notes.push(`Version ${since} has no entry of its own in CHANGELOG.md; entries newer than it are shown.`);
-  // An action counts unless the entry only says "No **App action**" / "**App action:** none".
-  const acts = (e, kind) => {
-    const t = e.body.replace(new RegExp(`\\b(no|none)\\b[^.\\n]{0,12}\\*\\*${kind} action\\*\\*`, "gi"), "").replace(new RegExp(`\\*\\*${kind} action:?\\*\\*:?\\s*(none|not needed)`, "gi"), "");
-    return new RegExp(`\\*\\*${kind} action`, "i").test(t);
-  };
-  const lines = [];
-  if (!picked.length) {
-    lines.push(`No newer CHANGELOG entries than ${since}${upTo ? ` (up to ${upTo})` : ""}: nothing to read.`, ...notes);
-    return { text: lines.join("\n"), count: 0, app: [], admin: [] };
-  }
-  const app = picked.filter((e) => acts(e, "App")).map((e) => e.version);
-  const admin = picked.filter((e) => acts(e, "Admin")).map((e) => e.version);
-  lines.push(
-    `CHANGELOG: ${picked.length} entr${picked.length === 1 ? "y" : "ies"} newer than ${valid ? since : "your version"}${upTo ? ` (up to ${upTo})` : ""}.`,
-    ...notes,
-    `Entries that mention an App action: ${app.length ? app.join(", ") : "none"}. Admin action: ${admin.length ? admin.join(", ") : "none"}.`,
-    "",
-    picked.map((e) => e.body).join("\n\n"),
-  );
-  return { text: lines.join("\n"), count: picked.length, app, admin };
-}
-
 function changelogFor(studio, since) {
-  const file = join(studio, "CHANGELOG.md");
-  if (!existsSync(file)) return "No CHANGELOG.md in app-studio; nothing to read.";
-  return changelogSince(readFileSync(file, "utf8"), since, studioVersion(studio)).text;
+  return syncReport(studio, since);
 }
 
 // ---------- release helpers (status, release-prepare) ----------
@@ -220,25 +343,15 @@ function claimedVersions(studio) {
   return out;
 }
 
-/** An empty changelog entry to fill in (the wording stays with the thread). */
-export function changelogScaffold(version, date = isoDate()) {
-  return [`## [${version}] - ${date}`, "", "Live check: pending", "", "- Origin: issue #<n>. <what changed>. What changes for the App Creator / App-Studio Owner: <...>. **App action:** none. No **Admin action**."].join("\n");
-}
-
 /** Read-only: where the harness version stands and what the next release may be called. */
 export function studioStatus(studio) {
   const current = studioVersion(studio);
   const claimed = claimedVersions(studio);
   const top = [current, ...claimed.map((c) => c.version)].filter((v) => /^\d+\.\d+\.\d+$/.test(v)).sort(cmpVersion).pop();
   const held = claimed.filter((c) => cmpVersion(c.version, current) > 0);
-  const file = join(studio, "CHANGELOG.md");
-  let live = "no changelog entry for this version";
-  if (existsSync(file)) {
-    const text = readFileSync(file, "utf8").replace(/\r\n/g, "\n");
-    const m = new RegExp(`\\n## \\[${current.replace(/\./g, "\\.")}\\][^\\n]*\\n([\\s\\S]*?)(?=\\n## \\[|$)`).exec(`\n${text}`);
-    const l = m && /Live check:\s*\**\s*(pending|passed[^\n]*)/i.exec(m[1]);
-    live = l ? (/pending/i.test(l[1]) ? "pending" : l[1].trim()) : "no Live check line";
-  }
+  const rec = release ? release.loadAll(studio).find((r) => r.version === current) : null;
+  const st = rec ? String(rec.status?.main ?? "pending") : null;
+  const live = !rec ? "no release record for this version" : /^pending/i.test(st) ? "pending" : st;
   return {
     current,
     nextPatch: bump(top, "patch"),
@@ -249,7 +362,7 @@ export function studioStatus(studio) {
       `app-studio version on this checkout: ${current}`,
       `Versions already held by other branches: ${held.length ? held.map((h) => `${h.version} (${h.ref})`).join(", ") : "none"}`,
       `Next free: patch ${bump(top, "patch")}, minor ${bump(top, "minor")} (you choose: patch for wording and fixes, minor for a new skill, agent, hook, profile field or workflow change)`,
-      `Newest release live check: ${live}`,
+      `Newest release check on main: ${live}${live === "pending" ? ` (once it passed in studio-scratch: node scripts/release.mjs pass-main ${current}, plus any older pending versions)` : ""}`,
     ].join("\n"),
   };
 }
@@ -294,14 +407,28 @@ export function applyRelease(text, version, date, { prevTag, repoUrl } = {}) {
   return { text: `${head}## [Unreleased]\n\n## [${version}] - ${date}\n\n${body}\n\n${rest.replace(/^\n+/, "")}`.replace(/\n{3,}/g, "\n\n") };
 }
 
+/**
+ * Latest release tag (vX.Y.Z). Cloud checkouts are often shallow or made without tags, so a plain
+ * `git describe` reports "none" although the tag exists on origin. Fetch the tags first (best effort),
+ * take the highest version among the local tags, and fall back to asking origin directly.
+ */
+export function lastReleaseTag(app) {
+  spawnSync("git", ["fetch", "--tags", "--quiet", "origin"], { cwd: app, encoding: "utf8", timeout: 20000 });
+  const byVersion = (list) => list.filter((t) => /^v\d+\.\d+\.\d+$/.test(t)).sort((a, b) => semver(b.slice(1)).reduce((d, n, i) => d || n - semver(a.slice(1))[i], 0))[0] ?? null;
+  const local = byVersion((gitOut(app, "tag", "--list", "v*") ?? "").split("\n").map((t) => t.trim()));
+  if (local) return local;
+  const remote = (gitOut(app, "ls-remote", "--tags", "origin", "refs/tags/v*") ?? "").split("\n").map((l) => /refs\/tags\/(v[^\s^]+)$/.exec(l)?.[1]).filter(Boolean);
+  return byVersion(remote);
+}
+
 /** `release-prepare`: dry run by default; `apply` edits CHANGELOG.md. Version choice stays with the caller. */
 export function releasePrepare(app, { version, apply = false, date = isoDate() } = {}) {
   const file = join(app, "CHANGELOG.md");
   if (!existsSync(file)) return { ok: false, text: "No CHANGELOG.md in the app." };
   let current = "0.0.0";
   try { current = JSON.parse(readFileSync(join(app, "package.json"), "utf8")).version ?? current; } catch {}
-  const tag = (gitOut(app, "describe", "--tags", "--abbrev=0", "--match", "v*") ?? "").trim() || null;
-  const subjects = (gitOut(app, "log", tag ? `${tag}..HEAD` : "HEAD", "--format=%s%n%b") ?? "").split("\n").filter(Boolean);
+  const tag = lastReleaseTag(app);
+  const subjects = (gitOut(app, "log", tag ? `${tag}..HEAD` : "HEAD", "--format=%s%n%b") ?? (tag ? gitOut(app, "log", "HEAD", "--format=%s%n%b") : null) ?? "").split("\n").filter(Boolean);
   const kind = proposeBump(subjects, tag ? tag.slice(1) : current);
   const proposed = kind ? bump(tag ? tag.slice(1) : current, kind) : null;
   const chosen = version ?? proposed;
@@ -316,8 +443,154 @@ export function releasePrepare(app, { version, apply = false, date = isoDate() }
   const r = applyRelease(readFileSync(file, "utf8"), chosen, date, { prevTag: tag, repoUrl });
   if (r.error) return { ok: false, text: [...lines, r.error].join("\n") };
   if (apply) writeFileSync(file, r.text);
-  lines.push(apply ? `CHANGELOG.md updated: Unreleased moved under ## [${chosen}] - ${date}, compare links fixed.` : `Dry run: CHANGELOG.md not changed. Would move Unreleased under ## [${chosen}] - ${date} and fix the compare links. Add --apply to write it.`, `Still yours: the wording, and \`npm version ${chosen} --no-git-tag-version\`.`);
+  lines.push(apply ? `CHANGELOG.md updated: Unreleased moved under ## [${chosen}] - ${date}, compare links fixed.` : `Dry run: CHANGELOG.md not changed. Would move Unreleased under ## [${chosen}] - ${date} and fix the compare links.`, apply ? `Still yours: the wording, and \`npm version ${chosen} --no-git-tag-version\`.` : `To cut it (branch, package.json, this changelog move): release-cut --version ${chosen}.`);
   return { ok: true, version: chosen, text: lines.join("\n") };
+}
+
+/**
+ * `release-cut`: the mechanical part of an app release (release skill steps 1-5). Stops, changing
+ * nothing, unless the release gate passes, the tree is clean and HEAD is origin/main (main is pulled
+ * first). Then: release branch (a session branch already on origin/main is kept), package.json via
+ * `npm version`, and the changelog. It never commits, pushes or merges; the version is the caller's.
+ */
+export function releaseCut(app, { version, date = isoDate() } = {}) {
+  const stop = (...why) => ({ ok: false, text: ["Release cut stopped, nothing changed:", ...why.map((w) => `  - ${w}`)].join("\n") });
+  if (!version) return stop("pass --version X.Y.Z (run release-prepare first for the proposed one; the choice is yours)");
+  if (!/^\d+\.\d+\.\d+$/.test(version)) return stop(`not a version: ${version}`);
+  const blockers = releaseBlockers(app);
+  if (blockers.length) return stop(...blockers);
+  if ((gitOut(app, "status", "--porcelain") ?? "x").trim()) return stop("the working tree is not clean: commit or drop the changes first");
+  if (gitOut(app, "fetch", "-q", "origin", "main") === null) return stop("could not fetch origin main");
+  const branch = (gitOut(app, "rev-parse", "--abbrev-ref", "HEAD") ?? "").trim();
+  if (branch === "main" && gitOut(app, "merge", "--ff-only", "-q", "origin/main") === null) return stop("main can't fast-forward to origin/main: sort that out first");
+  const head = (gitOut(app, "rev-parse", "HEAD") ?? "").trim();
+  if (!head || head !== (gitOut(app, "rev-parse", "origin/main") ?? "").trim())
+    return stop(`HEAD (${branch}) is not origin/main: release only what is on main (git switch main && git pull, or start the session branch from origin/main)`);
+  const dry = releasePrepare(app, { version, date });
+  if (!dry.ok) return stop(dry.text.split("\n").pop());
+  const done = [];
+  if (branch === "main") {
+    if (gitOut(app, "switch", "-q", "-c", `chore/release-v${version}`) === null) return stop(`could not create branch chore/release-v${version}`);
+    done.push(`on new branch chore/release-v${version}`);
+  } else done.push(`kept branch ${branch} (it is origin/main)`);
+  if (existsSync(join(app, "package.json"))) {
+    const npm = spawnSync(process.platform === "win32" ? "npm.cmd" : "npm", ["version", version, "--no-git-tag-version", "--allow-same-version"], { cwd: app, encoding: "utf8" });
+    if (npm.status !== 0) return { ok: false, text: [...done.map((d) => `  ${d}`), `npm version ${version} failed: ${(npm.stderr || npm.stdout).trim()}`].join("\n") };
+    done.push(`package.json${existsSync(join(app, "package-lock.json")) ? " and package-lock.json" : ""} set to ${version}`);
+  }
+  releasePrepare(app, { version, date, apply: true });
+  done.push(`CHANGELOG.md: Unreleased moved under ## [${version}] - ${date}, compare links fixed`);
+  return {
+    ok: true,
+    text: [
+      `Release ${version} cut:`,
+      ...done.map((d) => `  ${d}`),
+      "Still yours: tidy the wording of the new changelog section, run `npm run check`, then",
+      `  git commit -am "chore(release): v${version}", push and merge it (CLAUDE.md "Git workflow"). CI green on main and the full run are checked by you, not by this command.`,
+    ].join("\n"),
+  };
+}
+
+/** `release-tag-check`: is tag vX.Y.Z on origin? Without the Release tag workflow, the by-hand steps. */
+export function tagCheck(app, version) {
+  const v = String(version ?? "").replace(/^v/, "");
+  const tag = `v${v}`;
+  const found = (gitOut(app, "ls-remote", "--tags", "origin", `refs/tags/${tag}`) ?? "").trim();
+  if (found) return { ok: true, text: `Tag ${tag} is on origin. Never move or delete it.` };
+  const workflow = existsSync(join(app, ".github/workflows/release-tag.yml"));
+  return {
+    ok: false,
+    text: workflow
+      ? `Tag ${tag} is not on origin yet. The Release tag workflow makes it once the release commit is on main: wait for its run on main, then run this again.`
+      : [
+          `Tag ${tag} is not on origin, and this app has no Release tag workflow (.github/workflows/release-tag.yml), so tag by hand:`,
+          `  git switch main && git pull && git tag -a ${tag} -m "${tag}" && git push origin ${tag}`,
+          "  In a cloud session that push is refused: record the tag in docs/RELEASES.md with the commit, carry on, and suggest adding the workflow (harness-sync).",
+        ].join("\n"),
+  };
+}
+
+const SYNC_FORWARD = { "--force": "force", "--live-check": "liveCheck", "--dry-run": "dry" };
+
+/**
+ * `sync`: harness-sync's mechanical steps in one go. Fast-forward app-studio to origin main, then
+ * app-studio's own (just pulled) script runs `pull` and, only if that changed everything cleanly,
+ * `health`. The live-check gate and the edited-file refusal stay inside `pull`.
+ */
+function syncApp(app, studio, opts) {
+  const out = [];
+  if (existsSync(join(studio, ".git"))) {
+    // fetch + fast-forward from origin main, not `git pull`: a cloud session's app-studio clone can sit on a
+    // session branch with no upstream.
+    let g = spawnSync("git", ["-C", studio, "fetch", "-q", "origin", "main"], { encoding: "utf8" });
+    if (g.status === 0) g = spawnSync("git", ["-C", studio, "merge", "--ff-only", "-q", "FETCH_HEAD"], { encoding: "utf8" });
+    if (g.status !== 0) {
+      console.log(`Could not pull app-studio (${studio}): ${(g.stderr || g.stdout).trim()}\nNothing in the app was changed. Fix the app-studio checkout, then run sync again.`);
+      return 1;
+    }
+    out.push(`app-studio pulled (v${studioVersion(studio)}).`);
+  } else out.push(`app-studio at ${studio} is not a git checkout, so it was not pulled.`);
+  // Apps get releases, code included: the pull and the health check run the sync script of the current release, not what merged
+  // since (the live check alone runs the checkout as it is).
+  let from = studio;
+  if (!opts.liveCheck) {
+    const view = releasedView(studio);
+    if (view.error) {
+      console.log(view.error);
+      return 1;
+    }
+    from = view.dir;
+  }
+  const master = join(from, "scripts/studio-sync.mjs");
+  const step = (...a) => spawnSync(process.execPath, [master, ...a, "--app", app, "--studio", from], { encoding: "utf8" });
+  // The version this sync started on survives a stop: a --force rerun finds the lock already moved, and would
+  // otherwise print no changelog excerpt (so an App action could be missed).
+  const marker = join(app, ".git", "studio-sync-from");
+  const lockNow = readLock(app)?.studio;
+  let start = lockNow;
+  if (existsSync(marker)) start = readFileSync(marker, "utf8").trim() || lockNow;
+  const fingerprint = () => [LOCK, "CLAUDE.md"].map((f) => (existsSync(join(app, f)) ? readFileSync(join(app, f), "utf8") : "")).join("\0");
+  const fpBefore = fingerprint();
+  const p = step("pull", ...Object.keys(SYNC_FORWARD).filter((f) => opts[SYNC_FORWARD[f]]));
+  if (opts.dry) {
+    // A preview: the pull printed what it would do and its report; nothing in the app changed, so no health run and no commit line.
+    console.log([...out, p.stdout.trim(), p.stderr.trim()].filter(Boolean).join("\n"));
+    return p.status;
+  }
+  const now = studioVersion(studio);
+  const pullOut = p.stdout.trim();
+  // The pull prints the report itself when it moved the app; a gate refusal changed nothing, so it shows none.
+  const refused = /not live-checked yet/.test(p.stderr);
+  const excerpt = start && start !== now && !refused && !pullOut.includes(`Releases ${start} ->`) ? changelogFor(studio, start) : "";
+  out.push(pullOut, ...(excerpt ? ["", excerpt] : []));
+  if (p.status !== 0) {
+    if (existsSync(join(app, ".git")) && start && start !== now) writeFileSync(marker, start);
+    if (p.stderr.trim()) out.push(p.stderr.trim());
+    if (/skipped/.test(p.stdout))
+      out.push("", "Sync stopped: the files above were edited here. For each, send the change as a harness-idea (if it helps every app) or move it to the App profile (if app-specific), then run sync again with --force.");
+    console.log(out.filter(Boolean).join("\n"));
+    return 1;
+  }
+  const h = step("health", ...(opts.liveCheck ? ["--live-check"] : []));
+  out.push("", h.stdout.trim());
+  if (h.status !== 0) {
+    out.push("Sync stopped: fix what health reports (the commit hook blocks the commit otherwise), then run health again.");
+    console.log(out.join("\n"));
+    return 1;
+  }
+  rmSync(marker, { force: true });
+  const changed = start !== now || fingerprint() !== fpBefore;
+  if (!changed) {
+    out.push("", "Sync done: already in step, nothing to commit.");
+  } else {
+    out.push(
+      "",
+      "Still yours: apply any App action in the report above, relay any Admin action, list this app's fixed and declined ideas, and pass on any Project instructions prompt.",
+      `Then commit "chore(harness): sync studio v${now}" and merge it via a PR (CLAUDE.md "Git workflow").`,
+    );
+  }
+  console.log(out.join("\n"));
+  return 0;
 }
 
 // ---------- stack packs ----------
@@ -473,8 +746,85 @@ export function masterFiles(studio, packs = []) {
       files[`.claude/packs/${name}/${toPosix(relative(base, src))}`] = { src, hash: hashFile(src) };
     }
   }
+  // A module may ship skills (`skills/<skill>/...`) and agents (`agents/<agent>.md`): they land in
+  // .claude/skills/ and .claude/agents/ like the core's. A name the core or an earlier pack already
+  // has stays theirs, whole (packClashes reports it; `pack add` and `health` fail on it).
+  const owner = new Map(Object.keys(files).map((p) => [unitOf(p), "core"]));
+  for (const name of packs) {
+    for (const [path, src] of Object.entries(packShared(studio, name))) {
+      const unit = unitOf(path);
+      if (!owner.has(unit)) owner.set(unit, name);
+      if (owner.get(unit) === name) files[path] = { src, hash: hashFile(src), pack: name };
+    }
+  }
   return files;
 }
+
+// Skills and agents a pack ships beside `managed/` and `starter/`, as [pack folder, app folder].
+const PACK_SHARED = [
+  ["skills", ".claude/skills"],
+  ["agents", ".claude/agents"],
+];
+
+/** The skill and agent files a pack ships: { "<app path>": "<absolute master path>" }. */
+function packShared(studio, name) {
+  const out = {};
+  for (const [from, to] of PACK_SHARED) {
+    const base = join(packDir(studio, name), from);
+    for (const src of listFiles(base)) {
+      const rel = toPosix(relative(base, src));
+      if (from === "agents" && (rel.includes("/") || !rel.endsWith(".md"))) continue; // an agent is one .md file
+      if (from === "skills" && !rel.includes("/")) continue; // a skill is a folder
+      out[`${to}/${rel}`] = src;
+    }
+  }
+  return out;
+}
+
+/** The skill folder or agent file an app path belongs to (".claude/skills/x", ".claude/agents/x.md"), or null. */
+function unitOf(path) {
+  const m = /^(\.claude\/skills\/[^/]+)\/|^(\.claude\/agents\/[^/]+\.md)$/.exec(path);
+  return m ? (m[1] ?? m[2]) : null;
+}
+const unitMain = (unit) => (unit.startsWith(".claude/skills/") ? `${unit}/SKILL.md` : unit);
+const unitLabel = (unit) => `${unit.startsWith(".claude/skills/") ? "skill" : "agent"} "${basename(unit, ".md")}"`;
+
+/** Skills and agents two sources ship under one name: a pack against the core, or against an earlier pack. [{ pack, text }]. */
+export function packClashes(studio, packs) {
+  const owner = new Map(Object.keys(masterFiles(studio)).filter(unitOf).map((p) => [unitOf(p), "the core"]));
+  const clashes = [];
+  for (const name of packs) {
+    for (const unit of new Set(Object.keys(packShared(studio, name)).map(unitOf))) {
+      if (!owner.has(unit)) owner.set(unit, `the ${name} pack`);
+      else clashes.push({ pack: name, text: `the ${name} pack ships the ${unitLabel(unit)}, which ${owner.get(unit)} already ships: one name, one owner` });
+    }
+  }
+  return clashes;
+}
+
+/**
+ * A pack's skills and agents whose name the app already uses for one of its own: the folder or file is
+ * there (an empty folder is nobody's), the lock doesn't know it, and it isn't the pack's text.
+ * [{ unit, pack }]. (A core file in the way stays what it was: one skipped file.)
+ */
+const unitThere = (app, unit) => {
+  const p = join(app, unit);
+  return existsSync(p) && (!statSync(p).isDirectory() || readdirSync(p).length > 0);
+};
+function ownClashes(app, lockFiles, master) {
+  const known = new Set(Object.keys(lockFiles).map(unitOf));
+  const out = new Map();
+  for (const [path, m] of Object.entries(master)) {
+    const unit = unitOf(path);
+    if (!unit || !m.pack || out.has(unit) || known.has(unit) || !unitThere(app, unit)) continue;
+    const main = master[unitMain(unit)];
+    if (main && localHash(app, unitMain(unit)) === main.hash) continue; // the pack's own text, just not recorded yet
+    out.set(unit, { unit, pack: m.pack });
+  }
+  return [...out.values()];
+}
+const ownClashText = ({ unit, pack }, then = "run pull") =>
+  `${unit}: the app's own ${unitLabel(unit)} has the name of one the ${pack} pack ships. Rename the app's own (folder or file, and its \`name:\`), then ${then}`;
 
 // { "<app path>": { pack, src, text, hash } } with {{slug}} and {{title}} filled in.
 // `all` is every pack the app has: a pack's `supersededBy` map ({ "<path>": ["<pack>"] }) drops its
@@ -533,10 +883,19 @@ function writeLock(app, lock) {
   if (lock.packs && Object.keys(lock.packs).length) out.packs = sortKeys(lock.packs);
   if (lock.app) out.app = lock.app;
   if (lock.instructions) out.instructions = lock.instructions;
+  if (lock.unreleased === true) out.unreleased = true;
+  if (lock.since) out.since = lock.since;
+  if (Array.isArray(lock.ownStarters)) out.ownStarters = lock.ownStarters.filter((name) => name in (lock.packs ?? {})).sort();
   out.files = sortKeys(lock.files);
   if (lock.starters && Object.keys(lock.starters).length) out.starters = sortKeys(lock.starters);
   mkdirSync(dirname(join(app, LOCK)), { recursive: true });
   writeFileSync(join(app, LOCK), `${JSON.stringify(out, null, 2)}\n`);
+}
+
+/** Deletes a managed file, and the folders it leaves empty (an empty skill folder would read as a broken skill of the app's own). */
+function removeManaged(app, path) {
+  rmSync(join(app, path));
+  for (let dir = dirname(path); dir.startsWith(".claude/") && !readdirSync(join(app, dir)).length; dir = dirname(dir)) rmdirSync(join(app, dir));
 }
 
 const localHash = (app, path) => (existsSync(join(app, path)) ? hashFile(join(app, path)) : null);
@@ -581,12 +940,29 @@ export function compare(app, studio) {
       if (cur === m.hash) continue; // already equals the current starter (e.g. only formatting differed from the last install): nothing to merge
       report.starters.push({ path, pack: rec.pack, refreshable: !held && cur === rec.installed });
     }
-    report.newStarters = Object.keys(starters).filter((p) => !(p in (lock.starters ?? {})) && localHash(app, p) === null);
+    // A pack whose starters the app never took (it keeps its own files) has nothing "new" for it.
+    const own = ownFilesPacks(lock, starters);
+    report.newStarters = Object.keys(starters).filter((p) => !own.has(starters[p].pack) && !(p in (lock.starters ?? {})) && localHash(app, p) === null);
     report.partners = partnerGaps(studio, packs);
     const ih = instructionsHash(studio);
     report.instructionsChanged = !!ih && lock.instructions !== ih;
   }
   return report;
+}
+
+/**
+ * The app's packs whose starter files it never took: the app predates them (or was moved onto the harness by hand) and keeps its
+ * own CI, configs and code there. A pull never adds such a pack's starter files. The lock records the answer (`ownStarters`), decided
+ * once, at the first pull that finds no record: every pack that ships starter files (`starters`: what app-studio ships now) of which
+ * the lock tracks none. Later a pack is never added to the list, so a pack that gains its first starter file still delivers it, and
+ * a pack added with `pack add` brings its files and is tracked like any other.
+ */
+export function ownFilesPacks(lock, starters = {}) {
+  const have = Object.keys(lock?.packs ?? {});
+  if (Array.isArray(lock?.ownStarters)) return new Set(lock.ownStarters.filter((name) => have.includes(name)));
+  const tracked = new Set(Object.values(lock?.starters ?? {}).map((rec) => rec.pack));
+  const ships = new Set(Object.values(starters).map((m) => m.pack));
+  return new Set(have.filter((name) => ships.has(name) && !tracked.has(name)));
 }
 
 export const drift = (r) =>
@@ -603,15 +979,25 @@ function readLockForPull(app, force) {
   }
 }
 
-export function pull(app, studio, { force = false, patch = true } = {}) {
+/**
+ * `dry`: nothing is written (no file, no lock, no CLAUDE.md); the result says what a real pull would do.
+ * `fresh`: packs being added right now (`pack add`), whose starter files come in although the lock tracks none of them yet.
+ */
+export function pull(app, studio, { force = false, patch = true, dry = false, fresh = [] } = {}) {
   const lock = readLockForPull(app, force);
   const packs = Object.keys(lock.packs ?? {});
   for (const name of packs) readPack(studio, name); // a pack gone from app-studio fails before any file moves
   const files = { ...lock.files };
-  const result = { written: [], deleted: [], skipped: [], refreshed: [], starterNotes: [], created: [], held: [] };
+  const result = { written: [], deleted: [], skipped: [], refreshed: [], starterNotes: [], created: [], held: [], untaken: [], untakenPacks: [], newAgents: [] };
   const master = masterFiles(studio, packs);
+  // A pack's skill or agent never lands in the app's own folder of the same name: it is left whole and reported.
+  // --force is for edited shared files; it never overwrites something the app wrote itself.
+  const clashes = ownClashes(app, files, master);
+  result.clashes = [...packClashes(studio, packs).map((c) => c.text), ...clashes.map((c) => ownClashText(c))];
+  const taken = new Set(clashes.map((c) => c.unit));
 
   for (const [path, { src, hash }] of Object.entries(master)) {
+    if (taken.has(unitOf(path))) continue;
     const cur = localHash(app, path);
     if (cur === hash) {
       files[path] = hash;
@@ -623,10 +1009,15 @@ export function pull(app, studio, { force = false, patch = true } = {}) {
       result.skipped.push(path);
       continue;
     }
-    mkdirSync(dirname(join(app, path)), { recursive: true });
-    copyFileSync(src, join(app, path));
+    if (!dry) {
+      mkdirSync(dirname(join(app, path)), { recursive: true });
+      copyFileSync(src, join(app, path));
+    }
     files[path] = hash;
     result.written.push(path);
+    // An agent file the app did not have: the running session listed its agents before this file existed (#420).
+    const agent = cur === null && /^\.claude\/agents\/([^/]+)\.md$/.exec(path);
+    if (agent) result.newAgents.push(agent[1]);
   }
   for (const path of Object.keys(files)) {
     if (path in master) continue;
@@ -635,7 +1026,7 @@ export function pull(app, studio, { force = false, patch = true } = {}) {
       result.skipped.push(path);
       continue;
     }
-    if (cur !== null) rmSync(join(app, path));
+    if (cur !== null && !dry) removeManaged(app, path);
     delete files[path];
     result.deleted.push(path);
   }
@@ -644,19 +1035,31 @@ export function pull(app, studio, { force = false, patch = true } = {}) {
   // pack gained are created where nothing is in the way, the others are noted for a manual merge
   // (then `ack`). All of that is held back while the app calls a module it doesn't have.
   const newLock = { ...lock, studio: studioVersion(studio), files };
+  if (!Array.isArray(newLock.ownStarters)) newLock.ownStarters = []; // decided: no pack to leave out (replaced below when the app has packs)
+  if (!newLock.since) newLock.since = new Date().toISOString().slice(0, 10); // the date of the app's first install or sync: where health's grace periods count from
   if (packs.length) {
     newLock.packs = Object.fromEntries(packs.map((n) => [n, readPack(studio, n).version]));
     const starters = starterFiles(studio, packs, lock.app ?? defaultVars(app));
     newLock.starters = { ...lock.starters };
     result.holdReason = holdReason(missingModules(app, studio, packs));
+    const own = ownFilesPacks(lock, starters);
+    for (const name of fresh) own.delete(name);
+    newLock.ownStarters = [...own];
     for (const [path, m] of Object.entries(starters)) {
       if (path in (lock.starters ?? {}) || localHash(app, path) !== null) continue;
+      if (own.has(m.pack)) {
+        result.untaken.push(path); // the app keeps its own files where this pack has starters: none is "new" for it
+        if (!result.untakenPacks.includes(m.pack)) result.untakenPacks.push(m.pack);
+        continue;
+      }
       if (result.holdReason) {
         result.held.push(path);
         continue;
       }
-      mkdirSync(dirname(join(app, path)), { recursive: true });
-      writeFileSync(join(app, path), m.text);
+      if (!dry) {
+        mkdirSync(dirname(join(app, path)), { recursive: true });
+        writeFileSync(join(app, path), m.text);
+      }
       newLock.starters[path] = { pack: m.pack, installed: m.hash, seen: m.hash };
       result.created.push(path);
     }
@@ -667,7 +1070,7 @@ export function pull(app, studio, { force = false, patch = true } = {}) {
       else if (localHash(app, path) === m.hash) {
         newLock.starters[path] = { pack: rec.pack, installed: m.hash, seen: m.hash }; // already the current starter: record it, nothing to merge
       } else if (localHash(app, path) === rec.installed) {
-        writeFileSync(join(app, path), m.text);
+        if (!dry) writeFileSync(join(app, path), m.text);
         newLock.starters[path] = { pack: rec.pack, installed: m.hash, seen: m.hash };
         result.refreshed.push(path);
       } else {
@@ -675,8 +1078,8 @@ export function pull(app, studio, { force = false, patch = true } = {}) {
       }
     }
   }
-  writeLock(app, newLock);
-  result.patched = patch ? patchProfile(app, studio) : [];
+  if (!dry) writeLock(app, newLock);
+  result.patched = patch ? patchProfile(app, studio, { dry }) : [];
   return result;
 }
 
@@ -775,7 +1178,7 @@ function syncOwnedSections(lines, tplLines) {
  * the App profile's "Decision log" row and the "say plainly what you did not check" line. Each is
  * added only when missing, taken from the template, and never replaces or reorders app content.
  */
-export function patchProfile(app, studio) {
+export function patchProfile(app, studio, { dry = false } = {}) {
   const file = join(app, "CLAUDE.md");
   const tpl = join(studio, "plugins/studio/templates/CLAUDE.md");
   if (!existsSync(file) || !existsSync(tpl)) return [];
@@ -826,7 +1229,7 @@ export function patchProfile(app, studio) {
 
   done.push(...syncOwnedSections(lines, tplLines));
 
-  if (done.length) {
+  if (done.length && !dry) {
     let text = lines.join("\n");
     if (!text.endsWith("\n")) text += "\n";
     writeFileSync(file, crlf ? text.replace(/\n/g, "\r\n") : text);
@@ -849,6 +1252,16 @@ export function install(app, studio, opts) {
   return result;
 }
 
+const PROTOTYPE_IGNORE = ["# Hand-written prototypes saved by discovery are throwaway HTML, not source.", "docs/**/*.html"];
+/** True when the app has a Prettier ignore file that does not yet skip HTML prototypes under `folder` (default docs/discovery/). */
+function prototypeIgnoreMissing(app, folder = "docs/discovery/") {
+  const file = join(app, ".prettierignore");
+  if (!existsSync(file)) return false; // no stack yet: the stack pack's starter brings the line
+  const lines = readFileSync(file, "utf8").split(/\r?\n/).map((l) => l.trim());
+  const dir = folder.replace(/\/*$/, "");
+  return !lines.some((l) => l === "docs/**/*.html" || l === `${dir}/**/*.html` || l === "**/*.html" || l === "*.html");
+}
+
 /** Adds stack packs (and what they require): managed files, starter files, package.json entries. */
 export function addPacks(app, studio, names, { slug, title, force = false } = {}) {
   if (!names.length) throw new Error("Name at least one pack. Available: " + byKind(studio, listPacks(studio)));
@@ -860,7 +1273,18 @@ export function addPacks(app, studio, names, { slug, title, force = false } = {}
   checkVars(vars);
   const packs = [...new Set([...Object.keys(lock.packs ?? {}), ...packClosure(studio, names)])];
   const order = packClosure(studio, packs);
+  // A pack that is a whole stack of its own (static-site) can't share an app with the stacks it replaces.
+  for (const n of order)
+    for (const other of readPack(studio, n).conflictsWith ?? [])
+      if (order.includes(other))
+        throw new Error(`Pack "${n}" can't be in the same app as "${other}" (they ship the same build setup). Use one or the other.`);
   const fresh = order.filter((n) => !(n in (lock.packs ?? {})));
+  // One name, one owner: nothing is copied when a new pack's skill or agent is already the core's, another pack's or the app's own.
+  const clashes = [
+    ...packClashes(studio, order).filter((c) => fresh.includes(c.pack)).map((c) => c.text),
+    ...ownClashes(app, lock.files, masterFiles(studio, order)).filter((c) => fresh.includes(c.pack)).map((c) => ownClashText(c, "run pack add again")),
+  ];
+  if (clashes.length) throw new Error(`Name clash, nothing was added:\n${clashes.map((c) => `  ${c}`).join("\n")}`);
 
   // Register the packs, then reuse pull for the managed files.
   writeLock(app, {
@@ -868,7 +1292,7 @@ export function addPacks(app, studio, names, { slug, title, force = false } = {}
     app: vars,
     packs: { ...lock.packs, ...Object.fromEntries(fresh.map((n) => [n, readPack(studio, n).version])) },
   });
-  const result = pull(app, studio, { force });
+  const result = pull(app, studio, { force, fresh });
   result.added = fresh;
   result.kept = [];
   result.partners = partnerGaps(studio, order);
@@ -891,12 +1315,19 @@ export function addPacks(app, studio, names, { slug, title, force = false } = {}
   }
   result.held = result.held.filter((path) => !(path in starters));
   writeLock(app, after);
+  // An app that already has a stack gets the discovery prototype ignore line now: its stack starter came before discovery.
+  if (fresh.includes("discovery") && prototypeIgnoreMissing(app)) {
+    const file = join(app, ".prettierignore");
+    const text = readFileSync(file, "utf8");
+    writeFileSync(file, `${text}${text === "" || text.endsWith("\n") ? "" : "\n"}${PROTOTYPE_IGNORE.join("\n")}\n`);
+    result.ignoreLine = ".prettierignore";
+  }
   return result;
 }
 
 /**
- * Drops packs from an app: their managed files (checklists, release notes) are deleted and the lock
- * forgets them. Starter files and package.json entries are the app's own and stay. Refuses a pack
+ * Drops packs from an app: their managed files (checklists, release notes, a module's skills and
+ * agents) are deleted and the lock forgets them. Starter files and package.json entries are the app's own and stay. Refuses a pack
  * another remaining pack requires, and a managed file edited here unless `force`.
  */
 export function removePacks(app, studio, names, { force = false } = {}) {
@@ -913,14 +1344,17 @@ export function removePacks(app, studio, names, { force = false } = {}) {
   const result = { removed: names, deleted: [], skipped: [], startersKept: [] };
   for (const n of names) {
     const prefix = `.claude/packs/${n}/`;
+    // Its skills and agents, unless the core or another of the app's packs is the one that ships that name.
+    const mine = masterFiles(studio, have);
+    const skillPaths = new Set(Object.keys(packShared(studio, n)).filter((p) => mine[p]?.pack === n));
     for (const [path, hash] of Object.entries(lock.files)) {
-      if (!path.startsWith(prefix)) continue;
+      if (!path.startsWith(prefix) && !skillPaths.has(path)) continue;
       const cur = localHash(app, path);
       if (cur !== null && cur !== hash && !force) {
         result.skipped.push(path);
         continue;
       }
-      if (cur !== null) rmSync(join(app, path));
+      if (cur !== null) removeManaged(app, path);
       delete lock.files[path];
       result.deleted.push(path);
     }
@@ -929,7 +1363,7 @@ export function removePacks(app, studio, names, { force = false } = {}) {
       delete lock.starters[path];
       result.startersKept.push(path);
     }
-    if (!result.skipped.some((x) => x.startsWith(prefix))) delete lock.packs[n];
+    if (!result.skipped.some((x) => x.startsWith(prefix) || skillPaths.has(x))) delete lock.packs[n];
   }
   writeLock(app, lock);
   return result;
@@ -969,10 +1403,12 @@ function parseArgs(argv) {
     if (a === "--warn") opts.warn = true;
     else if (a === "--live-check") opts.liveCheck = true;
     else if (a === "--force") opts.force = true;
+    else if (a === "--dry-run") opts.dry = true;
     else if (a === "--build-only") opts.buildOnly = true;
+    else if (a === "--discovery-only") opts.discoveryOnly = true;
     else if (a === "--apply") opts.apply = true;
     else if (a === "--scaffold") opts.scaffold = true;
-    else if (["--app", "--studio", "--slug", "--title", "--since", "--version"].includes(a)) opts[a.slice(2)] = argv[++i];
+    else if (["--app", "--studio", "--slug", "--title", "--since", "--version", "--date"].includes(a)) opts[a.slice(2)] = argv[++i];
     else if (a.startsWith("--")) throw new Error(`Unknown argument: ${a}`);
     else opts.rest.push(a);
   }
@@ -1003,21 +1439,82 @@ function locate(opts) {
   return { app, studio };
 }
 
-// Long lists (a pack's starter files) are cut short: the app's git status shows the rest.
-const list = (label, paths) =>
-  paths.length
-    ? [`  ${label}: ${paths.length > 8 ? `${paths.slice(0, 6).join(", ")} and ${paths.length - 6} more` : paths.join(", ")}`]
+/** The report line for agents a pull or `pack add` brought in: a session lists its agents when it starts, so the thread that
+ *  ran the sync may not be offered them, while the push gate can already ask for one (#420). */
+export const newAgentsNote = (names) =>
+  names?.length
+    ? [`  new agents: ${names.join(", ")} (a session lists its agents when it starts, so this session may not offer them yet. If the Agent tool doesn't, run a general-purpose agent told to read and follow .claude/agents/<name>.md, on the model that file names; a new thread has them)`]
     : [];
 
-/** The App profile section of CLAUDE.md, or null when the file or section is missing. */
-function profileSection(app) {
+// Long lists (a pack's starter files) are cut short: the app's git status shows the rest. A dry run changes nothing, so git
+// shows nothing: it prints every file (#422).
+let fullLists = false;
+const list = (label, paths) =>
+  paths.length
+    ? [`  ${label}: ${paths.length > 8 && !fullLists ? `${paths.slice(0, 6).join(", ")} and ${paths.length - 6} more` : paths.join(", ")}`]
+    : [];
+
+/** The App profile section of CLAUDE.md (or another `## heading` section), or null when the file or section is missing. */
+function profileSection(app, heading = "## App profile") {
   const file = join(app, "CLAUDE.md");
   if (!existsSync(file)) return null;
   const text = readFileSync(file, "utf8");
-  const start = text.indexOf("## App profile");
+  const start = text.indexOf(heading);
   if (start < 0) return null;
   const end = text.indexOf("\n## ", start + 5);
   return text.slice(start, end < 0 ? undefined : end);
+}
+
+const DISCOVERY_REQUIRED = ["Product", "Target users", "Starting idea", "Docs folder", "Sign-off mode"];
+const SIGN_OFF_MODES = ["per artifact", "autonomous with record"];
+/** Problems with the Discovery profile, for health: checked only while the discovery module is installed. */
+export function discoveryProfileProblems(app, lock) {
+  if (!lock?.packs?.discovery) return [];
+  const section = profileSection(app, "## Discovery profile");
+  const fix = "node .claude/hooks/app-setup.mjs discovery-profile";
+  if (section === null) return [`the discovery module is installed but CLAUDE.md has no "## Discovery profile" section; write it with: ${fix} init --product "<one line>" --users "<one line>"`];
+  const value = (f) => (profileField(section, f) ?? "").replace(/`/g, "").trim();
+  const blank = DISCOVERY_REQUIRED.filter((f) => !value(f) || isPlaceholder(value(f)));
+  if (blank.length) return [`the Discovery profile has no ${blank.join(", ")}; set it with: ${fix} set "Row=value"`];
+  const problems = [];
+  if (!SIGN_OFF_MODES.includes(value("Sign-off mode").toLowerCase())) problems.push(`the Discovery profile's Sign-off mode must be "${SIGN_OFF_MODES.join('" or "')}" (it says "${value("Sign-off mode").slice(0, 40)}")`);
+  const folder = value("Docs folder").split(/\s/)[0];
+  if (folder.startsWith("/") || folder.split("/").includes("..") || !existsSync(join(app, folder)))
+    problems.push(`the Discovery profile's Docs folder "${folder.slice(0, 60)}" is not a folder in this repo (the module's starter documents are in docs/discovery/)`);
+  else if (prototypeIgnoreMissing(app, folder))
+    problems.push(`.prettierignore does not skip HTML prototypes in "${folder}", so a prototype saved as an HTML file fails npm run check; add the line ${folder.replace(/\/*$/, "")}/**/*.html to .prettierignore`);
+  return problems;
+}
+
+/**
+ * One start-up line for an app in discovery: the phase, exit criteria done of total and the next document
+ * (read from the discovery module's status tracker). Null once the app is building.
+ */
+export function discoveryNote(app, lock = readLock(app)) {
+  if (phaseOf(app) !== "discovery") return null;
+  const ends = 'Discovery ends only when the App Creator says "start building" (new-app skill).';
+  if (!lock?.packs?.discovery) return `Phase: discovery (no stack chosen yet). ${ends}`;
+  const workflow = "the order of work and the skill for each document are in .claude/packs/discovery/WORKFLOW.md";
+  const section = profileSection(app, "## Discovery profile");
+  const folder = ((section && profileField(section, "Docs folder")) || "docs/discovery/").replace(/`/g, "").trim().split(/\s/)[0].replace(/\/*$/, "/");
+  const file = join(app, folder, "status.md");
+  const none = `Phase: discovery. No status tracker found at ${folder}status.md; ${workflow}. ${ends}`;
+  if (folder.startsWith("/") || folder.split("/").includes("..") || !existsSync(file)) return none;
+  let text;
+  try {
+    text = readFileSync(file, "utf8");
+  } catch {
+    return none; // a start-up note must never break the session's start
+  }
+  const rows = [...text.matchAll(/^\|[ \t]*(\d+)[ \t]*\|([^|\n]*)\|([^|\n]*)\|/gm)]
+    .map((m) => ({ n: m[1], name: m[2].trim(), status: m[3].replace(/`/g, "").trim().toLowerCase() }))
+    .filter((r) => r.name && !r.status.startsWith("dropped"));
+  if (!rows.length) return `Phase: discovery. ${folder}status.md lists no exit criteria; ${workflow}. ${ends}`;
+  const open = rows.filter((r) => !/^done\b/.test(r.status));
+  // The decision log is kept current all along and scored by the exit gate: it is never the next document.
+  const doc = open.find((r) => !/^decision log\b/i.test(r.name));
+  const next = doc ? `${doc.name} (criterion ${doc.n}, ${doc.status || "not started"})` : "the exit gate report (exit-gate skill)";
+  return `Phase: discovery. Exit criteria: ${rows.length - open.length} of ${rows.length} done. Next: ${next}; ${workflow}. ${ends}`;
 }
 
 /** The value cell of a profile table row (`| Field | value |`), or null when the row is missing. */
@@ -1051,7 +1548,35 @@ export function phaseOf(app) {
 }
 
 const DISCOVERY_STOP =
-  "this app is in discovery (App profile, Phase): no stack is chosen, so there is nothing to build, test or release yet. Finish the requirements, then the App Creator says \"start building\" and the new-app skill's \"Start building\" section switches Phase to build";
+  "this app is in discovery (App profile, Phase): no stack is chosen, so there is nothing to build, test or release yet. Finish the requirements, then the App Creator says \"start building\" and the new-app skill's \"Start building\" section (discovery.md) switches Phase to build";
+
+const BUILD_STOP =
+  "this app is already building (App profile, Phase is build): discovery is over, so this discovery step no longer applies. Requirements now go through prd-intake and build-feature";
+
+/** Repos from the App profile's "Owner-merged repos" row (`owner/repo`, comma-separated). `none` or a missing row: no repos. */
+export function ownerMergedRepos(app) {
+  const section = profileSection(app);
+  const raw = section === null ? null : profileField(section, "Owner-merged repos");
+  if (raw === null || isPlaceholder(raw)) return [];
+  return raw.replace(/`/g, "").split(/[,\s]+/).filter((r) => r && !/^none$/i.test(r));
+}
+
+/** Problems with the Owner-merged repos row, for health: the format, and the merge hook covering auto-merge and approvals. */
+export function ownerMergedProblems(app) {
+  const bad = ownerMergedRepos(app).filter((r) => !/^[^/\s]+\/[^/\s]+$/.test(r));
+  if (bad.length) return [`the App profile's Owner-merged repos must be "none" or owner/repo names separated by commas (it says "${bad.join(" ").slice(0, 40)}")`];
+  if (!ownerMergedRepos(app).length) return [];
+  let settings = {};
+  try {
+    settings = JSON.parse(readFileSync(join(app, ".claude/settings.json"), "utf8"));
+  } catch {
+    return [];
+  }
+  const covered = (settings.hooks?.PreToolUse ?? []).some(
+    (g) => String(g.matcher ?? "").includes("enable_pr_auto_merge") && (g.hooks ?? []).some((h) => String(h.command ?? "").includes("hooks/check.mjs merge")),
+  );
+  return covered ? [] : ['the App profile lists Owner-merged repos, but the merge hook in .claude/settings.json does not cover enable_pr_auto_merge and pull_request_review_write; use the matcher "mcp__.*github.*__(merge_pull_request|enable_pr_auto_merge|pull_request_review_write)" (see app-studio\'s templates/settings.json)'];
+}
 
 /** Fields that must be real even in discovery: they identify the app. */
 const IDENTITY_FIELDS = ["App", "Id prefix", "Repo", "Phase"];
@@ -1186,13 +1711,13 @@ export const REQUIRED_HOOKS = [
 
 // Starter files the app owns but must keep, as [pack, path]: without the Harness workflow, a PR
 // that deletes it (or any docs-only PR) is never checked.
-const REQUIRED_STARTERS = [["base", ".github/workflows/harness.yml"]];
+const REQUIRED_STARTERS = [["base", ".github/workflows/harness.yml"], ["static-site", ".github/workflows/harness.yml"]];
 
 const GIT_HOOKS = ".claude/hooks";
-// Claude Code hooks forwarded to the parent folder in a cloud session, as [event, matcher, check.mjs mode].
+// Claude Code hooks forwarded to the user settings in a cloud session, as [event, matcher, check.mjs mode].
 // The git pre-commit hook covers commits, and SessionStart has already run by then.
 export const FORWARDED_HOOKS = [
-  ["PreToolUse", "mcp__.*github.*__merge_pull_request", "merge"],
+  ["PreToolUse", "mcp__.*github.*__(merge_pull_request|enable_pr_auto_merge|pull_request_review_write)", "merge"],
   ["PreToolUse", "mcp__.*github.*__(push_files|create_or_update_file|delete_file)", "write"],
   ["PostToolUse", "Edit|Write|MultiEdit", "lint"],
   ["Stop", undefined, "test"],
@@ -1200,11 +1725,11 @@ export const FORWARDED_HOOKS = [
 
 /**
  * Turns on what works wherever a session starts: the git pre-commit hook, and in a cloud session
- * (CLAUDE_CODE_REMOTE) the app's hooks forwarded to <parent>/.claude/settings.json. Claude Code loads
- * settings only from the session's top folder, which is the parent when several repos are attached,
- * and it usually picks up the file mid-session (best effort). Returns notes; does nothing in CI.
+ * (CLAUDE_CODE_REMOTE) the app's hooks forwarded to the user settings (~/.claude/settings.json): a cloud
+ * session runs no hooks from a folder's .claude/settings.json, and re-reads the user settings mid-session.
+ * Returns notes; does nothing in CI.
  */
-export function activateHooks(app, env = process.env) {
+export function activateHooks(app, env = process.env, { dry = false } = {}) {
   const notes = [];
   if (env.CI || !existsSync(join(app, LOCK))) return notes;
   const hook = join(app, GIT_HOOKS, "pre-commit");
@@ -1212,12 +1737,15 @@ export function activateHooks(app, env = process.env) {
     const git = (...a) => spawnSync("git", ["-C", app, ...a], { encoding: "utf8" });
     const cur = (git("config", "--get", "core.hooksPath").stdout ?? "").trim();
     if (!cur || cur === GIT_HOOKS) {
-      try {
-        chmodSync(hook, 0o755);
-      } catch {
-        // Windows: Git runs hooks through sh, no mode needed.
+      for (const h of dry ? [] : [hook, join(app, GIT_HOOKS, "pre-push")]) {
+        try {
+          chmodSync(h, 0o755);
+        } catch {
+          // Windows: Git runs hooks through sh, no mode needed. A missing pre-push (an old copy) is fine.
+        }
       }
-      if (!cur && git("config", "core.hooksPath", GIT_HOOKS).status === 0) notes.push("turned on the git pre-commit health check");
+      if (!cur && dry) notes.push("the git pre-commit health check is off");
+      else if (!cur && git("config", "core.hooksPath", GIT_HOOKS).status === 0) notes.push("turned on the git pre-commit health check");
     } else
       notes.push(`git core.hooksPath is "${cur}", so the harness pre-commit check is off: call .claude/hooks/pre-commit from that folder's pre-commit hook`);
   }
@@ -1226,7 +1754,11 @@ export function activateHooks(app, env = process.env) {
   const parent = dirname(app);
   const sharedParent = parent === dirname(parent) || [tmpdir(), "/tmp", "/var/tmp"].some((t) => resolve(t) === resolve(parent));
   if (env.CLAUDE_CODE_REMOTE === "true" && !sharedParent) {
-    const file = join(parent, ".claude", "settings.json");
+    // Cloud sessions don't run hooks from a folder's .claude/settings.json, only from the user settings
+    // (which they also re-read mid-session), so the hooks go there (0.30.1). Old forwarded copies in the
+    // parent folder are dropped. STUDIO_USER_SETTINGS: tests only.
+    if (!dry) dropFrom(join(parent, ".claude", "settings.json"), `${toPosix(app)}/.claude/hooks/`);
+    const file = env.STUDIO_USER_SETTINGS || process.env.STUDIO_USER_SETTINGS || join(homedir(), ".claude", "settings.json");
     const mine = `${toPosix(app)}/.claude/hooks/`;
     let settings = {};
     try {
@@ -1247,13 +1779,31 @@ export function activateHooks(app, env = process.env) {
         ...(matcher ? { matcher } : {}),
         hooks: [{ type: "command", command: `node "${mine}check.mjs" ${mode}`, timeout: mode === "test" || mode === "lint" ? 300 : 30 }],
       });
-    if (JSON.stringify(settings) !== before) {
+    if (JSON.stringify(settings) !== before && dry) notes.push("the app's hooks are not forwarded to the user settings, so a cloud session does not run them");
+    else if (JSON.stringify(settings) !== before) {
       mkdirSync(dirname(file), { recursive: true });
       writeFileSync(file, `${JSON.stringify(settings, null, 2)}\n`);
-      notes.push(`forwarded the app's hooks to ${toPosix(file)} (sessions whose top folder is ${toPosix(parent)})`);
+      notes.push(`forwarded the app's hooks to ${toPosix(file)} (the user settings, which cloud sessions run)`);
     }
   }
   return notes;
+}
+
+/** Removes the hooks whose command contains `mine` from a settings file, if it has any. */
+function dropFrom(file, mine) {
+  if (!existsSync(file)) return;
+  let s;
+  try {
+    s = JSON.parse(readFileSync(file, "utf8"));
+  } catch {
+    return;
+  }
+  const before = JSON.stringify(s);
+  for (const e of Object.keys(s.hooks ?? {}))
+    s.hooks[e] = s.hooks[e]
+      .map((g) => ({ ...g, hooks: (g.hooks ?? []).filter((h) => !String(h.command ?? "").includes(mine)) }))
+      .filter((g) => g.hooks.length);
+  if (JSON.stringify(s) !== before) writeFileSync(file, `${JSON.stringify(s, null, 2)}\n`);
 }
 
 function hookGaps(app) {
@@ -1348,6 +1898,46 @@ export function idGaps(app) {
   return [...seen].filter(([, w]) => w.length > 1).map(([id, w]) => `backlog id ${id} is used ${w.length} times (${[...new Set(w)].join(", ")}): two items must not share an id; renumber the newer one, and every reference to it, to the next free id`);
 }
 
+/** Days an app with decision ids used twice only gets a note, counted from its install or first sync (lock `since`). */
+export const DECISION_GRACE_DAYS = 14;
+
+/** Decision ids defined twice in the app's decision log (the file the App profile's Decision log row names). */
+export function decisionDuplicates(app) {
+  const section = profileSection(app);
+  const row = section === null ? null : profileField(section, "Decision log");
+  const file = row === null ? "docs/PRD.md" : (/`([^`\s]+\.md)`/.exec(row)?.[1] ?? /(?:^|\s)([\w./-]+\.md)\b/.exec(row)?.[1] ?? "docs/PRD.md");
+  const path = join(app, file);
+  if (!existsSync(path)) return { file, dups: [] };
+  const count = new Map();
+  for (const m of readFileSync(path, "utf8").matchAll(/^#{2,4}[ \t]+(D-\d+)\b/gm)) count.set(m[1], (count.get(m[1]) ?? 0) + 1);
+  return { file, dups: [...count].filter(([, n]) => n > 1).map(([id]) => id) };
+}
+
+/** Entries (numbered or not) left in docs/PRD.md "Decisions" while the Decision log row points at another file. */
+export function strandedDecisions(app) {
+  const { file } = decisionDuplicates(app);
+  const prd = join(app, "docs/PRD.md");
+  if (file === "docs/PRD.md" || !existsSync(prd)) return [];
+  // The same count as decisions.mjs decisionEntries: a ### heading, list item or table row inside "## Decisions".
+  const md = readFileSync(prd, "utf8").replace(/\r\n/g, "\n").replace(/<!--[\s\S]*?-->/g, "");
+  const h = /^## Decisions[ \t]*$/m.exec(md);
+  const rest = h ? md.slice(h.index + h[0].length) : "";
+  const next = /^## /m.exec(rest);
+  const lines = (next ? rest.slice(0, next.index) : rest).split("\n");
+  const n = lines.filter((l, i) => /^(#{3,4}[ \t]+\S|\s*(?:[-*]|\d+[.)])[ \t]+\S)/.test(l) || (/^\s*\|/.test(l) && !/^\s*\|[\s:|-]+$/.test(l) && !/^\s*\|[\s:|-]+$/.test(lines[i + 1] ?? ""))).length;
+  return n ? [`docs/PRD.md "Decisions" still has ${n} decision entr${n === 1 ? "y" : "ies"}, but the App profile's Decision log row points at ${file}: move them into ${file} (keep their dates and ids), or point the row back at docs/PRD.md`] : [];
+}
+
+/** A note while the app is inside its grace period (or has no `since` date yet), a problem after it. */
+export function decisionIdFindings(app, lock, today = new Date()) {
+  const { file, dups } = decisionDuplicates(app);
+  if (!dups.length) return { problems: [], notes: [] };
+  const msg = `decision id${dups.length > 1 ? "s" : ""} ${dups.join(", ")} used more than once in ${file}: two decisions must not share an id; renumber the newer one, and every reference to it, to the next free id (decisions.mjs next)`;
+  const since = lock?.since ? Date.parse(lock.since) : NaN;
+  const days = Number.isNaN(since) ? 0 : Math.floor((today.getTime() - since) / 86400000);
+  return days > DECISION_GRACE_DAYS ? { problems: [msg], notes: [] } : { problems: [], notes: [`${msg} (a note for ${Math.max(0, DECISION_GRACE_DAYS - days)} more day(s), then it fails the health check)`] };
+}
+
 /** { problems, notes }: problems fail the check, notes don't. */
 export function health(app, studio) {
   const problems = [];
@@ -1367,7 +1957,14 @@ export function health(app, studio) {
     problems.push('CLAUDE.md has no "## App profile" section (merge it from app-studio\'s templates/CLAUDE.md)');
   const gaps = profileGaps(app);
   if (gaps.length) problems.push(`the App profile in CLAUDE.md still has ${gaps.length} placeholder(s), for example:\n${gaps.slice(0, 3).map((g) => `      ${g}`).join("\n")}`);
-  problems.push(...phaseProblems(app), ...featureGaps(app), ...hookGaps(app), ...ownGaps(app, lock), ...linkGaps(app, lock), ...idGaps(app));
+  problems.push(...phaseProblems(app), ...ownerMergedProblems(app), ...featureGaps(app), ...hookGaps(app), ...ownGaps(app, lock), ...linkGaps(app, lock), ...idGaps(app), ...discoveryProfileProblems(app, lock));
+  const dec = decisionIdFindings(app, lock);
+  problems.push(...dec.problems, ...strandedDecisions(app));
+  notes.push(...dec.notes);
+  if (studio) {
+    const packs = Object.keys(lock.packs ?? {});
+    problems.push(...packClashes(studio, packs).map((c) => `name clash: ${c.text}`), ...ownClashes(app, lock.files, masterFiles(studio, packs)).map((c) => `name clash: ${ownClashText(c)}`));
+  }
   for (const [pack, file] of REQUIRED_STARTERS)
     if (lock.packs?.[pack] && !existsSync(join(app, file)))
       problems.push(`${file} is missing (the ${pack} pack's starter; copy it from app-studio's packs/${pack}/starter/)`);
@@ -1528,18 +2125,50 @@ export function inventory(app, studio) {
 function main() {
   const argv = process.argv.slice(2);
   const code = run(argv);
-  if (code === 2 || argv[0] === "ack" || argv[0] === "inventory" || argv[0] === "changelog" || argv[0] === "status" || argv[0] === "release-prepare") return code;
+  if (code === 2 || argv[0] === "ack" || argv[0] === "inventory" || argv[0] === "changelog" || argv[0] === "status" || argv[0] === "release-prepare" || argv[0] === "live-check-pass" || argv[0] === "sync") return code;
   let app;
   try {
     ({ app } = locate(parseArgs(argv)));
   } catch {
     return code;
   }
-  const notes = activateHooks(app);
+  markPreview(argv, app, code);
+  // Only `hooks`, the SessionStart hook (`check --warn`) and the copying commands change git config or settings; `check` and `health` report, other reads are silent.
+  const wires = (["hooks", "pull", "install", "pack"].includes(argv[0]) && !argv.includes("--dry-run")) || argv.includes("--warn");
+  const reportOnly = !wires;
+  const notes = activateHooks(app, process.env, { dry: reportOnly });
   const quiet = argv.includes("--warn") ? notes.filter((n) => n.includes("is off")) : notes;
-  if (quiet.length) console.log(quiet.map((n) => `Harness hooks: ${n}.`).join("\n"));
+  if (reportOnly && (!quiet.length || !["check", "health"].includes(argv[0]))) return code; // other reads stay silent
+  if (reportOnly)
+    console.log(`${quiet.map((n) => `Harness hooks: ${n}.`).join("\n")}\nThis command only reports. To turn the hooks on, run: node ${toPosix(relative(process.cwd(), process.argv[1]) || process.argv[1])} hooks --app ${toPosix(app)}`);
+  else if (quiet.length) console.log(quiet.map((n) => `Harness hooks: ${n}.`).join("\n"));
   else if (argv[0] === "hooks") console.log("Harness hooks are on.");
   return code;
+}
+
+const READS_STUDIO = ["check", "health", "changelog", "inventory", "pack"];
+const COPIES = (opts) => ["pull", "install"].includes(opts.cmd) || (opts.cmd === "pack" && opts.rest[0] === "add");
+
+/**
+ * A copy taken with --live-check comes from the checkout as it is (the studio-scratch check and the packs smoke test try what is not
+ * released yet). The lock says so (`unreleased: true`), so the app's later commands compare against that same checkout until its next
+ * ordinary pull.
+ */
+const previewed = (app) => { try { return readLock(app)?.unreleased === true; } catch { return false; } };
+
+function markPreview(argv, app, code) {
+  try {
+    const opts = parseArgs(argv);
+    if (!COPIES(opts) || opts.dry) return;
+    const { studio } = locate(opts);
+    const lock = readLock(app);
+    if (!lock || !studio) return;
+    const want = !!opts.liveCheck && unreleasedForApps(studio).length > 0;
+    if (!!lock.unreleased === want || (want && code !== 0)) return; // a copy that failed or was refused took nothing
+    if (want) lock.unreleased = true;
+    else delete lock.unreleased;
+    writeLock(app, lock);
+  } catch { /* no lock to mark */ }
 }
 
 function run(argv) {
@@ -1551,6 +2180,22 @@ function run(argv) {
     console.error(e.message);
     return argv.includes("--warn") ? 0 : 2;
   }
+  if (opts.dry && !["pull", "sync"].includes(opts.cmd)) {
+    console.error("--dry-run works with pull and sync only. Nothing was run or changed.");
+    return 2;
+  }
+  // Apps get releases: read app-studio as of its current release while a change that reaches apps waits for the next one.
+  // `status` and `sync` work on the checkout itself (sync's own pull comes back through here).
+  // Only the commands that read app-studio's content take part; a copy (pull, install, pack add) stops when the release cannot be
+  // read back, and the comparing ones go on without app-studio (against the lock alone), as when it is not found.
+  // `ack` writes what it saw of app-studio into the lock, so it stops like a copy.
+  const strict = COPIES(opts) || opts.cmd === "ack";
+  if (studio && !opts.liveCheck && (COPIES(opts) || ((READS_STUDIO.includes(opts.cmd) || opts.cmd === "ack") && !previewed(app)))) {
+    const view = releasedView(studio, { deepen: !opts.warn });
+    if (view.error && !opts.warn) console.error(strict ? view.error : `${view.error.replace(/, so nothing was changed\..*$/, ".")} Going on without app-studio.`);
+    if (view.error && strict) return 1;
+    studio = view.error ? null : view.dir;
+  }
 
   if (opts.cmd === "check") {
     let r;
@@ -1561,6 +2206,9 @@ function run(argv) {
       return opts.warn ? 0 : 1;
     }
     const gaps = profileGaps(app);
+    // In discovery, every session starts knowing the phase and what comes next.
+    const stage = r.installed ? discoveryNote(app) : null;
+    if (stage) console.log(stage);
     const notes = r.starters.length
       ? [
           "Pack starter files changed in app-studio (the app owns them; use the harness-sync skill):",
@@ -1617,6 +2265,10 @@ function run(argv) {
       console.log(`Stopped: ${DISCOVERY_STOP}.`);
       return 1;
     }
+    if (opts.discoveryOnly && phase !== "discovery") {
+      console.log(`Stopped: ${BUILD_STOP}.`);
+      return 1;
+    }
     console.log(phase);
     return 0;
   }
@@ -1634,13 +2286,13 @@ function run(argv) {
     return 1;
   }
 
-  // Pull, install and pack add copy what app-studio holds into the app: stop on a release that
-  // hasn't passed its live check. `--live-check` is for the studio-scratch check only.
-  const pending = ["pull", "install"].includes(opts.cmd) || (opts.cmd === "pack" && opts.rest[0] === "add") ? studio && livePending(studio) : null;
-  if (pending && !opts.liveCheck) {
+  // Pull, install and pack add copy what app-studio holds into the app: stop while any release between the
+  // app's version and app-studio's is waiting on its check on main. `--live-check` is for the studio-scratch check only.
+  const pending = ["pull", "install"].includes(opts.cmd) || (opts.cmd === "pack" && opts.rest[0] === "add") ? pendingInRange(studio, readLock(app)?.studio) : [];
+  if (pending.length && !opts.liveCheck) {
     console.error(
-      `app-studio v${pending} is not live-checked yet (its CHANGELOG.md entry says "Live check: pending"), so nothing was changed. ` +
-        "Wait until the entry says \"Live check: passed\", or run it with --live-check only for the studio-scratch check.",
+      `app-studio ${pending.map((v) => `v${v}`).join(", ")} ${pending.length === 1 ? "is" : "are"} not live-checked yet (status.main is pending in releases/), so nothing was changed. ` +
+        "Wait until `node scripts/release.mjs pending` lists nothing, or run it with --live-check only for the studio-scratch check.",
     );
     return 1;
   }
@@ -1659,6 +2311,35 @@ function run(argv) {
     const r = releasePrepare(app, { version: opts.version, apply: opts.apply });
     (r.ok ? console.log : console.error)(r.text);
     return r.ok ? 0 : 1;
+  }
+
+  if (opts.cmd === "release-cut") {
+    const r = releaseCut(app, { version: opts.version });
+    (r.ok ? console.log : console.error)(r.text);
+    return r.ok ? 0 : 1;
+  }
+
+  if (opts.cmd === "release-tag-check") {
+    if (!opts.rest[0]) {
+      console.error("Usage: studio-sync.mjs release-tag-check X.Y.Z");
+      return 2;
+    }
+    const r = tagCheck(app, opts.rest[0]);
+    console.log(r.text);
+    return r.ok ? 0 : 1;
+  }
+
+  if (opts.cmd === "live-check-pass") {
+    console.error("Moved: run `node scripts/release.mjs pass-main <version>` (it sets the record to passed and renders CHANGELOG.md). Nothing was changed.");
+    return 1;
+  }
+
+  if (opts.cmd === "sync") {
+    if (!studio) {
+      console.error("app-studio not found. Pass --studio <dir> or set STUDIO_DIR.");
+      return 2;
+    }
+    return syncApp(app, studio, opts);
   }
 
   if (opts.cmd === "changelog") {
@@ -1685,22 +2366,33 @@ function run(argv) {
     }
     const lock = readLock(app);
     const ih = instructionsHash(studio);
+    // A section the pull could not place is the thread's to merge: it is listed apart from the wording the pull did add.
+    const byHand = (r.patched ?? []).filter((x) => /by hand/.test(x));
+    const patched = (r.patched ?? []).filter((x) => !byHand.includes(x));
+    fullLists = !!opts.dry;
     const lines = [
-      `Studio harness v${studioVersion(studio)} ${opts.cmd === "install" ? "installed in" : "pulled into"} ${app}.`,
+      opts.dry
+        ? `Dry run: nothing was changed. A pull would bring ${app} ${before ? `from v${before} ` : ""}to studio harness v${studioVersion(studio)}:`
+        : `Studio harness v${studioVersion(studio)} ${opts.cmd === "install" ? "installed in" : "pulled into"} ${app}.`,
       ...list("updated", r.written),
+      ...newAgentsNote(r.newAgents),
       ...list("deleted", r.deleted),
       ...list("added from templates", r.templates ?? []),
-      ...list("CLAUDE.md wording added (app text untouched; commit it with the sync)", r.patched ?? []),
+      ...list("CLAUDE.md wording added (app text untouched; commit it with the sync)", patched),
+      ...list("CLAUDE.md sections left as they are (merge by hand)", byHand),
       ...list("pack starters refreshed", r.refreshed ?? []),
       ...list("pack starters added (new in their pack)", r.created ?? []),
+      ...(r.untaken?.length ? [`  pack starters not added: ${r.untaken.length} (this app never took the starter files of ${r.untakenPacks.join(", ")}, so it keeps its own; copy one by hand from app-studio's packs/<name>/starter/ only if wanted)`] : []),
       ...(r.held?.length ? [`  pack starters held back (${r.holdReason}): ${r.held.join(", ")}`] : []),
       ...list("pack starters changed upstream but edited here (merge by hand, then ack)", r.starterNotes ?? []),
       ...list("skipped (changed here; move the change to app-studio, or pass --force)", r.skipped),
+      ...(r.clashes ?? []).map((c) => `  name clash: ${c}`),
       ...(opts.cmd === "pull" && ih && lock?.instructions !== ih ? instructionsNote() : []),
     ];
     if (opts.cmd === "pull" && before !== studioVersion(studio)) lines.push("", changelogFor(studio, before));
+    if (opts.dry) lines.push("", "Dry run: nothing was changed. Run it again without --dry-run to apply this.");
     console.log(lines.join("\n"));
-    return r.skipped.length ? 1 : 0;
+    return r.skipped.length || r.clashes?.length ? 1 : 0;
   }
 
   if (opts.cmd === "pack") {
@@ -1739,14 +2431,19 @@ function run(argv) {
       [
         `Packs added to ${app}: ${byKind(studio, r.added) || "none new"}.`,
         ...list("managed files", r.written),
+        ...newAgentsNote(r.newAgents),
         ...list("starter files created", r.created),
         ...list("starter files kept (already there, different)", r.kept),
+        ...list("starter files of the packs it already had refreshed", r.refreshed ?? []),
+        ...list("pack starters changed upstream but edited here (merge by hand, then ack)", r.starterNotes ?? []),
+        ...(r.ignoreLine ? [`  added the line docs/**/*.html to ${r.ignoreLine} (a saved HTML prototype no longer fails npm run check)`] : []),
         ...list("package.json entries added", r.packageJson),
         ...(r.partners ?? []).map((g) => `  module: ${g}`),
         ...list("skipped (changed here; pass --force)", r.skipped),
+        ...(r.clashes ?? []).map((c) => `  name clash: ${c}`),
       ].join("\n"),
     );
-    return r.skipped.length ? 1 : 0;
+    return r.skipped.length || r.clashes?.length ? 1 : 0;
   }
 
   if (opts.cmd === "inventory") {
@@ -1770,7 +2467,7 @@ function run(argv) {
     return 0;
   }
 
-  console.error("Usage: studio-sync.mjs <install|check|inventory|health|phase|pull|changelog|status|release-prepare|pack add|pack remove|ack|hooks> [--app <dir>] [--studio <dir>] [--warn] [--force] [--live-check]");
+  console.error("Usage: studio-sync.mjs <install|check|inventory|health|phase|pull|sync|changelog|status|release-prepare|pack add|pack remove|ack|hooks> [--app <dir>] [--studio <dir>] [--warn] [--force] [--dry-run] [--live-check]");
   return 2;
 }
 

@@ -70,6 +70,29 @@ Music copyright, likeness and image rights, AI generation cost (video and media)
 
 Gritty and subcultural, phone-first. Fake data uses realistic band names, venues and flyers.
 
+## Roles
+
+<!-- studio:begin roles (harness-owned: a sync replaces everything up to the end marker; keep app-specific roles outside it) -->
+- **The App Creator (PM) and the Tester.** The App Creator is also the Tester unless someone else tests. The App Creator describes requirements and sets priority by ordering the backlog; the Tester tests releases and reports results. Neither writes code, runs commands or manages git. The few things only the Admin can do (creating a repo, adding a repository secret, a host's settings) Claude hands over as exact clicks.
+- **Claude (engineer).** Owns all code, tests, versioning, releases and the harness. Turns the App Creator's words into PRD and backlog changes, builds, ships and hands over a test script.
+- Ask the App Creator only when a requirement is genuinely ambiguous or a decision is product-level. Ask one question at a time, each with a recommended answer and one line on why. Everything technical is ours to decide.
+<!-- studio:end roles -->
+
+## Git workflow
+
+<!-- studio:begin merge-rule (harness-owned: a sync replaces everything up to the end marker; keep app-specific rules outside it) -->
+- **Merging a PR** (every skill that says "merge it" means this). Open it ready for review with a Conventional Commit title. **Never open a draft PR: its checks are skipped and it never merges, silently.** Read it back (`pull_request_read`, `get`); if `draft` is `true`, mark it ready (`update_pull_request`, `draft: false`) before you hand back. Then squash-merge once `CI gate` and `health` are green, else switch on auto-merge (`enable_pr_auto_merge`, `SQUASH`) and follow the PR (`subscribe_pr_activity` plus a wake-up about 3 minutes out). Never bypass a check or merge a blocked PR. The full procedure is `.claude/skills/build-feature/merge.md`.
+  - **Owner-merged repos** (App profile): never merge, auto-merge or approve there; open the PR and say it waits for the App Creator.
+  - **No safety checks, no merge.** If the session did not start with "Studio harness loaded" (see `.claude/skills/harness-sync/harness.md`, "Cloud sessions"), say so in your first reply and leave merging to the App Creator unless `/tmp/studio-hooks.log` shows hooks ran.
+  - **`app-studio` is never changed from here, with no exceptions** (no approval lifts it): decline in one line and file a `harness-idea` issue instead. Issues and comments there stay allowed.
+<!-- studio:end merge-rule -->
+
+## Threads
+
+<!-- studio:begin thread-reports (harness-owned: a sync replaces everything up to the end marker; keep app-specific rules outside it) -->
+- **Point, don't repeat.** The App Creator reads and answers in threads. A thread puts everything the App Creator must act on in its own message: the result in plain English, the test steps, and any product decision about its own item (one question, with a recommended answer; a release question about its own item too). The coordinator then posts only "<what is needed> - open the thread", with the thread link. It does not restate the result, the test steps or PR numbers, and it adds no question of its own, even though a coordinator's habit is to relay results. With parallel threads it posts one such line per thread. A summary is for a matter that spans threads (ordering, the next item, one release covering several). The App Creator can ask a thread for a shorter recap.
+<!-- studio:end thread-reports -->
+
 ## Writing for the App Creator
 
 Before saying something is done, check it, and say plainly what you did not check (for example, "no code tests ran" or "not tried on a phone").
