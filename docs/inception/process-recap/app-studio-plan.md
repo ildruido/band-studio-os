@@ -18,7 +18,7 @@ What is being upstreamed, with where it lives today in this repo:
 | --- | --- | --- |
 | Workflow, order, artifact map, 11 exit criteria | [workflow.md](../workflow.md) | doc |
 | Exit-criteria tracker and sub-milestone record | [status.md](../status.md) | doc |
-| Decision log format and rules | [decision-log.md](../decision-log.md), skill `decision-log` | doc + skill |
+| Decision log format and rules | [decision-log.md](../decision-log.md), harness script `decisions.mjs` (the app's `decision-log` skill was removed) | doc + skill |
 | Product facts for generic skills | "Inception profile" section of `CLAUDE.md` | profile |
 | Interview-driven artifacts (foundation, personas, metrics, constraints, MVP, roadmap) | skill `inception-interview` | skill |
 | Research method and bias guards | [framework.md](../../research/framework.md), skill `research-protocol` and its protocol and report templates | doc + skill |

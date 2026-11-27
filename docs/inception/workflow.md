@@ -47,7 +47,7 @@ All of them live in `docs/inception/`, except research studies, which live in `d
 | 5 | Constraints and non-goals | `constraints.md` | `inception-interview` | 9 |
 | 6 | MVP definition and roadmap | `mvp.md` and `roadmap.md` (two PRs; roadmap derived from the MVP) | `inception-interview` + `product-management:write-spec` / `roadmap-update` | 3 |
 | 7 | Prototypes (interactive mock-ups) | `prototypes.md` (index of Artifact links) | `prototype` | 4 |
-| 8 | Decision log | `decision-log.md` | `decision-log` (ongoing) | 10 |
+| 8 | Decision log | `decision-log.md` | `node .claude/hooks/decisions.mjs` (ongoing; the app's own `decision-log` skill was removed) | 10 |
 | 8a | Product Brief Pack (source of truth for decks, one-pager and video pitch; D-036). Step 1: [inventories and gap table](product-brief-pack.md) | `product-brief-pack.md`, then `docs/brief-pack/` | `inception-interview` | supports 5 and 6; not an exit criterion |
 | 9 | Architecture handoff (product + meta-architecture) and next steps | `architecture-handoff.md` | `architecture-handoff` | 5, 6 |
 | 10 | Exit gate report | `exit-gate.md` | `exit-gate` | 11 (Ale's sign-off) |
@@ -82,7 +82,7 @@ Project skills live in `.claude/skills/`:
 | Skill | Use |
 | --- | --- |
 | `inception-interview` | Fill or refine an artifact by interviewing the product owner one question at a time |
-| `decision-log` | Record, revise or look up a decision |
+| `decision-log` (removed) | Was: record, revise or look up a decision. Now `node .claude/hooks/decisions.mjs` (harness) numbers and records them |
 | `research-protocol` | Run any research with the framework's bias guardrails, at a light, standard or deep tier |
 | `persona-validation` | Reality check of the target users before personas (part A), evidence audit of the personas draft (part B) |
 | `market-analysis` | Size and health of the market (TAM, SAM, SOM) with triangulated estimates and ranges |

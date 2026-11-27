@@ -38,7 +38,7 @@ Evidence is the workflow table, PR titles and study files. Where the repo does n
 | Item | Kind | Used for | Evidence of use |
 | --- | --- | --- | --- |
 | `inception-interview` | skill | Foundation, personas, constraints, metrics, MVP, brief pack | Planned in the workflow.md artifact table; no direct trace in the repo |
-| `decision-log` | skill | D-001 to D-040 | decision-log.md |
+| `decision-log` | skill (since replaced by `decisions.mjs`) | D-001 to D-040 | decision-log.md |
 | `research-protocol` | skill | Every study: questions and kill criteria fixed before searching | studies.md, protocol.md per study |
 | `persona-validation` | skill | R-001, R-002 (part A) | studies.md |
 | `competitor-scan`, `competitive-analysis`, `market-analysis` | skills | R-004, R-005, R-006 (R-007 as a scan follow-up) | studies.md |
