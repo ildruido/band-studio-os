@@ -33,7 +33,7 @@ None. Everything up to PR #50 is merged. Prototype v3 is in this PR ([prototypes
 - The prototype link is private to Ale. It has to be shared from the artifact before anyone else can open it. The prototype artwork is canned: it is not evidence for H-01.
 - Video: the R-009 sample uses synthetic art and placeholder sound, was not uploaded to Instagram, and ran on one local CPU core, not the real hosting plan. Rights findings are desk research, not legal advice; Meta's own help pages could not be read.
 - CI covers docs and harness files only; there are no code tests during inception.
-- App profile Phase set to discovery, undecided values say TBD (D-024). Harness synced to 0.28.1 (latest stable; Project instructions review pending with the coordinator).
+- App profile Phase set to discovery, undecided values say TBD (D-024). Harness synced to 0.48.1 (Project instructions review pending with the coordinator).
 - The `Harness` check runs on every PR, and main requires the `health` check, so PRs self-merge when it is green (proven).
 - Canva's own pages still return 403 to automated access (Adobe, PosterMyWall, Mew and Simplified open). R-007 used independent reviews for Canva instead. The gap against incumbents narrowed: Simplified and Canva AI 2.0 now advertise a "brief in, campaign out" flow for general businesses; nobody independent tests it for bands. A timed trial is still the missing evidence (Ale declined it, D-025).
 
